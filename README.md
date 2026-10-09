@@ -1,4 +1,4 @@
-# 🚌 SmartRideTIET
+# <img src="frontend/src/assets/tiet_logo_icon.png" alt="TIET Logo" height="36" valign="middle" /> SmartRideTIET
 
 > Campus ride-sharing platform for Thapar Institute of Engineering & Technology (TIET) students — powered by Firebase, Node.js, React, and a Python ML engine.
 
