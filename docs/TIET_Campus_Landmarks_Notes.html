@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartRideTIET — TIET Campus Landmarks Notes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #07071a;
+      --surface:  #0e0e28;
+      --card:     rgba(255,255,255,0.035);
+      --border:   rgba(255,255,255,0.08);
+      --text:     #e8e8ff;
+      --muted:    #6666a0;
+      --accent:   #a78bfa;
+      --green:    #22c55e;
+      --cyan:     #06b6d4;
+      --amber:    #f59e0b;
+      --red:      #ef4444;
+      --pink:     #ec4899;
+      --lime:     #86efac;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ── Sidebar ──────────────────────────────── */
+    .sidebar {
+      position: fixed;
+      top: 0; left: 0;
+      width: 240px;
+      height: 100vh;
+      background: #0b0b22;
+      border-right: 1px solid var(--border);
+      padding: 2rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      overflow-y: auto;
+      z-index: 100;
+    }
+
+    .sidebar-brand {
+      font-size: 1rem;
+      font-weight: 900;
+      color: var(--accent);
+      margin-bottom: 1.25rem;
+      letter-spacing: -0.3px;
+    }
+
+    .sidebar-brand span { color: #5555c0; }
+
+    .sidebar-section {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: #3a3a60;
+      margin-top: 1.1rem;
+      margin-bottom: 0.3rem;
+      padding-left: 0.75rem;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.45rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .sidebar-link:hover, .sidebar-link.active {
+      background: rgba(34,197,94,0.1);
+      color: var(--green);
+    }
+
+    /* ── Main ─────────────────────────────────── */
+    .main {
+      margin-left: 240px;
+      padding: 3rem 2.5rem 6rem;
+      max-width: 960px;
+    }
+
+    /* ── Hero ─────────────────────────────────── */
+    .hero {
+      background: linear-gradient(135deg, rgba(34,197,94,0.12) 0%, rgba(6,182,212,0.07) 50%, rgba(167,139,250,0.05) 100%);
+      border: 1px solid rgba(34,197,94,0.22);
+      border-radius: 22px;
+      padding: 2.5rem 2.5rem;
+      margin-bottom: 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -40%; right: -10%;
+      width: 320px; height: 320px;
+      background: radial-gradient(circle, rgba(34,197,94,0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(34,197,94,0.15);
+      border: 1px solid rgba(34,197,94,0.35);
+      border-radius: 20px;
+      padding: 0.28rem 0.85rem;
+      font-size: 0.78rem;
+      color: var(--green);
+      font-weight: 700;
+      margin-bottom: 1.1rem;
+    }
+
+    .hero h1 {
+      font-size: 2.4rem;
+      font-weight: 900;
+      letter-spacing: -1px;
+      line-height: 1.15;
+      margin-bottom: 0.8rem;
+    }
+
+    .hero h1 span { color: var(--green); }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 580px;
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+
+    .hero-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.82rem;
+      color: #5a5a8a;
+    }
+
+    .hero-meta-item span { color: var(--green); font-weight: 700; }
+
+    /* ── Section headers ──────────────────────── */
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 1.1rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section { margin-bottom: 2.5rem; }
+
+    /* ── Cards ────────────────────────────────── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .card p, .card li {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .card ul { padding-left: 1.3rem; }
+    .card li { margin-bottom: 0.3rem; }
+
+    /* ── Grid layouts ─────────────────────────── */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+    .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 0.75rem; }
+
+    @media (max-width: 700px) {
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    }
+
+    /* ── File Table ───────────────────────────── */
+    .file-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    .file-table th {
+      text-align: left;
+      padding: 0.6rem 1rem;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #4a4a70;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .file-table td {
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      color: var(--muted);
+      vertical-align: top;
+    }
+
+    .file-table tr:last-child td { border-bottom: none; }
+    .file-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .file-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--cyan);
+    }
+
+    /* ── Badges ───────────────────────────────── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      border-radius: 20px;
+      padding: 0.2rem 0.7rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      border: 1px solid transparent;
+    }
+
+    .badge-new      { background: rgba(34,197,94,0.12);   color: var(--green); border-color: rgba(34,197,94,0.25); }
+    .badge-updated  { background: rgba(6,182,212,0.12);   color: var(--cyan);  border-color: rgba(6,182,212,0.25); }
+    .badge-css      { background: rgba(236,72,153,0.12);  color: var(--pink);  border-color: rgba(236,72,153,0.25); }
+    .badge-data     { background: rgba(167,139,250,0.12); color: var(--accent);border-color: rgba(167,139,250,0.25); }
+    .badge-asset    { background: rgba(245,158,11,0.12);  color: var(--amber); border-color: rgba(245,158,11,0.25); }
+
+    /* ── Flow ─────────────────────────────────── */
+    .flow {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      color: #8888cc;
+      line-height: 2;
+      white-space: pre-wrap;
+    }
+
+    .flow .hl  { color: var(--green);  font-weight: 700; }
+    .flow .hl2 { color: var(--cyan);   font-weight: 700; }
+    .flow .hl3 { color: var(--accent); font-weight: 700; }
+    .flow .hl4 { color: var(--amber);  font-weight: 700; }
+
+    /* ── Stat highlight ───────────────────────── */
+    .stat-highlight {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-hl-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.1rem;
+      text-align: center;
+    }
+
+    .stat-hl-value {
+      font-size: 1.6rem;
+      font-weight: 900;
+    }
+
+    .stat-hl-label {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 0.2rem;
+    }
+
+    /* ── Verification Box ─────────────────────── */
+    .verify-box {
+      background: rgba(34,197,94,0.06);
+      border: 1px solid rgba(34,197,94,0.18);
+      border-radius: 16px;
+      padding: 1.5rem;
+    }
+
+    .verify-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+      font-size: 0.88rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .verify-item:last-child { border-bottom: none; }
+
+    .verify-check {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: rgba(34,197,94,0.15);
+      color: var(--green);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    /* ── Category Pill ────────────────────────── */
+    .cat-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      border-radius: 20px;
+      padding: 0.18rem 0.6rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      border: 1px solid;
+      margin: 0.15rem;
+    }
+
+    /* ── Fare Box ─────────────────────────────── */
+    .fare-box {
+      background: rgba(34,197,94,0.07);
+      border: 1px solid rgba(34,197,94,0.22);
+      border-radius: 16px;
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .fare-box-item { text-align: center; }
+
+    .fare-box-value {
+      font-size: 2.2rem;
+      font-weight: 900;
+    }
+
+    .fare-box-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 0.2rem;
+    }
+
+    .fare-box-divider {
+      width: 1px;
+      height: 50px;
+      background: rgba(255,255,255,0.07);
+    }
+
+    /* ── Landmark Count Table ─────────────────── */
+    .landmark-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    .landmark-table th {
+      text-align: left;
+      padding: 0.55rem 0.9rem;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #4a4a70;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .landmark-table td {
+      padding: 0.6rem 0.9rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      color: var(--muted);
+    }
+
+    .landmark-table tr:last-child td { border-bottom: none; }
+    .landmark-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .landmark-count {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    /* ── Next Phase ───────────────────────────── */
+    .next-phase {
+      background: linear-gradient(135deg, rgba(6,182,212,0.1), rgba(167,139,250,0.06));
+      border: 1px solid rgba(6,182,212,0.2);
+      border-radius: 18px;
+      padding: 2rem;
+    }
+
+    .next-phase h3 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--cyan);
+      margin-bottom: 1rem;
+    }
+
+    .next-phase-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .next-phase-item {
+      background: rgba(255,255,255,0.025);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.9rem 1rem;
+    }
+
+    .next-phase-item-label { font-size: 0.85rem; font-weight: 700; color: var(--text); }
+    .next-phase-item-sub   { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
+
+    /* ── Code inline ──────────────────────────── */
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82em;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 4px;
+      padding: 0.1em 0.35em;
+      color: var(--cyan);
+    }
+
+    /* ── Scrollbar ────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #2a2a50; border-radius: 3px; }
+
+    /* ── Responsive ───────────────────────────── */
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .main    { margin-left: 0; padding: 2rem 1.25rem 4rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Sidebar ───────────────────────────────────────────────── -->
+<nav class="sidebar">
+  <div class="sidebar-brand">SmartRide<span>TIET</span></div>
+
+  <div class="sidebar-section">Overview</div>
+  <a href="#summary"    class="sidebar-link active">📋 Summary</a>
+  <a href="#what-built" class="sidebar-link">🏗 What Was Built</a>
+  <a href="#files"      class="sidebar-link">📁 File Index</a>
+
+  <div class="sidebar-section">Landmarks</div>
+  <a href="#categories"  class="sidebar-link">🏷 Categories</a>
+  <a href="#full-list"   class="sidebar-link">📍 Full Landmark List</a>
+  <a href="#fare-logic"  class="sidebar-link">💰 Fare Logic</a>
+
+  <div class="sidebar-section">Frontend</div>
+  <a href="#locations-data"  class="sidebar-link">🗂 locations.js</a>
+  <a href="#book-ride"       class="sidebar-link">🚗 BookRide Updates</a>
+  <a href="#campus-map"      class="sidebar-link">🗺 CampusMap Page</a>
+  <a href="#campus-map-css"  class="sidebar-link">🎨 CampusMap CSS</a>
+  <a href="#ride-service"    class="sidebar-link">⚙️ rideService Update</a>
+  <a href="#dashboard"       class="sidebar-link">🏠 StudentDashboard</a>
+  <a href="#app-routes"      class="sidebar-link">🛣 App Routes</a>
+
+  <div class="sidebar-section">Validation</div>
+  <a href="#flow"   class="sidebar-link">🔄 User Flow</a>
+  <a href="#verify" class="sidebar-link">✅ Verification</a>
+  <a href="#next"   class="sidebar-link">🚀 Next Steps</a>
+</nav>
+
+<!-- ── Main Content ─────────────────────────────────────────── -->
+<main class="main">
+
+  <!-- ── Hero ───────────────────────────────────────────────── -->
+  <div class="hero" id="summary">
+    <div class="hero-badge">🏫 Campus Landmarks Feature — Complete</div>
+    <h1>TIET Campus <span>Landmarks</span><br>&amp; Interactive Map</h1>
+    <p>
+      A comprehensive campus navigation layer for SmartRideTIET — 65+ TIET landmark locations
+      across 11 categories, a real uploaded 2D campus map with clickable pin overlay,
+      and a flat ₹10 fare for any ride within TIET campus.
+    </p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">📍 <span>65+</span> campus landmarks</div>
+      <div class="hero-meta-item">🏷 <span>11</span> categories</div>
+      <div class="hero-meta-item">💰 <span>₹10</span> campus flat fare</div>
+      <div class="hero-meta-item">📁 <span>4</span> new files created</div>
+      <div class="hero-meta-item">✏️ <span>5</span> files updated</div>
+    </div>
+  </div>
+
+  <!-- ── Build Stats ─────────────────────────────────────────── -->
+  <div class="stat-highlight">
+    <div class="stat-hl-card">
+      <div class="stat-hl-value" style="color:#22c55e;">65+</div>
+      <div class="stat-hl-label">Campus landmarks</div>
+    </div>
+    <div class="stat-hl-card">
+      <div class="stat-hl-value" style="color:#06b6d4;">11</div>
+      <div class="stat-hl-label">Location categories</div>
+    </div>
+    <div class="stat-hl-card">
+      <div class="stat-hl-value" style="color:#a78bfa;">₹10</div>
+      <div class="stat-hl-label">Campus flat fare</div>
+    </div>
+    <div class="stat-hl-card">
+      <div class="stat-hl-value" style="color:#f59e0b;">4</div>
+      <div class="stat-hl-label">New files</div>
+    </div>
+    <div class="stat-hl-card">
+      <div class="stat-hl-value" style="color:#ec4899;">5</div>
+      <div class="stat-hl-label">Files updated</div>
+    </div>
+  </div>
+
+  <!-- ── What Was Built ───────────────────────────────────────── -->
+  <div class="section" id="what-built">
+    <div class="section-title">🏗 What Was Built</div>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-title">🗂 Central Data File</div>
+        <ul>
+          <li>Single source of truth: <code>src/data/locations.js</code></li>
+          <li>65+ campus locations with lat/lng, emoji, description, category</li>
+          <li>5 off-campus Patiala locations</li>
+          <li><code>isCampusInternalTrip()</code> fare-detection helper</li>
+          <li><code>CATEGORY_COLORS</code> map for consistent theming across all UI</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">🗺 Interactive Campus Map</div>
+        <ul>
+          <li>Uploaded 2D TIET campus map as background image</li>
+          <li>Percentage-positioned landmark pins on the image</li>
+          <li>Click pins to reveal tooltip: name, description, fare &amp; "Book" link</li>
+          <li>Category sidebar with search + filter</li>
+          <li>Zoom toggle for fullscreen map view</li>
+          <li>Color-coded legend per category</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">🚗 BookRide Upgrade</div>
+        <ul>
+          <li>All 65+ campus landmarks in search suggestions</li>
+          <li>Tab-filtered quick selector (All / Gates / Academic / Hostels / Food / Sports / Research)</li>
+          <li>Emoji + color-coded chips per category</li>
+          <li>Campus fare notice banner (₹10 flat)</li>
+          <li>Fare card turns green for campus trips</li>
+          <li>Campus vs off-campus travel time estimation</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── File Index ──────────────────────────────────────────── -->
+  <div class="section" id="files">
+    <div class="section-title">📁 File Index</div>
+    <div class="card" style="padding: 0; overflow: hidden;">
+      <table class="file-table">
+        <thead>
+          <tr>
+            <th>File</th>
+            <th>Status</th>
+            <th>What it does</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="file-name">src/data/locations.js</span></td>
+            <td><span class="badge badge-new">NEW</span></td>
+            <td>All 65+ campus &amp; 5 off-campus locations, category colors, campus fare helpers</td>
+          </tr>
+          <tr>
+            <td><span class="file-name">pages/student/CampusMap.jsx</span></td>
+            <td><span class="badge badge-new">NEW</span></td>
+            <td>Interactive campus map page with image background, pins, sidebar, search</td>
+          </tr>
+          <tr>
+            <td><span class="file-name">pages/student/CampusMap.css</span></td>
+            <td><span class="badge badge-css">NEW CSS</span></td>
+            <td>Full layout CSS for campus map, pins, tooltips, sidebar, legend</td>
+          </tr>
+          <tr>
+            <td><span class="file-name">assets/campus_map.jpg</span></td>
+            <td><span class="badge badge-asset">NEW ASSET</span></td>
+            <td>Uploaded real 2D TIET campus map image used as map background</td>
+          </tr>
+          <tr>
+            <td><span class="file-name">pages/student/BookRide.jsx</span></td>
+            <td><span class="badge badge-updated">UPDATED</span></td>
+            <td>Added 65+ landmarks, category tabs, campus fare notice, green fare card for campus trips</td>
+          </tr>
+          <tr>
+            <td><span class="file-name">pages/student/BookRide.css</span></td>
+            <td><span class="badge badge-css">UPDATED CSS</span></td>
+            <td>Updated <code>.quick-loc-chip</code> to flex layout with emoji, scrollbar, transition styles</td>
+          </tr>
+          <tr>
+            <td><span class="file-name">services/rideService.js</span></td>
+            <td><span class="badge badge-updated">UPDATED</span></td>
+            <td><code>calcFare()</code> now returns flat ₹10 when <code>isCampusInternal = true</code></td>
+          </tr>
+          <tr>
+            <td><span class="file-name">pages/student/StudentDashboard.jsx</span></td>
+            <td><span class="badge badge-updated">UPDATED</span></td>
+            <td>Added 🗺️ Campus Map quick-action card &amp; Phase 4 banner</td>
+          </tr>
+          <tr>
+            <td><span class="file-name">src/App.jsx</span></td>
+            <td><span class="badge badge-updated">UPDATED</span></td>
+            <td>Added <code>/student/campus-map</code> protected route</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── Categories ─────────────────────────────────────────── -->
+  <div class="section" id="categories">
+    <div class="section-title">🏷 Landmark Categories</div>
+    <div class="card">
+      <p style="margin-bottom:1rem;">All campus landmarks belong to one of 11 categories. Each category has a unique color used consistently in the campus map pins, the BookRide chip grid, and the sidebar legend.</p>
+      <div style="display:flex; flex-wrap:wrap; gap:0.4rem;">
+        <span class="cat-pill" style="background:rgba(245,158,11,0.15);border-color:rgba(245,158,11,0.4);color:#f59e0b;">🏛️ Gates</span>
+        <span class="cat-pill" style="background:rgba(96,165,250,0.15);border-color:rgba(96,165,250,0.4);color:#60a5fa;">🏫 Academic</span>
+        <span class="cat-pill" style="background:rgba(167,139,250,0.15);border-color:rgba(167,139,250,0.4);color:#a78bfa;">🔭 Research</span>
+        <span class="cat-pill" style="background:rgba(52,211,153,0.15);border-color:rgba(52,211,153,0.4);color:#34d399;">🏠 Hostels</span>
+        <span class="cat-pill" style="background:rgba(248,113,113,0.15);border-color:rgba(248,113,113,0.4);color:#f87171;">🏃 Sports</span>
+        <span class="cat-pill" style="background:rgba(251,146,60,0.15);border-color:rgba(251,146,60,0.4);color:#fb923c;">🍽️ Food</span>
+        <span class="cat-pill" style="background:rgba(103,232,249,0.15);border-color:rgba(103,232,249,0.4);color:#67e8f9;">💳 Facilities</span>
+        <span class="cat-pill" style="background:rgba(253,230,138,0.15);border-color:rgba(253,230,138,0.4);color:#fde68a;">🛕 Religious</span>
+        <span class="cat-pill" style="background:rgba(192,132,252,0.15);border-color:rgba(192,132,252,0.4);color:#c084fc;">🚌 Transport</span>
+        <span class="cat-pill" style="background:rgba(134,239,172,0.15);border-color:rgba(134,239,172,0.4);color:#86efac;">🎓 Education</span>
+        <span class="cat-pill" style="background:rgba(148,163,184,0.15);border-color:rgba(148,163,184,0.4);color:#94a3b8;">🏙️ City</span>
+      </div>
+    </div>
+
+    <!-- Category counts -->
+    <div class="card" style="padding:0; overflow:hidden;">
+      <table class="landmark-table">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Count</th>
+            <th>Key Landmarks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>🏛️ Gates</td>
+            <td><span class="landmark-count">4</span></td>
+            <td>Main Entrance, Western Gate, Polytechnic Gate, TSLAS Gate</td>
+          </tr>
+          <tr>
+            <td>🏫 Academic</td>
+            <td><span class="landmark-count">17</span></td>
+            <td>Library, COS, CS Block, C–H Blocks, Mechanical Workshop, TSLAS, Venture Lab…</td>
+          </tr>
+          <tr>
+            <td>🔭 Research</td>
+            <td><span class="landmark-count">9</span></td>
+            <td>FRA–FRG Blocks, TI-FAC CORE, STEP</td>
+          </tr>
+          <tr>
+            <td>🏠 Hostels</td>
+            <td><span class="landmark-count">13</span></td>
+            <td>Meera, Prithvi, Vyom, Amritam, Agira, Telas, Viyan, Anantam, Ananta, Vahni, Vasudha, Ira, Ambaram</td>
+          </tr>
+          <tr>
+            <td>🏃 Sports</td>
+            <td><span class="landmark-count">6</span></td>
+            <td>Athletics Track, Cricket Field, Football Ground, Tennis Court, Swimming Pool, Sports Complex</td>
+          </tr>
+          <tr>
+            <td>🍽️ Food</td>
+            <td><span class="landmark-count">4</span></td>
+            <td>Food Court, Canteen, Cafe, Waterbody Cafe</td>
+          </tr>
+          <tr>
+            <td>💳 Facilities</td>
+            <td><span class="landmark-count">12</span></td>
+            <td>Auditorium (OAT), Fete Area, Central Park, Bank Street, ATM, Guest House, SBOP Lawns, Stationery Shop, Visitors Lounge, State Quarters…</td>
+          </tr>
+          <tr>
+            <td>🛕 Religious</td>
+            <td><span class="landmark-count">2</span></td>
+            <td>Shiv Mandir, Gurudwara</td>
+          </tr>
+          <tr>
+            <td>🚌 Transport (off-campus)</td>
+            <td><span class="landmark-count">2</span></td>
+            <td>Patiala Railway Station, Patiala Bus Stand</td>
+          </tr>
+          <tr>
+            <td>🎓 Education (off-campus)</td>
+            <td><span class="landmark-count">1</span></td>
+            <td>Punjabi University</td>
+          </tr>
+          <tr>
+            <td>🏙️ City (off-campus)</td>
+            <td><span class="landmark-count">2</span></td>
+            <td>Model Town Patiala, Leela Bhawan Market</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── Full Landmark List ──────────────────────────────────── -->
+  <div class="section" id="full-list">
+    <div class="section-title">📍 Full Campus Landmark List</div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">🏛️ Gates (4)</div>
+        <ul>
+          <li>Main Entrance</li>
+          <li>Western Gate</li>
+          <li>Polytechnic Gate</li>
+          <li>TSLAS Gate</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🛕 Religious (2)</div>
+        <ul>
+          <li>Shiv Mandir</li>
+          <li>Gurudwara</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🏫 Academic (17)</div>
+        <ul>
+          <li>Library</li>
+          <li>COS Block (Centre of Studies)</li>
+          <li>CS Block</li>
+          <li>C Block, D Block, E Block, F Block, G Block, H Block</li>
+          <li>Mechanical Workshop</li>
+          <li>Venture Lab</li>
+          <li>TSLAS (Thapar School of Liberal Arts &amp; Sciences)</li>
+          <li>Thapar Polytechnic College</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🔭 Research (9)</div>
+        <ul>
+          <li>FRA Block, FRB Block, FRC Block</li>
+          <li>FRD Block, FRE Block</li>
+          <li>FRF Block, FRG Block</li>
+          <li>TI-FAC CORE</li>
+          <li>STEP</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🏠 Hostels / Halls (13)</div>
+        <ul>
+          <li>Meera Hall, Prithvi Hall, Vyom Hall</li>
+          <li>Amritam Hall, Agira Hall</li>
+          <li>Telas Hall, Viyan Hall, Anantam Hall</li>
+          <li>Ananta Hall, Vahni Hall</li>
+          <li>Vasudha Hall, Ira Hall</li>
+          <li>Ambaram Hall</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🏃 Sports (6)</div>
+        <ul>
+          <li>Athletics Track</li>
+          <li>Cricket Field</li>
+          <li>Football Ground</li>
+          <li>Tennis Court</li>
+          <li>Swimming Pool</li>
+          <li>Sports Complex</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🍽️ Food (4)</div>
+        <ul>
+          <li>Food Court</li>
+          <li>Canteen</li>
+          <li>Cafe</li>
+          <li>Waterbody Cafe</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title">💳 Facilities (12)</div>
+        <ul>
+          <li>Auditorium / Open Air Theatre (OAT)</li>
+          <li>Fete Area, Central Park</li>
+          <li>Bank Street, ATM, Stationery Shop</li>
+          <li>Guest House, SBOP Lawns</li>
+          <li>Visitors Lounge, State Quarters</li>
+          <li>Hostel PG (area marker)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Fare Logic ──────────────────────────────────────────── -->
+  <div class="section" id="fare-logic">
+    <div class="section-title">💰 Campus Fare Logic</div>
+
+    <div class="fare-box" style="margin-bottom:1rem;">
+      <div class="fare-box-item">
+        <div class="fare-box-value" style="color:#22c55e;">₹10</div>
+        <div class="fare-box-label">Campus-internal flat fare</div>
+      </div>
+      <div class="fare-box-divider"></div>
+      <div class="fare-box-item">
+        <div class="fare-box-value" style="color:#a78bfa;">₹30</div>
+        <div class="fare-box-label">Off-campus base fare</div>
+      </div>
+      <div class="fare-box-divider"></div>
+      <div class="fare-box-item">
+        <div class="fare-box-value" style="color:#06b6d4;">+₹12</div>
+        <div class="fare-box-label">Per km (off-campus)</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">🔍 How Campus Detection Works</div>
+        <ul>
+          <li>Every campus location has <code>isCampus: true</code> in <code>locations.js</code></li>
+          <li><code>isCampusInternalTrip(locA, locB)</code> returns <code>true</code> only if <strong>both</strong> endpoints have <code>isCampus === true</code></li>
+          <li>This flag is passed as the 2nd argument to <code>calcFare(dist, isCampusInternal)</code></li>
+          <li>If <code>true</code>, fare = ₹10 regardless of distance</li>
+          <li>If <code>false</code>, fare = ₹30 + ₹12/km (minimum ₹30)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">💚 Campus Fare UX</div>
+        <ul>
+          <li>Green ₹10 fare card border on campus trips (vs purple for off-campus)</li>
+          <li>"🏫 Campus Fare · flat rate" label shown under fare value</li>
+          <li>Green banner at top of BookRide: "Campus Rides — Flat ₹10"</li>
+          <li>Status banner shows "🏫 Campus Flat Rate" badge after booking</li>
+          <li>Campus Map page footer note: "Any ride within campus = ₹10 flat"</li>
+          <li>Travel time estimate uses 15 km/h for campus, 40 km/h for off-campus</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📐 Updated <code>calcFare()</code> in rideService.js</div>
+      <pre style="font-family:'JetBrains Mono',monospace; font-size:0.82rem; color:#8888cc; line-height:1.9; margin-top:0.5rem;">
+<span style="color:#6666a0;">// Campus-internal trips → flat ₹10</span>
+<span style="color:#6666a0;">// Off-campus          → ₹30 base + ₹12/km (min ₹30)</span>
+<span style="color:#a78bfa;">export const</span> <span style="color:#22c55e;">calcFare</span> = (distanceKm, <span style="color:#06b6d4;">isCampusInternal</span> = <span style="color:#f59e0b;">false</span>) => {
+  <span style="color:#a78bfa;">if</span> (isCampusInternal) <span style="color:#a78bfa;">return</span> <span style="color:#22c55e;">10</span>; <span style="color:#4a4a70;">// Flat campus fee</span>
+  <span style="color:#a78bfa;">const</span> BASE = <span style="color:#22c55e;">30</span>;
+  <span style="color:#a78bfa;">const</span> PER_KM = <span style="color:#22c55e;">12</span>;
+  <span style="color:#a78bfa;">return</span> Math.max(BASE, Math.round(BASE + distanceKm * PER_KM));
+};</pre>
+    </div>
+  </div>
+
+  <!-- ── locations.js ────────────────────────────────────────── -->
+  <div class="section" id="locations-data">
+    <div class="section-title">🗂 src/data/locations.js</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">📦 What it exports</div>
+        <ul>
+          <li><code>CAMPUS_LOCATIONS</code> — array of 65+ campus landmarks</li>
+          <li><code>OFFCAMPUS_LOCATIONS</code> — 5 Patiala destinations</li>
+          <li><code>ALL_LOCATIONS</code> — combined array (campus first)</li>
+          <li><code>CAMPUS_FLAT_FARE</code> — constant <code>10</code></li>
+          <li><code>isCampusInternalTrip(locA, locB)</code> — boolean helper</li>
+          <li><code>CATEGORY_COLORS</code> — color/bg map for each category</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">🔑 Location Object Schema</div>
+        <pre style="font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:#8888cc; line-height:1.8;">
+{
+  <span style="color:#06b6d4;">label</span>:       <span style="color:#22c55e;">"Library"</span>,
+  <span style="color:#06b6d4;">lat</span>:         <span style="color:#f59e0b;">30.3535</span>,
+  <span style="color:#06b6d4;">lng</span>:         <span style="color:#f59e0b;">76.3637</span>,
+  <span style="color:#06b6d4;">category</span>:    <span style="color:#22c55e;">"Academic"</span>,
+  <span style="color:#06b6d4;">emoji</span>:       <span style="color:#22c55e;">"📚"</span>,
+  <span style="color:#06b6d4;">description</span>: <span style="color:#22c55e;">"Main campus library"</span>,
+  <span style="color:#06b6d4;">isCampus</span>:    <span style="color:#a78bfa;">true</span>
+}</pre>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🎨 CATEGORY_COLORS usage</div>
+      <p>The <code>CATEGORY_COLORS</code> export maps each category name to a <code>{ color, bg }</code> object. This is used in three places:</p>
+      <ul style="margin-top:0.5rem;">
+        <li><strong>BookRide.jsx</strong> — chip background and border color in the quick selector grid</li>
+        <li><strong>CampusMap.jsx</strong> — pin dot color, tooltip border color, sidebar item highlight, and legend dots</li>
+        <li><strong>Suggestion dropdown</strong> — "CAMPUS" badge color in BookRide search</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ── BookRide Updates ────────────────────────────────────── -->
+  <div class="section" id="book-ride">
+    <div class="section-title">🚗 BookRide.jsx — Updates</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">⚡ Quick Selector Upgrade</div>
+        <ul>
+          <li>Previously: 8 hardcoded POPULAR_LOCATIONS chips</li>
+          <li>Now: 65+ campus landmarks with 7 category tabs</li>
+          <li>Tab options: <strong>All / Gates / Academic / Hostels / Food / Sports / Research</strong></li>
+          <li>Chips show emoji + label, color-coded per category</li>
+          <li>Grid is scrollable (180px max-height) with custom scrollbar</li>
+          <li>First click sets Pickup, second click sets Drop</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">🔍 Suggestion Dropdown Upgrade</div>
+        <ul>
+          <li>Search now queries <code>ALL_LOCATIONS</code> (campus + off-campus)</li>
+          <li>Each suggestion shows: emoji, label, description sub-text</li>
+          <li>Campus suggestions show a green <strong>CAMPUS</strong> badge on the right</li>
+          <li>Up to 8 suggestions shown per query (slice limit)</li>
+          <li>Min 2 characters to trigger suggestions</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">💰 Campus Fare Banner</div>
+        <ul>
+          <li>Green info strip at top of BookRide page (when no active ride)</li>
+          <li>Shows: "Campus Rides — Flat ₹10"</li>
+          <li>Includes a link → <code>/student/campus-map</code></li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">📐 Fare Card Changes</div>
+        <ul>
+          <li>Border turns green (<code>rgba(34,197,94,0.3)</code>) for campus trips</li>
+          <li>Fare value turns green + shows "flat rate" sub-label</li>
+          <li>Fare label changes to "🏫 Campus Fare" vs "Estimated Fare"</li>
+          <li><code>transition: border-color 0.3s</code> added for smooth switch</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CampusMap Page ──────────────────────────────────────── -->
+  <div class="section" id="campus-map">
+    <div class="section-title">🗺 CampusMap.jsx — Page Architecture</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">🖼 Map Image + Pin System</div>
+        <ul>
+          <li>Real uploaded TIET 2D campus map as <code>&lt;img&gt;</code> inside a relative-positioned container</li>
+          <li>Pins are absolutely positioned using <code>left: X%</code>, <code>top: Y%</code> (percentage-based, responsive)</li>
+          <li>All 65+ landmark positions manually calibrated against the actual map image</li>
+          <li><code>LANDMARK_POSITIONS</code> lookup object maps label → <code>{ x, y }</code></li>
+          <li>Only landmarks with a position entry are rendered as pins</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">📍 Pin Anatomy</div>
+        <ul>
+          <li>Colored dot (22px) with category color + glow shadow</li>
+          <li>Emoji inside the dot (0.65rem)</li>
+          <li>On hover: dot grows to 28px, ring outline appears</li>
+          <li>Hovered (non-selected): small label text appears below pin</li>
+          <li>Selected: full tooltip card appears above pin</li>
+          <li>Tooltip animates in with <code>tooltipIn</code> keyframe</li>
+          <li>Clicking map background deselects all pins</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">📋 Left Sidebar</div>
+        <ul>
+          <li>Search input filters landmark list and visible pins simultaneously</li>
+          <li>Category buttons filter both map pins and sidebar list</li>
+          <li>Scrollable landmark list (custom scrollbar)</li>
+          <li>Each item: emoji, name, description, category badge</li>
+          <li>Clicking sidebar item selects/deselects the landmark (same as clicking pin)</li>
+          <li>Selected item gets category-colored border highlight</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">🔍 Map Controls</div>
+        <ul>
+          <li><strong>🔍+ / 🔍− Zoom toggle</strong> — switches map to fixed fullscreen overlay (<code>position: fixed</code>) with overflow scroll</li>
+          <li><strong>↺ Reset button</strong> — clears selection, search and sets category to "All"</li>
+          <li>Cursor is <code>crosshair</code> on the map area</li>
+          <li>Map image has <code>pointer-events: none</code> (prevents image drag interfering with pin clicks)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🎨 Pin Tooltip Contents</div>
+      <p>When a landmark pin is clicked, a tooltip card appears above it containing:</p>
+      <div class="grid-2" style="margin-top:0.75rem;">
+        <ul>
+          <li><strong>Title</strong> — landmark name (bold)</li>
+          <li><strong>Description</strong> — sub-text description from data</li>
+          <li><strong>Campus Fare</strong> — "🏫 Campus Ride: ₹10"</li>
+        </ul>
+        <ul>
+          <li><strong>Book from here →</strong> button link to <code>/student/book</code></li>
+          <li>Border color matches the landmark's category color</li>
+          <li>Tooltip is category-colored (border + button)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CampusMap CSS ───────────────────────────────────────── -->
+  <div class="section" id="campus-map-css">
+    <div class="section-title">🎨 CampusMap.css — Design System</div>
+    <div class="card">
+      <p>A dedicated CSS module covering the full campus map page. Key class groups:</p>
+      <div class="grid-2" style="margin-top:1rem;">
+        <ul>
+          <li><strong>.campus-map-page</strong> — full-page shell</li>
+          <li><strong>.campus-map-header</strong> — gradient header bar</li>
+          <li><strong>.campus-map-layout</strong> — 300px sidebar + 1fr main grid</li>
+          <li><strong>.campus-map-sidebar</strong> — left panel with search, filters, list</li>
+          <li><strong>.sidebar-cat-btn</strong> — category filter pill buttons</li>
+          <li><strong>.sidebar-landmark-item</strong> — clickable landmark row</li>
+          <li><strong>.campus-map-image-wrap</strong> — relative image container (+ .zoomed fullscreen)</li>
+        </ul>
+        <ul>
+          <li><strong>.campus-map-img</strong> — the background map image</li>
+          <li><strong>.map-pin</strong> — absolute-positioned pin wrapper</li>
+          <li><strong>.map-pin-dot</strong> — colored circle with emoji</li>
+          <li><strong>.map-pin-label</strong> — hover label below pin</li>
+          <li><strong>.map-pin-tooltip</strong> — selected state info card</li>
+          <li><strong>.map-legend</strong> — category color legend row</li>
+          <li><strong>.map-fare-notice</strong> — green fare footer strip</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── rideService Update ──────────────────────────────────── -->
+  <div class="section" id="ride-service">
+    <div class="section-title">⚙️ services/rideService.js — Update</div>
+    <div class="card">
+      <div class="card-title">What changed</div>
+      <ul>
+        <li>File header comment updated to include "Phase 4 Campus Fare"</li>
+        <li><code>calcFare(distanceKm)</code> → <code>calcFare(distanceKm, isCampusInternal = false)</code></li>
+        <li>When <code>isCampusInternal</code> is <code>true</code>, returns <code>10</code> immediately</li>
+        <li>Default behaviour unchanged for off-campus: <code>₹30 + ₹12/km</code></li>
+        <li>No new npm packages required</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ── StudentDashboard ────────────────────────────────────── -->
+  <div class="section" id="dashboard">
+    <div class="section-title">🏠 StudentDashboard.jsx — Changes</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">🗺️ New Campus Map Card</div>
+        <ul>
+          <li>4th quick-action card added to the dashboard grid</li>
+          <li>Green gradient: <code>rgba(34,197,94,0.15) → rgba(34,197,94,0.04)</code></li>
+          <li>Green border: <code>rgba(34,197,94,0.25)</code></li>
+          <li>Label: <strong>Campus Map</strong></li>
+          <li>Sub-text: "Explore landmarks · Rides ₹10"</li>
+          <li>Links to <code>/student/campus-map</code></li>
+          <li>Same hover lift animation as the other cards</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">📢 Phase Banner Update</div>
+        <ul>
+          <li>Old: purple Phase 3 "Ride Booking System" banner</li>
+          <li>New: green Phase 4 "Campus Landmarks &amp; Map" banner</li>
+          <li>Icon changed from 🚀 to 🏫</li>
+          <li>Text: "65+ TIET campus landmarks · Campus rides flat ₹10 · Interactive map with pin overlay!"</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── App Routes ──────────────────────────────────────────── -->
+  <div class="section" id="app-routes">
+    <div class="section-title">🛣 App.jsx — New Route</div>
+    <div class="card">
+      <div class="card-title">Added route</div>
+      <pre style="font-family:'JetBrains Mono',monospace; font-size:0.82rem; color:#8888cc; line-height:1.9; margin-top:0.5rem;">
+<span style="color:#a78bfa;">import</span> CampusMap <span style="color:#a78bfa;">from</span> <span style="color:#22c55e;">'./pages/student/CampusMap'</span>;
+
+<span style="color:#6666a0;">// Inside &lt;Routes&gt; — student section:</span>
+<span style="color:#06b6d4;">&lt;Route</span> path=<span style="color:#22c55e;">"/student/campus-map"</span> element={
+  <span style="color:#06b6d4;">&lt;ProtectedRoute</span> allowedRoles={[<span style="color:#22c55e;">'student'</span>]}<span style="color:#06b6d4;">&gt;</span>
+    <span style="color:#06b6d4;">&lt;CampusMap /&gt;</span>
+  <span style="color:#06b6d4;">&lt;/ProtectedRoute&gt;</span>
+} <span style="color:#06b6d4;">/&gt;</span></pre>
+      <p style="margin-top:0.75rem; font-size:0.85rem;">Route is protected — only logged-in students can access the campus map page. Drivers and admins are redirected by <code>ProtectedRoute</code>.</p>
+    </div>
+  </div>
+
+  <!-- ── User Flow ───────────────────────────────────────────── -->
+  <div class="section" id="flow">
+    <div class="section-title">🔄 User Flow</div>
+    <div class="flow"><span class="hl">Student opens Student Dashboard</span>
+  ├── Sees 4 quick-action cards (Book Ride, Ride History, Profile, Campus Map)
+  └── Clicks 🗺️ Campus Map card → /student/campus-map
+
+<span class="hl2">Campus Map page loads</span>
+  ├── Real TIET 2D campus map image loads as background
+  ├── 65+ colored pins rendered at calibrated positions
+  ├── Left sidebar shows searchable landmark list
+  ├── Category filter tabs (All, Gates, Academic, Hostels…)
+  ├── Click a pin → tooltip shows name, description, ₹10 fare, "Book from here →"
+  ├── Click "Book from here →" → /student/book (pre-fill planned in future)
+  └── Zoom toggle → fullscreen map mode
+
+<span class="hl3">Student opens Book a Ride → /student/book</span>
+  ├── Green banner: "Campus Rides — Flat ₹10 · View Campus Map →"
+  ├── Quick selector panel with 7 category tabs
+  ├── Category chips: colored by type, emoji + label
+  ├── Types in search → suggestions from ALL 70 locations
+  │     └── Campus locations show green "CAMPUS" badge
+  ├── Selects Pickup (campus location)
+  ├── Selects Drop (campus location)
+  │
+  ├── Fare card: GREEN border, ₹10, "flat rate" sub-label
+  │     → isCampusInternalTrip() returned true
+  │     → calcFare(dist, true) returned 10
+  │
+  ├── Selects Pickup (campus) + Drop (off-campus, e.g. Railway Station)
+  │     → Fare card: PURPLE border, ₹30+ based on distance
+  │     → calcFare(dist, false)
+  │
+  └── Confirms booking → ride created with isCampusInternal: true/false
+
+<span class="hl4">Active ride banner shows "🏫 Campus Flat Rate" badge when isCampusInternal = true</span></div>
+  </div>
+
+  <!-- ── Verification ───────────────────────────────────────── -->
+  <div class="section" id="verify">
+    <div class="section-title">✅ Verification Checklist</div>
+    <div class="verify-box">
+      <div class="verify-item">
+        <div class="verify-check">✓</div>
+        <span><code>src/data/locations.js</code> created — 65+ campus + 5 off-campus locations with full metadata</span>
+      </div>
+      <div class="verify-item">
+        <div class="verify-check">✓</div>
+        <span><code>assets/campus_map.jpg</code> copied — real uploaded TIET 2D map available in frontend assets</span>
+      </div>
+      <div class="verify-item">
+        <div class="verify-check">✓</div>
+        <span><code>CampusMap.jsx</code> built — image background, 65+ pins, sidebar, search, category filter, tooltip, zoom</span>
+      </div>
+      <div class="verify-item">
+        <div class="verify-check">✓</div>
+        <span><code>CampusMap.css</code> built — full responsive layout, pin animations, tooltip cards, legend</span>
+      </div>
+      <div class="verify-item">
+        <div class="verify-check">✓</div>
+        <span><code>BookRide.jsx</code> updated — 65+ landmarks in search, 7-tab quick selector, campus fare notice, green fare card</span>
+      </div>
+      <div class="verify-item">
+        <div class="verify-check">✓</div>
+        <span><code>rideService.js</code> updated — <code>calcFare()</code> returns ₹10 flat for any campus-internal trip</span>
+      </div>
+      <div class="verify-item">
+        <div class="verify-check">✓</div>
+        <span><code>StudentDashboard.jsx</code> updated — 🗺️ Campus Map card + Phase 4 green banner</span>
+      </div>
+      <div class="verify-item">
+        <div class="verify-check">✓</div>
+        <span><code>App.jsx</code> updated — <code>/student/campus-map</code> protected route registered</span>
+      </div>
+      <div class="verify-item">
+        <div class="verify-check">✓</div>
+        <span>All 11 landmark categories covered with unique colors consistent across all UI surfaces</span>
+      </div>
+      <div class="verify-item">
+        <div class="verify-check">✓</div>
+        <span>Off-campus bookings (campus → Patiala Railway Station etc.) still use distance-based fare correctly</span>
+      </div>
+      <div class="verify-item">
+        <div class="verify-check">✓</div>
+        <span>No new npm packages required — pure React + CSS, zero additional dependencies</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Next Steps ─────────────────────────────────────────── -->
+  <div class="section" id="next">
+    <div class="section-title">🚀 Possible Next Improvements</div>
+    <div class="next-phase">
+      <h3>Ideas for Future Iterations</h3>
+      <div class="next-phase-grid">
+        <div class="next-phase-item">
+          <div class="next-phase-item-label">📌 Pre-fill from Map</div>
+          <div class="next-phase-item-sub">Clicking "Book from here" pre-fills that landmark as pickup in BookRide</div>
+        </div>
+        <div class="next-phase-item">
+          <div class="next-phase-item-label">🗺 Google Maps Layer</div>
+          <div class="next-phase-item-sub">Optionally overlay a live Google Maps or Leaflet.js layer on top of the static image</div>
+        </div>
+        <div class="next-phase-item">
+          <div class="next-phase-item-label">📍 Driver Location Pin</div>
+          <div class="next-phase-item-sub">Show driver's real-time GPS position on the campus map during active ride</div>
+        </div>
+        <div class="next-phase-item">
+          <div class="next-phase-item-label">🏫 Admin Landmark Editor</div>
+          <div class="next-phase-item-sub">Admin panel to add, edit, or remove campus landmarks without code changes</div>
+        </div>
+        <div class="next-phase-item">
+          <div class="next-phase-item-label">🔔 Campus Zone Alerts</div>
+          <div class="next-phase-item-sub">Notify student when driver enters the same campus zone as their pickup</div>
+        </div>
+        <div class="next-phase-item">
+          <div class="next-phase-item-label">📊 Heatmap</div>
+          <div class="next-phase-item-sub">Admin view showing which campus landmarks are most frequently booked from/to</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+</body>
+</html>

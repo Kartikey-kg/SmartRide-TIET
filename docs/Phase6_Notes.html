@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartRideTIET – Phase 6 Complete Notes</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap');
+
+    :root {
+      --bg: #0d0d1a;
+      --bg2: #111128;
+      --bg3: #16162a;
+      --border: #2a2a4a;
+      --purple: #7c3aed;
+      --blue: #3b82f6;
+      --green: #22c55e;
+      --orange: #f97316;
+      --red: #ef4444;
+      --yellow: #eab308;
+      --cyan: #06b6d4;
+      --text: #f0f0ff;
+      --text2: #a0a0c0;
+      --text3: #6060a0;
+      --grad: linear-gradient(135deg, #7c3aed, #06b6d4);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    /* ── Print PDF button ── */
+    .pdf-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: rgba(13,13,26,0.97);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 999;
+      backdrop-filter: blur(10px);
+    }
+    .pdf-bar-title { font-weight: 700; font-size: 1rem; }
+    .pdf-bar-title span { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .btn-pdf {
+      background: var(--grad);
+      color: white;
+      border: none;
+      padding: 0.55rem 1.4rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+      box-shadow: 0 4px 15px rgba(124,58,237,0.4);
+    }
+    .btn-pdf:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,58,237,0.5); }
+
+    /* ── Main Layout ── */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 6rem 2rem 4rem;
+    }
+
+    /* ── Cover ── */
+    .cover {
+      text-align: center;
+      padding: 3rem 0 4rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 3rem;
+    }
+    .cover-badge {
+      display: inline-block;
+      background: rgba(6,182,212,0.15);
+      border: 1px solid rgba(6,182,212,0.4);
+      border-radius: 50px;
+      padding: 0.35rem 1rem;
+      font-size: 0.85rem;
+      color: #67e8f9;
+      margin-bottom: 1.5rem;
+    }
+    .cover h1 { font-size: 3rem; font-weight: 900; line-height: 1.1; margin-bottom: 1rem; }
+    .cover h1 span { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .cover p { color: var(--text2); max-width: 600px; margin: 0 auto 2rem; }
+    .cover-meta {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .meta-item { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 0.75rem 1.25rem; text-align: left; min-width: 150px; }
+    .meta-label { font-size: 0.75rem; color: var(--text3); text-transform: uppercase; font-weight: 700; margin-bottom: 0.2rem; }
+    .meta-value { font-size: 0.95rem; font-weight: 700; }
+
+    /* ── Table of Contents ── */
+    .toc { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem 2rem; margin-bottom: 3rem; }
+    .toc h2 { font-size: 1.2rem; font-weight: 800; margin-bottom: 1rem; }
+    .toc ol { padding-left: 1.5rem; }
+    .toc li { margin-bottom: 0.5rem; font-size: 0.95rem; color: var(--text2); }
+    .toc a { color: var(--text2); text-decoration: none; transition: color 0.15s; }
+    .toc a:hover { color: #67e8f9; }
+
+    /* ── Section Header ── */
+    .section { margin-bottom: 3rem; }
+    .section-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+    .section-num { width: 36px; height: 36px; border-radius: 50%; background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.3); display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 800; color: #c4b5fd; flex-shrink: 0; }
+    .section h2 { font-size: 1.6rem; font-weight: 850; letter-spacing: -0.5px; }
+    .section h3 { font-size: 1.15rem; font-weight: 700; color: #e2e8f0; margin-top: 2rem; margin-bottom: 0.75rem; }
+    .section p { margin-bottom: 1rem; color: var(--text2); font-size: 0.95rem; }
+    .section strong { color: var(--text); }
+
+    /* ── Table style ── */
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; font-size: 0.9rem; }
+    th { text-align: left; padding: 0.75rem 1rem; background: var(--bg3); color: var(--text2); font-weight: 600; border-bottom: 2px solid var(--border); }
+    td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); color: var(--text2); vertical-align: top; }
+    tr:hover td { background: rgba(255,255,255,0.01); }
+
+    /* ── Alert boxes ── */
+    .alert { display: flex; gap: 1rem; padding: 1.25rem 1.5rem; border-radius: 12px; margin: 1.5rem 0; border: 1px solid transparent; }
+    .alert-note { background: rgba(59,130,246,0.06); border-color: rgba(59,130,246,0.15); }
+    .alert-warn { background: rgba(249,115,22,0.06); border-color: rgba(249,115,22,0.15); }
+    .alert-success { background: rgba(34,197,94,0.06); border-color: rgba(34,197,94,0.15); }
+    .alert-error { background: rgba(239,68,68,0.06); border-color: rgba(239,68,68,0.15); }
+    .alert-icon { font-size: 1.25rem; flex-shrink: 0; }
+    .alert-title { font-weight: 700; color: var(--text); margin-bottom: 0.25rem; font-size: 0.95rem; }
+    .alert-body { font-size: 0.88rem; color: var(--text2); }
+
+    /* ── Code display ── */
+    .inline-code { font-family: 'Fira Code', monospace; font-size: 0.82rem; background: var(--bg3); border: 1px solid var(--border); padding: 0.15rem 0.35rem; border-radius: 5px; color: #e2e8f0; }
+    pre { background: #050510; border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem 1.5rem; overflow-x: auto; margin: 1rem 0 1.5rem; }
+    pre code { font-family: 'Fira Code', monospace; font-size: 0.83rem; color: #e2e8f0; }
+
+    /* ── Terminal style ── */
+    .terminal { background: #050510; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 1rem 0 1.5rem; }
+    .terminal-header { background: var(--bg3); padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.4rem; border-bottom: 1px solid var(--border); }
+    .t-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+    .t-red { background: #ff5f56; }
+    .t-yellow { background: #ffbd2e; }
+    .t-green { background: #27c93f; }
+    .t-title { font-size: 0.75rem; color: var(--text3); font-family: 'Fira Code', monospace; margin-left: auto; }
+    .terminal-body { padding: 1.25rem 1.5rem; font-family: 'Fira Code', monospace; font-size: 0.83rem; line-height: 1.6; }
+    .t-prompt { color: #22c55e; }
+    .t-cmd { color: #f0f0ff; }
+    .t-out { color: #6060a0; }
+    .t-success { color: #22c55e; }
+    .t-error { color: #ef4444; }
+
+    /* ── Error card ── */
+    .error-card { background: rgba(239,68,68,0.05); border: 1px solid rgba(239,68,68,0.2); border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; }
+    .error-title { color: #f87171; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+    .error-msg { background: #0a0a18; border-radius: 6px; padding: 0.75rem 1rem; font-family: 'Fira Code', monospace; font-size: 0.8rem; color: #f87171; margin: 0.5rem 0; overflow-x: auto; }
+    .fix-title { color: #4ade80; font-weight: 700; font-size: 0.9rem; margin-top: 1rem; margin-bottom: 0.4rem; }
+
+    /* ── Concept box ── */
+    .concept { background: rgba(6,182,212,0.06); border-left: 3px solid var(--cyan); border-radius: 0 10px 10px 0; padding: 1rem 1.25rem; margin: 1rem 0; }
+    .concept-term { font-weight: 700; color: #67e8f9; margin-bottom: 0.3rem; }
+    .concept p { margin-bottom: 0; font-size: 0.9rem; }
+
+    /* ── File tree ── */
+    .filetree { background: #050510; border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem 1.5rem; font-family: 'Fira Code', monospace; font-size: 0.83rem; line-height: 2; margin: 1rem 0 1.5rem; }
+    .ft-dir { color: #60a5fa; }
+    .ft-file { color: #e2e8f0; }
+    .ft-new { color: #86efac; }
+    .ft-mod { color: #fbd38d; }
+    .ft-comment { color: #4a4a7a; }
+
+    /* ── Checklist ── */
+    .checklist { list-style: none; }
+    .checklist li { display: flex; align-items: flex-start; gap: 0.6rem; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text2); }
+    .check-done { color: var(--green); font-size: 1rem; flex-shrink: 0; }
+
+    /* ── Flow diagram ── */
+    .flow-diagram { background: #050510; border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem 1.5rem; font-family: 'Fira Code', monospace; font-size: 0.83rem; line-height: 2.2; margin: 1rem 0 1.5rem; color: var(--text2); }
+    .flow-diagram .flow-purple { color: #c084fc; }
+    .flow-diagram .flow-cyan   { color: #67e8f9; }
+    .flow-diagram .flow-green  { color: #86efac; }
+    .flow-diagram .flow-orange { color: #fb923c; }
+    .flow-diagram .flow-arrow  { color: #4a4a7a; }
+
+    /* ── Print styles ── */
+    @media print {
+      .pdf-bar { display: none !important; }
+      body { background: white; color: #111; font-size: 12px; }
+      :root {
+        --bg: white; --bg2: #f8f8f8; --bg3: #f0f0f8;
+        --border: #ddd; --text: #111; --text2: #444; --text3: #888;
+        --purple: #5b21b6; --blue: #1d4ed8; --cyan: #0284c7;
+      }
+      .container { padding-top: 1rem; max-width: 100%; }
+      pre, .terminal-body { background: #f5f5f5 !important; border-color: #ddd; }
+      pre code, .terminal-body code { color: #222; }
+      .alert-note { background: #eff6ff !important; }
+      .alert-warn { background: #fffbeb !important; }
+      .alert-error { background: #fef2f2 !important; }
+      .alert-success { background: #f0fdf4 !important; }
+      .concept { background: #f0fdfe !important; }
+      .error-msg { background: #fff5f5 !important; color: #c00 !important; }
+      .filetree, .flow-diagram { background: #f5f5f5 !important; }
+      pre { page-break-inside: avoid; }
+      .section { page-break-inside: avoid; }
+      h2, h3 { page-break-after: avoid; }
+      a { color: inherit; text-decoration: none; }
+    }
+
+    .divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+    .tag { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-right: 0.3rem; }
+    .tag-purple { background: rgba(124,58,237,0.15); color: #c4b5fd; border: 1px solid rgba(124,58,237,0.3); }
+    .tag-blue   { background: rgba(59,130,246,0.15);  color: #93c5fd; border: 1px solid rgba(59,130,246,0.3); }
+    .tag-green  { background: rgba(34,197,94,0.15);   color: #86efac; border: 1px solid rgba(34,197,94,0.3); }
+    .tag-cyan   { background: rgba(6,182,212,0.15);   color: #67e8f9; border: 1px solid rgba(6,182,212,0.3); }
+    .tag-orange { background: rgba(249,115,22,0.15);  color: #fdba74; border: 1px solid rgba(249,115,22,0.3); }
+  </style>
+</head>
+<body>
+
+<!-- PDF Download Bar -->
+<div class="pdf-bar">
+  <div class="pdf-bar-title">🚌 SmartRide<span>TIET</span> — Phase 6 Notes</div>
+  <button class="btn-pdf" onclick="window.print()">
+    📥 Download as PDF
+  </button>
+</div>
+
+<div class="container">
+
+  <!-- ── COVER ── -->
+  <div class="cover">
+    <div class="cover-badge">⚙️ Complete Operation Notes</div>
+    <h1>SmartRideTIET<br /><span>Phase 6 Notes</span></h1>
+    <p>Complete documentation for the Advanced Admin Dashboard and Platform Intelligence systems. Multi-period interactive SVG charts, driver verification processes, notification broadcasts, real-time live monitoring dispatches, dynamic variable configuration settings, and database raw CSV exports.</p>
+    <div class="cover-meta">
+      <div class="meta-item"><div class="meta-label">Phase</div><div class="meta-value">Phase 6 — Admin Console</div></div>
+      <div class="meta-item"><div class="meta-label">Stack</div><div class="meta-value">React + SVG + Firebase + CSV</div></div>
+      <div class="meta-item"><div class="meta-label">Status</div><div class="meta-value" style="color:#22c55e">✅ Complete</div></div>
+      <div class="meta-item"><div class="meta-label">Features</div><div class="meta-value">6 New Operations Modules ✅</div></div>
+    </div>
+  </div>
+
+  <!-- ── TABLE OF CONTENTS ── -->
+  <div class="toc">
+    <h2>📋 Table of Contents</h2>
+    <ol>
+      <li><a href="#s1">What Phase 6 Builds — Overview</a></li>
+      <li><a href="#s2">Key Concepts Explained</a></li>
+      <li><a href="#s3">Files Added &amp; Updated in Phase 6</a></li>
+      <li><a href="#s4">Frontend Architecture — Code Explained</a></li>
+      <li><a href="#s5">Backend APIs — Code Explained</a></li>
+      <li><a href="#s6">Database Schema &amp; Platforms Settings</a></li>
+      <li><a href="#s7">Terminal Commands — When &amp; Why</a></li>
+      <li><a href="#s8">Errors Faced &amp; How We Fixed Them</a></li>
+      <li><a href="#s9">Phase 6 Final Checklist</a></li>
+    </ol>
+  </div>
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 1: OVERVIEW -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s1">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <h2>What Phase 6 Builds — Overview</h2>
+    </div>
+
+    <p>Phase 6 implements the **Advanced Admin Panel and Platform Intelligence** stack for SmartRideTIET. This phase expands the simple stats views from Phase 4 into a full dispatch operations suite, giving campus administrators tools to review graphs, approve driver profiles, update ride fees, issue warnings, and export databases.</p>
+
+    <h3>🎯 Core Features Added in Phase 6</h3>
+    <table>
+      <tr><th>Module Panel</th><th>Core Functionality</th><th>Target Routes</th></tr>
+      <tr><td>**Advanced Analytics**</td><td>Line and area charts representing rides, completed trips, cancellations, and revenue trends across 7/14/30 day intervals.</td><td>`/admin/analytics`</td></tr>
+      <tr><td>**Revenue Report**</td><td>Income payment distribution splits (Razorpay cards vs campus wallet transactions) and top driver earnings logs.</td><td>`/admin/revenue`</td></tr>
+      <tr><td>**Driver Onboarding**</td><td>Inspect vehicle registrations and verify driver profile credentials with optional rejection messages.</td><td>`/admin/drivers`</td></tr>
+      <tr><td>**Alert Broadcasts**</td><td>Compose announcements and alerts targeting specific user groups (Everyone, Students, Drivers).</td><td>`/admin/notifications`</td></tr>
+      <tr><td>**System Configuration**</td><td>Real-time overrides for surge multiplier variables, max travel limits, booking blockades, and warning banners.</td><td>`/admin/settings`</td></tr>
+      <tr><td>**Live Dispatch Monitor**</td><td>Real-time view of active dispatches (pending, accepted, ongoing) with emergency cancel functions and 10s auto-refresh clock cycles.</td><td>`/admin/monitor`</td></tr>
+      <tr><td>**CSV Export Center**</td><td>Download full database sheets for users and rides collections directly as spreadsheet files.</td><td>Dashboard buttons</td></tr>
+    </table>
+
+    <div class="alert alert-note">
+      <div class="alert-icon">💡</div>
+      <div class="alert-body">
+        <div class="alert-title">Real-Time Dispatch Center</div>
+        In a busy campus ecosystem, dispatchers need to see the active system state instantly. Rather than refreshing, the monitor loops on standard intervals (10s clock timers) combined with Firestore listeners. This ensures active ride updates are captured immediately.
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 2: KEY CONCEPTS -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s2">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <h2>Key Concepts Explained</h2>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 Custom SVG Chart Paths</div>
+      <p>Building charts without heavy canvas libraries by writing native SVG layouts in React. By calculating exact `(x, y)` coordinate mappings inside the viewport bounds (`viewBox="0 0 600 200"`), we draw smooth lines via SVG `<path d="..." />` tags and add background gradient areas with `<path fill="url(#grad)" />` fills.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 Periodic Interval Countdown Clocks</div>
+      <p>Running timers inside `useEffect` with `setInterval`. A countdown reference (e.g. `10s` down to `1s`) loops every second to update a visual spinner. Upon reaching `1s`, it calls API loaders silently in the background and resets the timer, preventing visual UI flicker.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 Binary Blob CSV Stream Piping</div>
+      <p>Streaming spreadsheets by sending CSV files directly as text lines over HTTP. The backend formats records into comma-separated lines and sets the headers `Content-Type: text/csv` and `Content-Disposition: attachment; filename="..."`. The frontend requests this as a `responseType: 'blob'`, creates an object URL, and triggers an automated download anchor.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 Platform Override Configurations</div>
+      <p>Adjusting baseline system fields without redeploying code. Platform settings are stored in a dedicated Firebase configuration document `config/platform`. Fares checkouts and booking screens listen to this configuration to determine if new requests are allowed, surge rates apply, or warning messages should be displayed.</p>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 3: FILES ADDED & MODIFIED -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s3">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <h2>Files Added &amp; Updated in Phase 6</h2>
+    </div>
+
+    <div class="filetree">
+      <span class="ft-dir">SmartRideTIET</span>/<br />
+      ├── <span class="ft-dir">backend</span>/<br />
+      │   ├── <span class="ft-dir">controllers</span>/<br />
+      │   │   └── <span class="ft-new">admin.controller.js</span> <span class="ft-comment">← Expanded: added analytics reports, verification updates, dispatches monitor API, CSV streams</span><br />
+      │   └── <span class="ft-dir">routes</span>/<br />
+      │       └── <span class="ft-new">admin.routes.js</span> <span class="ft-comment">← Exposed new controller routes under verifyToken security rules</span><br />
+      └── <span class="ft-dir">frontend</span>/<br />
+          └── <span class="ft-dir">src</span>/<br />
+              ├── <span class="ft-mod">App.jsx</span> <span class="ft-comment">← Wired 6 new router endpoints under protected admin roles</span><br />
+              ├── <span class="ft-dir">components</span>/<br />
+              │   └── <span class="ft-dir">common</span>/<br />
+              │       ├── <span class="ft-new">AdminSidebar.jsx</span> <span class="ft-comment">← Collapsible fixed sidebar panel component</span><br />
+              │       └── <span class="ft-new">AdminSidebar.css</span> <span class="ft-comment">← Glassmorphism sidebar design styling sheet</span><br />
+              ├── <span class="ft-dir">services</span>/<br />
+              │   └── <span class="ft-mod">api.js</span> <span class="ft-comment">← Added Phase 6 Axios request services</span><br />
+              └── <span class="ft-dir">pages</span>/<br />
+                  └── <span class="ft-dir">admin</span>/<br />
+                      ├── <span class="ft-mod">AdminDashboard.jsx</span> <span class="ft-comment">← Updated: sidebar layout offset, quick links, CSV exports</span><br />
+                      ├── <span class="ft-mod">AdminUsers.jsx</span> <span class="ft-comment">← Updated: layout offset adjustments, sidebar design</span><br />
+                      ├── <span class="ft-mod">AdminRides.jsx</span> <span class="ft-comment">← Updated: layout offset adjustments, sidebar design</span><br />
+                      ├── <span class="ft-new">AdminAnalytics.jsx</span> <span class="ft-comment">← SVG line area charts and metrics table</span><br />
+                      ├── <span class="ft-new">AdminAnalytics.css</span> <span class="ft-comment">← Styling config rules for reports, grids and KPI cards</span><br />
+                      ├── <span class="ft-new">AdminRevenueReport.jsx</span> <span class="ft-comment">← Driver income list, payment split metrics</span><br />
+                      ├── <span class="ft-new">AdminDriverVerification.jsx</span> <span class="ft-comment">← Documents verification queues and actions</span><br />
+                      ├── <span class="ft-new">AdminNotifications.jsx</span> <span class="ft-comment">← Compose notice alerts broadcasts form</span><br />
+                      ├── <span class="ft-new">AdminSettings.jsx</span> <span class="ft-comment">← Fare multipliers, max limits and overrides</span><br />
+                      └── <span class="ft-new">AdminLiveMonitor.jsx</span> <span class="ft-comment">← Dispatches tracker desk with live timers</span>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 4: FRONTEND CODE EXPLAINED -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s4">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <h2>Frontend Architecture — Code Explained</h2>
+    </div>
+
+    <h3>1. Dynamic SVG Plotting Calculations</h3>
+    <p>Instead of relying on external charting libraries, we map the analytics array coordinates into SVG view space. The following calculation is used inside **AdminAnalytics.jsx**:</p>
+
+    <pre><code><span class="cm">// Map each values item to coordinate vectors within 600 x 200 viewport bounds</span>
+const values = data.map(d => d[valueKey] ?? 0);
+const maxVal = Math.max(...values, 1);
+const w = 600, h = 200, padX = 40, padY = 20;
+
+const pts = values.map((v, i) => ({
+  x: padX + (i / (values.length - 1 || 1)) * (w - padX * 2),
+  y: padY + (1 - v / maxVal) * (h - padY * 2),
+  v
+}));
+
+<span class="cm">// Format string instructions for SVG path rendering</span>
+const linePath = pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x},${p.y}`).join(' ');</code></pre>
+
+    <h3>2. Client-Side CSV Download Streaming</h3>
+    <p>To safely retrieve and save binary CSV data while attaching JWT authentication headers, we fetch files inside **AdminDashboard.jsx** using Axios `responseType: 'blob'` mappings:</p>
+
+    <pre><code>const handleExportRides = async () => {
+  setExportingRides(true);
+  const loadId = toast.loading('Exporting rides CSV...');
+  try {
+    const blob = await exportRidesCSV();
+    <span class="cm">// Generate temporary download handle and trigger download</span>
+    const url = window.URL.createObjectURL(new Blob([blob]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `rides_export_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode.removeChild(link);
+    toast.success('Rides CSV exported successfully!', { id: loadId });
+  } catch (e) {
+    toast.error('Failed to export rides data', { id: loadId });
+  } finally {
+    setExportingRides(false);
+  }
+};</code></pre>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 5: BACKEND APIS EXPLAINED -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s5">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <h2>Backend APIs — Code Explained</h2>
+    </div>
+
+    <p>All backend administrative routes in `admin.routes.js` are secured using verification token and role assertion middlewares:</p>
+    <pre><code>const { verifyToken, requireRole } = require('../middleware/auth.middleware');
+
+<span class="cm">// All administrative endpoints require valid token and "admin" account role</span>
+router.use(verifyToken, requireRole('admin'));
+router.get('/analytics/advanced', adminController.getAdvancedAnalytics);
+router.put('/drivers/:id/verify', adminController.verifyDriver);
+router.get('/export/rides', adminController.exportRidesCSV);</code></pre>
+
+    <h3>1. Advanced Analytics Bucketing API</h3>
+    <p>In `admin.controller.js`, the `/api/admin/analytics/advanced` route queries the rides collection and formats the data into daily statistics bins:</p>
+
+    <pre><code>const getAdvancedAnalytics = async (req, res) => {
+  try {
+    const period = parseInt(req.query.period) || 7;
+    const snapshot = await db.collection('rides').get();
+    
+    <span class="cm">// Pre-populate array with ISO date entries</span>
+    const buckets = Array.from({ length: period }, (_, i) => {
+      const d = new Date();
+      d.setDate(d.getDate() - (period - 1 - i));
+      return { date: d.toISOString().slice(0, 10), rides: 0, revenue: 0 };
+    });
+
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      if (!data.createdAt) return;
+      const dayStr = data.createdAt.slice(0, 10);
+      const bucket = buckets.find(b => b.date === dayStr);
+      if (bucket) {
+        bucket.rides++;
+        if (data.status === 'completed') bucket.revenue += (data.fare || 0);
+      }
+    });
+
+    res.json({ buckets });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};</code></pre>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 6: PLATFORM SETTINGS SCHEMA -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s6">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <h2>Database Schema &amp; Platforms Settings</h2>
+    </div>
+
+    <p>A central configuration document is stored in Firestore at **`config/platform`** to manage global variables. When administrators adjust parameters inside **AdminSettings.jsx**, the following document structure is updated:</p>
+
+    <pre><code>{
+  "maintenanceMode": false,      <span class="cm">// If true, blocks student and driver dashboard modules</span>
+  "rideBookingEnabled": true,    <span class="cm">// If false, prevents students from booking new rides</span>
+  "driverAutoAccept": false,     <span class="cm">// If true, matches driver to request automatically</span>
+  "fareMultiplier": 1.5,         <span class="cm">// Surge multiplier applied on trip fare calculator formulas</span>
+  "maxRideDistance": 20,         <span class="cm">// Max trip route distance threshold in km</span>
+  "platformMessage": "Surge pricing active due to rain", <span class="cm">// Banner announcement string</span>
+  "updatedAt": "2026-07-08T13:21:00.000Z",
+  "updatedBy": "admin_uid"
+}</code></pre>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 7: TERMINAL COMMANDS -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s7">
+    <div class="section-header">
+      <div class="section-num">7</div>
+      <h2>Terminal Commands — When &amp; Why</h2>
+    </div>
+
+    <p>To run, test, and verify the administrative environment, use the split terminal logs configurations:</p>
+
+    <div class="terminal">
+      <div class="terminal-header">
+        <span class="t-dot t-red"></span>
+        <span class="t-dot t-yellow"></span>
+        <span class="t-dot t-green"></span>
+        <span class="t-title">bash — backend log</span>
+      </div>
+      <div class="terminal-body">
+        <span class="t-prompt">$</span> <span class="t-cmd">cd backend</span><br />
+        <span class="t-prompt">$</span> <span class="t-cmd">npm run dev</span><br />
+        <span class="t-out">[nodemon] starting `node server.js`</span><br />
+        <span class="t-success">✔ Server running on http://localhost:5000</span><br />
+        <span class="t-success">✔ Firebase Admin SDK connected to smartridetiet</span>
+      </div>
+    </div>
+
+    <div class="terminal">
+      <div class="terminal-header">
+        <span class="t-dot t-red"></span>
+        <span class="t-dot t-yellow"></span>
+        <span class="t-dot t-green"></span>
+        <span class="t-title">bash — frontend log</span>
+      </div>
+      <div class="terminal-body">
+        <span class="t-prompt">$</span> <span class="t-cmd">cd frontend</span><br />
+        <span class="t-prompt">$</span> <span class="t-cmd">npm run dev</span><br />
+        <span class="t-out">  VITE v5.2.11  ready in 320 ms</span><br />
+        <span class="t-success">➜  Local:   http://localhost:5173/</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 8: ERRORS faced & FIXED -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s8">
+    <div class="section-header">
+      <div class="section-num">8</div>
+      <h2>Errors Faced &amp; How We Fixed Them</h2>
+    </div>
+
+    <div class="error-card">
+      <div class="error-title">❌ Error 1: CSV download returns 401 Unauthorized inside new tab</div>
+      <p><strong>Cause:</strong> Attempting to export raw datasets by triggering `window.open('/api/admin/export/rides')` failed because new browser tabs do not send client JWT authorization headers.</p>
+      <div class="fix-title">🔧 The Fix:</div>
+      <p>Changed the API to fetch the dataset asynchronously via Axios with the Authorization header attached, received the response as a blob, and triggered an in-page download anchor.</p>
+      <pre><code><span class="cm">// Fetch dataset with authentication headers</span>
+const blob = await api.get('/admin/export/rides', { responseType: 'blob' });
+const url = window.URL.createObjectURL(new Blob([blob]));</code></pre>
+    </div>
+
+    <div class="error-card">
+      <div class="error-title">❌ Error 2: Sidebar overlap layout shifts on mobile layouts</div>
+      <p><strong>Cause:</strong> The fixed sidebar overlay blocked page contents on small screens, preventing administrators from interacting with metrics controls.</p>
+      <div class="fix-title">🔧 The Fix:</div>
+      <p>Added a responsive backdrop overlay (`.asb-overlay`) that is displayed only on mobile viewports. Clicking the backdrop collapses the sidebar by updating the layout width state.</p>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 9: CHECKLIST -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s9">
+    <div class="section-header">
+      <div class="section-num">9</div>
+      <h2>Phase 6 Final Checklist</h2>
+    </div>
+
+    <ul class="checklist">
+      <li><span class="check-done">✓</span> <strong>Collapsible Nav Sidebar:</strong> Fixed sidebar navigation implemented for all admin pages.</li>
+      <li><span class="check-done">✓</span> <strong>Advanced SVG Reports:</strong> Area charts illustrating trip volumes and revenue metrics across 7/14/30 days.</li>
+      <li><span class="check-done">✓</span> <strong>Revenue Split Analysis:</strong> Visual metrics for payment transactions (Razorpay card entries vs campus wallet balances).</li>
+      <li><span class="check-done">✓</span> <strong>Driver Document Verifications:</strong> Applications queue showing vehicle details and status update actions.</li>
+      <li><span class="check-done">✓</span> <strong>Targeted Notice Alerts:</strong> Compositions board to broadcast system alerts to specific user cohorts.</li>
+      <li><span class="check-done">✓</span> <strong>Live Dispatch Monitor Table:</strong> Real-time dispatches track table with cancellation triggers and automatic refresh timers.</li>
+      <li><span class="check-done">✓</span> <strong>Spreadsheets Export triggers:</strong> Raw CSV collection dumps for trips and users profiles collections.</li>
+    </ul>
+  </div>
+
+</div>
+
+</body>
+</html>

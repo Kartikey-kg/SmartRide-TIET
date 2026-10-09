@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartRideTIET – Phase 3 Complete Notes</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap');
+
+    :root {
+      --bg: #0d0d1a;
+      --bg2: #111128;
+      --bg3: #16162a;
+      --border: #2a2a4a;
+      --purple: #7c3aed;
+      --blue: #3b82f6;
+      --green: #22c55e;
+      --orange: #f97316;
+      --red: #ef4444;
+      --yellow: #eab308;
+      --cyan: #06b6d4;
+      --text: #f0f0ff;
+      --text2: #a0a0c0;
+      --text3: #6060a0;
+      --grad: linear-gradient(135deg, #7c3aed, #06b6d4);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    /* ── Print PDF button ── */
+    .pdf-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: rgba(13,13,26,0.97);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 999;
+      backdrop-filter: blur(10px);
+    }
+    .pdf-bar-title { font-weight: 700; font-size: 1rem; }
+    .pdf-bar-title span { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .btn-pdf {
+      background: var(--grad);
+      color: white;
+      border: none;
+      padding: 0.55rem 1.4rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+      box-shadow: 0 4px 15px rgba(124,58,237,0.4);
+    }
+    .btn-pdf:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,58,237,0.5); }
+
+    /* ── Main Layout ── */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 6rem 2rem 4rem;
+    }
+
+    /* ── Cover ── */
+    .cover {
+      text-align: center;
+      padding: 3rem 0 4rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 3rem;
+    }
+    .cover-badge {
+      display: inline-block;
+      background: rgba(6,182,212,0.15);
+      border: 1px solid rgba(6,182,212,0.4);
+      border-radius: 50px;
+      padding: 0.35rem 1rem;
+      font-size: 0.85rem;
+      color: #67e8f9;
+      margin-bottom: 1.5rem;
+    }
+    .cover h1 { font-size: 3rem; font-weight: 900; line-height: 1.1; margin-bottom: 1rem; }
+    .cover h1 span { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .cover p { color: var(--text2); max-width: 600px; margin: 0 auto 2rem; }
+    .cover-meta {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .meta-item { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 0.75rem 1.25rem; text-align: center; }
+    .meta-label { font-size: 0.75rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; }
+    .meta-value { font-weight: 700; font-size: 1rem; color: var(--text); }
+
+    /* ── TOC ── */
+    .toc { background: var(--bg3); border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem 2rem; margin-bottom: 3rem; }
+    .toc h2 { font-size: 1.1rem; margin-bottom: 1rem; color: #67e8f9; }
+    .toc ol { padding-left: 1.25rem; }
+    .toc li { margin-bottom: 0.35rem; }
+    .toc a { color: var(--text2); text-decoration: none; font-size: 0.92rem; transition: color 0.2s; }
+    .toc a:hover { color: #67e8f9; }
+
+    /* ── Sections ── */
+    .section { margin-bottom: 4rem; }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border);
+    }
+    .section-num {
+      width: 40px; height: 40px;
+      background: var(--grad);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .section h2 { font-size: 1.6rem; font-weight: 800; }
+
+    /* ── Sub sections ── */
+    h3 { font-size: 1.15rem; font-weight: 700; margin: 2rem 0 0.75rem; color: #67e8f9; }
+    h4 { font-size: 1rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: #93c5fd; }
+    p { color: var(--text2); margin-bottom: 0.75rem; }
+
+    /* ── Code blocks ── */
+    pre {
+      background: #0a0a18;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      overflow-x: auto;
+      margin: 1rem 0 1.5rem;
+      position: relative;
+    }
+    code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      line-height: 1.7;
+    }
+    pre code { color: #e2e8f0; }
+    .inline-code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.82rem;
+      background: rgba(6,182,212,0.12);
+      color: #67e8f9;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      border: 1px solid rgba(6,182,212,0.2);
+    }
+    .lang-tag {
+      position: absolute;
+      top: 0.5rem; right: 0.75rem;
+      font-size: 0.72rem;
+      color: var(--text3);
+      font-family: 'Fira Code', monospace;
+      background: var(--bg);
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+    }
+
+    /* Syntax colors */
+    .kw { color: #c084fc; }
+    .fn { color: #60a5fa; }
+    .str { color: #86efac; }
+    .cm { color: #4a4a7a; font-style: italic; }
+    .num { color: #fb923c; }
+    .var { color: #f0f0ff; }
+    .prop { color: #93c5fd; }
+
+    /* ── Cards ── */
+    .card { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
+    .card-title { font-weight: 700; margin-bottom: 0.4rem; font-size: 0.95rem; }
+    .card p { margin-bottom: 0; font-size: 0.9rem; }
+
+    /* ── Alert boxes ── */
+    .alert { border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; display: flex; gap: 0.75rem; }
+    .alert-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 0.1rem; }
+    .alert-body { font-size: 0.9rem; }
+    .alert-note  { background: rgba(59,130,246,0.1);  border: 1px solid rgba(59,130,246,0.3);  }
+    .alert-warn  { background: rgba(234,179,8,0.1);   border: 1px solid rgba(234,179,8,0.3);   }
+    .alert-error { background: rgba(239,68,68,0.1);   border: 1px solid rgba(239,68,68,0.3);   }
+    .alert-success { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3);   }
+    .alert-title { font-weight: 700; margin-bottom: 0.2rem; }
+
+    /* ── Step list ── */
+    .steps { list-style: none; counter-reset: step; }
+    .steps li {
+      counter-increment: step;
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      align-items: flex-start;
+    }
+    .steps li::before {
+      content: counter(step);
+      background: var(--grad);
+      color: white;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.78rem; font-weight: 800;
+      flex-shrink: 0;
+    }
+    .steps li p { margin-bottom: 0; font-size: 0.92rem; }
+
+    /* ── Table ── */
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; }
+    th { background: rgba(6,182,212,0.15); color: #67e8f9; font-size: 0.85rem; padding: 0.65rem 1rem; text-align: left; border: 1px solid var(--border); }
+    td { padding: 0.6rem 1rem; border: 1px solid var(--border); font-size: 0.87rem; color: var(--text2); vertical-align: top; }
+    tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+    /* ── Terminal ── */
+    .terminal {
+      background: #050510;
+      border: 1px solid #1a1a3a;
+      border-radius: 10px;
+      padding: 0;
+      margin: 1rem 0 1.5rem;
+      overflow: hidden;
+    }
+    .terminal-header {
+      background: #111128;
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-r { background: #ef4444; }
+    .dot-y { background: #eab308; }
+    .dot-g { background: #22c55e; }
+    .terminal-label { margin-left: 0.5rem; font-size: 0.75rem; color: var(--text3); font-family: 'Fira Code', monospace; }
+    .terminal-body { padding: 1rem 1.25rem; }
+    .terminal-body code { color: #e2e8f0; font-size: 0.85rem; line-height: 1.8; }
+    .t-prompt { color: #22c55e; }
+    .t-cmd { color: #f0f0ff; }
+    .t-out { color: #6060a0; }
+    .t-success { color: #22c55e; }
+    .t-error { color: #ef4444; }
+
+    /* ── Error card ── */
+    .error-card { background: rgba(239,68,68,0.05); border: 1px solid rgba(239,68,68,0.2); border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; }
+    .error-title { color: #f87171; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+    .error-msg { background: #0a0a18; border-radius: 6px; padding: 0.75rem 1rem; font-family: 'Fira Code', monospace; font-size: 0.8rem; color: #f87171; margin: 0.5rem 0; overflow-x: auto; }
+    .fix-title { color: #4ade80; font-weight: 700; font-size: 0.9rem; margin-top: 1rem; margin-bottom: 0.4rem; }
+
+    /* ── Concept box ── */
+    .concept { background: rgba(6,182,212,0.06); border-left: 3px solid var(--cyan); border-radius: 0 10px 10px 0; padding: 1rem 1.25rem; margin: 1rem 0; }
+    .concept-term { font-weight: 700; color: #67e8f9; margin-bottom: 0.3rem; }
+    .concept p { margin-bottom: 0; font-size: 0.9rem; }
+
+    /* ── File tree ── */
+    .filetree { background: #050510; border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem 1.5rem; font-family: 'Fira Code', monospace; font-size: 0.83rem; line-height: 2; margin: 1rem 0 1.5rem; }
+    .ft-dir { color: #60a5fa; }
+    .ft-file { color: #e2e8f0; }
+    .ft-new { color: #86efac; }
+    .ft-comment { color: #4a4a7a; }
+
+    /* ── Checklist ── */
+    .checklist { list-style: none; }
+    .checklist li { display: flex; align-items: flex-start; gap: 0.6rem; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text2); }
+    .check-done { color: var(--green); font-size: 1rem; flex-shrink: 0; }
+
+    /* ── Flow diagram ── */
+    .flow-diagram { background: #050510; border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem 1.5rem; font-family: 'Fira Code', monospace; font-size: 0.83rem; line-height: 2.2; margin: 1rem 0 1.5rem; color: var(--text2); }
+    .flow-diagram .flow-purple { color: #c084fc; }
+    .flow-diagram .flow-cyan   { color: #67e8f9; }
+    .flow-diagram .flow-green  { color: #86efac; }
+    .flow-diagram .flow-orange { color: #fb923c; }
+    .flow-diagram .flow-arrow  { color: #4a4a7a; }
+
+    /* ── Print styles ── */
+    @media print {
+      .pdf-bar { display: none !important; }
+      body { background: white; color: #111; font-size: 12px; }
+      :root {
+        --bg: white; --bg2: #f8f8f8; --bg3: #f0f0f8;
+        --border: #ddd; --text: #111; --text2: #444; --text3: #888;
+        --purple: #5b21b6; --blue: #1d4ed8; --cyan: #0284c7;
+      }
+      .container { padding-top: 1rem; max-width: 100%; }
+      pre, .terminal-body { background: #f5f5f5 !important; border-color: #ddd; }
+      pre code, .terminal-body code { color: #222; }
+      .alert-note { background: #eff6ff !important; }
+      .alert-warn { background: #fffbeb !important; }
+      .alert-error { background: #fef2f2 !important; }
+      .alert-success { background: #f0fdf4 !important; }
+      .concept { background: #f0fdfe !important; }
+      .error-msg { background: #fff5f5 !important; color: #c00 !important; }
+      .filetree, .flow-diagram { background: #f5f5f5 !important; }
+      pre { page-break-inside: avoid; }
+      .section { page-break-inside: avoid; }
+      h2, h3 { page-break-after: avoid; }
+      a { color: inherit; text-decoration: none; }
+    }
+
+    .divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+    .tag { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-right: 0.3rem; }
+    .tag-purple { background: rgba(124,58,237,0.15); color: #c4b5fd; border: 1px solid rgba(124,58,237,0.3); }
+    .tag-blue   { background: rgba(59,130,246,0.15);  color: #93c5fd; border: 1px solid rgba(59,130,246,0.3); }
+    .tag-green  { background: rgba(34,197,94,0.15);   color: #86efac; border: 1px solid rgba(34,197,94,0.3); }
+    .tag-cyan   { background: rgba(6,182,212,0.15);   color: #67e8f9; border: 1px solid rgba(6,182,212,0.3); }
+    .tag-orange { background: rgba(249,115,22,0.15);  color: #fdba74; border: 1px solid rgba(249,115,22,0.3); }
+  </style>
+</head>
+<body>
+
+<!-- PDF Download Bar -->
+<div class="pdf-bar">
+  <div class="pdf-bar-title">🚌 SmartRide<span>TIET</span> — Phase 3 Notes</div>
+  <button class="btn-pdf" onclick="window.print()">
+    📥 Download as PDF
+  </button>
+</div>
+
+<div class="container">
+
+  <!-- ── COVER ── -->
+  <div class="cover">
+    <div class="cover-badge">📗 Complete Study Notes</div>
+    <h1>SmartRideTIET<br /><span>Phase 3 Notes</span></h1>
+    <p>Every file, every concept, every command, every error — all explained in simple language. Ride Booking System built with Firestore real-time listeners (onSnapshot), fare calculator, and full student + driver UI.</p>
+    <div class="cover-meta">
+      <div class="meta-item"><div class="meta-label">Phase</div><div class="meta-value">Phase 3 — Rides</div></div>
+      <div class="meta-item"><div class="meta-label">Stack</div><div class="meta-value">React + Firestore + Node.js</div></div>
+      <div class="meta-item"><div class="meta-label">Status</div><div class="meta-value" style="color:#22c55e">✅ Complete</div></div>
+      <div class="meta-item"><div class="meta-label">Build</div><div class="meta-value">1886 modules ✅</div></div>
+    </div>
+  </div>
+
+  <!-- ── TABLE OF CONTENTS ── -->
+  <div class="toc">
+    <h2>📋 Table of Contents</h2>
+    <ol>
+      <li><a href="#s1">What Phase 3 Builds — Overview</a></li>
+      <li><a href="#s2">Key Concepts Explained</a></li>
+      <li><a href="#s3">New Files Added in Phase 3</a></li>
+      <li><a href="#s4">Frontend Files — Code Explained</a></li>
+      <li><a href="#s5">Backend Files — Code Explained</a></li>
+      <li><a href="#s6">Fare Calculation — How It Works</a></li>
+      <li><a href="#s7">Terminal Commands — When &amp; Why</a></li>
+      <li><a href="#s8">Ride Flow — How Everything Connects</a></li>
+      <li><a href="#s9">Errors Faced &amp; How We Fixed Them</a></li>
+      <li><a href="#s10">Phase 3 Final Checklist</a></li>
+    </ol>
+  </div>
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 1: OVERVIEW -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s1">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <h2>What Phase 3 Builds — Overview</h2>
+    </div>
+
+    <p>Phase 3 is the <strong>Ride Booking System</strong> of SmartRideTIET. Now that users can log in (Phase 2), they need to actually <em>do something</em>. Phase 3 lets students book rides, drivers accept and complete them, and both sides see real-time updates — all powered by Firestore's live data technology.</p>
+
+    <h3>🎯 What Gets Built in Phase 3</h3>
+    <table>
+      <tr><th>Feature</th><th>What it does</th><th>Files involved</th></tr>
+      <tr><td>Book Ride Page</td><td>Student selects pickup + drop from TIET locations, sees fare, confirms booking</td><td>BookRide.jsx, BookRide.css</td></tr>
+      <tr><td>Live Status Tracking</td><td>After booking, student sees real-time ride status updates (pending → accepted → completed)</td><td>BookRide.jsx, rideService.js</td></tr>
+      <tr><td>Ride History</td><td>Student sees all their rides (past + active) with filter tabs and stats</td><td>RideHistory.jsx</td></tr>
+      <tr><td>Available Rides</td><td>Driver sees live list of pending rides and can accept them instantly</td><td>AvailableRides.jsx</td></tr>
+      <tr><td>Driver Ride Management</td><td>Driver can mark rides as complete or cancel them, updating Firestore instantly</td><td>AvailableRides.jsx</td></tr>
+      <tr><td>Driver Earnings</td><td>Full earnings dashboard — total, weekly, average fare, distance, completed ride list</td><td>DriverEarnings.jsx</td></tr>
+      <tr><td>Dashboard Banners</td><td>Both dashboards show a live "Active Ride" banner with real-time status</td><td>StudentDashboard.jsx, DriverDashboard.jsx</td></tr>
+      <tr><td>Ride Service</td><td>Shared Firestore onSnapshot functions, haversine calculator, fare formula, status metadata</td><td>rideService.js</td></tr>
+    </table>
+
+    <h3>🔄 The Ride Status Lifecycle</h3>
+    <table>
+      <tr><th>Status</th><th>Who sets it</th><th>Meaning</th><th>Color</th></tr>
+      <tr><td><strong>pending</strong></td><td>Student (on booking)</td><td>Ride created, waiting for a driver</td><td>🟡 Amber</td></tr>
+      <tr><td><strong>accepted</strong></td><td>Driver (on accept)</td><td>A driver accepted, coming to pickup</td><td>🔵 Cyan</td></tr>
+      <tr><td><strong>ongoing</strong></td><td>Driver (future feature)</td><td>Ride is in progress</td><td>🟣 Purple</td></tr>
+      <tr><td><strong>completed</strong></td><td>Driver (on complete)</td><td>Ride finished, payment recorded</td><td>🟢 Green</td></tr>
+      <tr><td><strong>cancelled</strong></td><td>Student or Driver</td><td>Ride was cancelled before completion</td><td>🔴 Red</td></tr>
+    </table>
+
+    <div class="alert alert-note">
+      <div class="alert-icon">💡</div>
+      <div class="alert-body">
+        <div class="alert-title">Why Real-Time? Why Not Just Reload?</div>
+        With normal API calls, students would have to press F5 to see if a driver accepted their ride. With Firestore <span class="inline-code">onSnapshot</span>, the browser receives an automatic push notification the moment any data changes — no page refresh needed. This is what makes ride tracking feel instant, like Uber/Ola.
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 2: KEY CONCEPTS -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s2">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <h2>Key Concepts Explained</h2>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 Firestore onSnapshot</div>
+      <p>A real-time listener attached to a Firestore document or collection. When any matching data changes in the database, Firestore instantly pushes the new data to all browsers that have an active <span class="inline-code">onSnapshot</span> listener. It's like a live subscription — you subscribe once, and updates arrive automatically. Used in every Phase 3 page.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 Unsubscribe Function (Memory Leak Prevention)</div>
+      <p><span class="inline-code">onSnapshot</span> returns an unsubscribe function. If you never call it, the listener keeps running even after the user leaves the page, causing memory leaks and unnecessary Firestore reads (which cost money). We always return it from <span class="inline-code">useEffect</span> so React calls it automatically on unmount.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 Haversine Formula</div>
+      <p>A mathematical formula to calculate the straight-line distance between two GPS coordinates (latitude + longitude) on a sphere (Earth). Used in <span class="inline-code">calcDistance()</span> to compute how far the pickup is from the drop location. This is the same formula used by mapping apps like Google Maps for distance calculations.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 Firestore Collection vs Document</div>
+      <p>A <strong>Collection</strong> is like a database table (e.g., "rides"). A <strong>Document</strong> is like a row with a unique ID (e.g., "rides/abc123"). In Phase 3, every booked ride is stored as a document in the "rides" collection. When a driver accepts a ride, we update that specific document with <span class="inline-code">rideRef.update({...})</span>.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 Firestore FieldValue.increment()</div>
+      <p>A special Firestore command that increases a number field atomically (safely, even with multiple simultaneous requests). Used when a ride completes to add the fare to <span class="inline-code">driver.earnings</span> and increment <span class="inline-code">driver.totalRides</span>. If two rides complete at the same time, both increments are applied correctly — no data loss.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 useEffect Cleanup (return function)</div>
+      <p>In React, <span class="inline-code">useEffect</span> can return a function that runs when the component unmounts (is removed from screen). For <span class="inline-code">onSnapshot</span> listeners, this return function calls the unsubscribe function to stop listening. Pattern: <span class="inline-code">useEffect(() => { const unsub = onSnapshot(...); return () => unsub(); }, []);</span></p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 useRef for Unsubscribe</div>
+      <p>Sometimes you need to cancel a listener from outside the <span class="inline-code">useEffect</span> (e.g., when user cancels a ride). <span class="inline-code">useRef</span> stores the unsubscribe function in a ref — a special container that doesn't cause re-renders when it changes. Then you can call <span class="inline-code">unsubRef.current()</span> from anywhere in the component.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 Optimistic UI</div>
+      <p>Showing UI changes immediately before the server confirms them, to feel faster. In Phase 3, when a driver clicks "Accept", the button disables and shows "Accepting…" immediately — we don't wait for the API to respond before updating the UI. If the API fails, we show an error. This pattern makes the app feel snappy.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 Firestore Query with where() + orderBy()</div>
+      <p>Firestore queries filter documents. <span class="inline-code">where('studentId', '==', uid)</span> gets only rides belonging to this student. <span class="inline-code">orderBy('createdAt', 'desc')</span> sorts newest first. <span class="inline-code">limit(20)</span> caps the results. Combining these is how we efficiently query only relevant data without fetching the whole collection.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 ISO Date Strings</div>
+      <p>Dates in the rides collection are stored as ISO 8601 strings (e.g., <span class="inline-code">"2026-07-04T18:30:00.000Z"</span>) using <span class="inline-code">new Date().toISOString()</span>. This format is timezone-safe, sortable as a string, and parseable in any language. We use <span class="inline-code">new Date(iso).toLocaleString('en-IN', {...})</span> to display them in a human-readable format.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 CSS Animation: pulse</div>
+      <p>The animated dots on "pending" and "accepted" status badges use a CSS keyframe animation called <span class="inline-code">pulse</span>. It oscillates between full opacity/scale and slightly smaller/transparent, giving a heartbeat-like effect that visually communicates "this is live and changing". Completed/cancelled rides use a static dot — no animation.</p>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 3: NEW FILES IN PHASE 3 -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s3">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <h2>New Files Added in Phase 3</h2>
+    </div>
+
+    <p>These are all the files created or significantly changed in Phase 3. <span style="color:#86efac">Green</span> = new file, <span style="color:#93c5fd">Blue</span> = existing file updated.</p>
+
+    <div class="filetree">
+<span class="ft-dir">SmartRideTIET/</span>
+│
+├── <span class="ft-dir">frontend/</span>
+│   └── <span class="ft-dir">src/</span>
+│       │
+│       ├── <span class="ft-dir">services/</span>
+│       │   ├── <span class="ft-file">firebase.js</span>                <span class="ft-comment">← unchanged (already exports db)</span>
+│       │   ├── <span class="ft-file">api.js</span>                    <span class="ft-comment">← unchanged (already has all ride API calls)</span>
+│       │   └── <span class="ft-new">rideService.js</span>            <span class="ft-comment">← NEW: all onSnapshot listeners + fare helpers</span>
+│       │
+│       ├── <span class="ft-dir">pages/student/</span>
+│       │   ├── <span class="ft-file">StudentDashboard.jsx</span>      <span class="ft-comment">← UPDATED: live active-ride banner via onSnapshot</span>
+│       │   ├── <span class="ft-new">BookRide.jsx</span>              <span class="ft-comment">← NEW (was placeholder): full booking + live tracking</span>
+│       │   ├── <span class="ft-new">BookRide.css</span>              <span class="ft-comment">← NEW: dedicated premium CSS for booking page</span>
+│       │   └── <span class="ft-new">RideHistory.jsx</span>           <span class="ft-comment">← NEW (was placeholder): all rides + filter tabs</span>
+│       │
+│       └── <span class="ft-dir">pages/driver/</span>
+│           ├── <span class="ft-file">DriverDashboard.jsx</span>       <span class="ft-comment">← UPDATED: today's earnings strip + active ride banner</span>
+│           ├── <span class="ft-new">AvailableRides.jsx</span>        <span class="ft-comment">← NEW (was placeholder): pending rides + my rides tabs</span>
+│           └── <span class="ft-new">DriverEarnings.jsx</span>        <span class="ft-comment">← NEW (was placeholder): full earnings dashboard</span>
+│
+└── <span class="ft-dir">backend/</span>
+    ├── <span class="ft-file">controllers/ride.controller.js</span>  <span class="ft-comment">← already built in Phase 2, fully used now</span>
+    └── <span class="ft-file">routes/ride.routes.js</span>           <span class="ft-comment">← already built in Phase 2, fully used now</span>
+    </div>
+
+    <div class="alert alert-note">
+      <div class="alert-icon">💡</div>
+      <div class="alert-body">
+        <div class="alert-title">Backend Was Already Ready!</div>
+        The entire backend for rides (<span class="inline-code">ride.controller.js</span> and <span class="inline-code">ride.routes.js</span>) was built in Phase 2. Phase 3 is purely frontend work — we're now connecting the UI to those already-existing API endpoints using the <span class="inline-code">api.js</span> functions that were also ready.
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 4: FRONTEND FILES EXPLAINED -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s4">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <h2>Frontend Files — Code Explained</h2>
+    </div>
+
+    <!-- rideService.js -->
+    <h3>📄 frontend/src/services/rideService.js — The Real-Time Engine</h3>
+    <p><strong>What:</strong> A shared utility file with all Firestore <span class="inline-code">onSnapshot</span> listener functions and helper utilities used across all Phase 3 pages.</p>
+    <p><strong>Why:</strong> Instead of writing the same Firestore query code in every component, we centralize it here. Any component can import <span class="inline-code">subscribeToStudentRides</span> and get live data with one line.</p>
+    <p><strong>How it works:</strong> Each function creates a Firestore query, attaches an <span class="inline-code">onSnapshot</span> listener, and returns the unsubscribe function. The component stores this and calls it on cleanup.</p>
+
+    <pre><code><span class="cm">// Example: subscribe to a student's rides in real-time</span>
+<span class="kw">export const</span> <span class="fn">subscribeToStudentRides</span> = (studentId, callback) => {
+  <span class="kw">const</span> q = <span class="fn">query</span>(
+    <span class="fn">collection</span>(db, <span class="str">'rides'</span>),
+    <span class="fn">where</span>(<span class="str">'studentId'</span>, <span class="str">'=='</span>, studentId),   <span class="cm">// only THIS student's rides</span>
+    <span class="fn">orderBy</span>(<span class="str">'createdAt'</span>, <span class="str">'desc'</span>),           <span class="cm">// newest first</span>
+    <span class="fn">limit</span>(<span class="num">20</span>)                               <span class="cm">// max 20 rides</span>
+  );
+
+  <span class="cm">// onSnapshot = live listener. Fires instantly + on every future change.</span>
+  <span class="kw">return</span> <span class="fn">onSnapshot</span>(q, (snapshot) => {
+    <span class="kw">const</span> rides = snapshot.docs.<span class="fn">map</span>((doc) => ({ id: doc.id, ...doc.<span class="fn">data</span>() }));
+    <span class="fn">callback</span>(rides);    <span class="cm">// pass ride array to the component</span>
+  });
+  <span class="cm">// returns unsubscribe function — component must call this on unmount!</span>
+};
+
+<span class="cm">// Fare formula — called in BookRide to show cost before booking</span>
+<span class="kw">export const</span> <span class="fn">calcFare</span> = (distanceKm) => {
+  <span class="kw">const</span> BASE = <span class="num">30</span>;     <span class="cm">// ₹30 base fare (covers first ~0km)</span>
+  <span class="kw">const</span> PER_KM = <span class="num">12</span>;   <span class="cm">// ₹12 for every km after base</span>
+  <span class="kw">return</span> Math.<span class="fn">max</span>(BASE, Math.<span class="fn">round</span>(BASE + distanceKm * PER_KM));
+  <span class="cm">// Math.max ensures minimum ₹30 even for very short trips</span>
+};
+
+<span class="cm">// Status metadata — label, color, bg for each ride status</span>
+<span class="kw">export const</span> <span class="fn">getRideStatusMeta</span> = (status) => {
+  <span class="kw">const</span> map = {
+    pending:   { label: <span class="str">'Waiting for driver'</span>, color: <span class="str">'#f59e0b'</span>, dot: <span class="str">'#f59e0b'</span>, bg: <span class="str">'rgba(245,158,11,0.12)'</span> },
+    accepted:  { label: <span class="str">'Driver on the way'</span>,  color: <span class="str">'#06b6d4'</span>, dot: <span class="str">'#06b6d4'</span>, bg: <span class="str">'rgba(6,182,212,0.12)'</span>  },
+    completed: { label: <span class="str">'Completed'</span>,           color: <span class="str">'#22c55e'</span>, dot: <span class="str">'#22c55e'</span>, bg: <span class="str">'rgba(34,197,94,0.12)'</span>  },
+    cancelled: { label: <span class="str">'Cancelled'</span>,           color: <span class="str">'#ef4444'</span>, dot: <span class="str">'#ef4444'</span>, bg: <span class="str">'rgba(239,68,68,0.12)'</span>  },
+  };
+  <span class="kw">return</span> map[status] || { label: status, color: <span class="str">'#888'</span>, ... };
+};</code><span class="lang-tag">rideService.js</span></pre>
+
+    <!-- BookRide.jsx -->
+    <h3>📄 frontend/src/pages/student/BookRide.jsx — The Booking Page</h3>
+    <p><strong>What:</strong> The most important Phase 3 page for students. Has four states: (1) Location selection, (2) Fare preview, (3) Booking confirmation, (4) Live ride tracking.</p>
+    <p><strong>Why:</strong> Students need an intuitive way to pick pickup + drop, see the cost upfront, and then track their ride without leaving the page.</p>
+    <p><strong>How it works:</strong> Local state for location inputs. When both pickup and drop are selected, <span class="inline-code">useEffect</span> recalculates fare automatically. On booking, calls <span class="inline-code">POST /api/rides/book</span>. Then starts a Firestore <span class="inline-code">onSnapshot</span> on the returned ride ID for live status.</p>
+
+    <pre><code><span class="cm">// Key state variables in BookRide</span>
+<span class="kw">const</span> [pickupLoc, setPickupLoc] = <span class="fn">useState</span>(<span class="kw">null</span>);   <span class="cm">// { lat, lng, label }</span>
+<span class="kw">const</span> [dropLoc,   setDropLoc]   = <span class="fn">useState</span>(<span class="kw">null</span>);   <span class="cm">// { lat, lng, label }</span>
+<span class="kw">const</span> [distance,  setDistance]  = <span class="fn">useState</span>(<span class="kw">null</span>);   <span class="cm">// km (calculated)</span>
+<span class="kw">const</span> [fare,      setFare]      = <span class="fn">useState</span>(<span class="kw">null</span>);   <span class="cm">// ₹ (calculated)</span>
+<span class="kw">const</span> [activeRide, setActiveRide] = <span class="fn">useState</span>(<span class="kw">null</span>); <span class="cm">// rideId after booking</span>
+<span class="kw">const</span> [rideStatus, setRideStatus] = <span class="fn">useState</span>(<span class="kw">null</span>); <span class="cm">// live ride object</span>
+<span class="kw">const</span> unsubRef = <span class="fn">useRef</span>(<span class="kw">null</span>);                       <span class="cm">// stores unsub function</span>
+
+<span class="cm">// Auto-calculate fare when both locations are selected</span>
+<span class="fn">useEffect</span>(() => {
+  <span class="kw">if</span> (pickupLoc &amp;&amp; dropLoc) {
+    <span class="kw">const</span> dist = <span class="fn">calcDistance</span>(pickupLoc.lat, pickupLoc.lng, dropLoc.lat, dropLoc.lng);
+    <span class="fn">setDistance</span>(Math.<span class="fn">round</span>(dist * <span class="num">10</span>) / <span class="num">10</span>);  <span class="cm">// round to 1 decimal</span>
+    <span class="fn">setFare</span>(<span class="fn">calcFare</span>(dist));
+  }
+}, [pickupLoc, dropLoc]);   <span class="cm">// re-runs whenever either location changes</span>
+
+<span class="cm">// Start live tracking after booking</span>
+<span class="fn">useEffect</span>(() => {
+  <span class="kw">if</span> (activeRide) {
+    unsubRef.current = <span class="fn">subscribeToRide</span>(activeRide, (ride) => {
+      <span class="fn">setRideStatus</span>(ride);  <span class="cm">// update UI every time Firestore changes</span>
+      <span class="kw">if</span> (ride.status === <span class="str">'completed'</span>) toast.<span class="fn">success</span>(<span class="str">'🎉 Your ride is complete!'</span>);
+    });
+  }
+  <span class="kw">return</span> () => { <span class="kw">if</span> (unsubRef.current) unsubRef.<span class="prop">current</span>(); };
+}, [activeRide]);   <span class="cm">// runs when activeRide ID is set after booking</span>
+
+<span class="cm">// handleBook — sends the API call</span>
+<span class="kw">const</span> <span class="fn">handleBook</span> = <span class="kw">async</span> () => {
+  <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">apiBookRide</span>({
+    pickupLocation: { lat: pickupLoc.lat, lng: pickupLoc.lng },
+    dropLocation:   { lat: dropLoc.lat,   lng: dropLoc.lng   },
+    pickupAddress:  pickupLoc.label,
+    dropAddress:    dropLoc.label,
+    distance,
+    fare,   <span class="cm">// calculated client-side, saved to Firestore via backend</span>
+  });
+  <span class="fn">setActiveRide</span>(res.rideId);   <span class="cm">// triggers the onSnapshot useEffect above</span>
+};</code><span class="lang-tag">BookRide.jsx</span></pre>
+
+    <div class="alert alert-note">
+      <div class="alert-icon">💡</div>
+      <div class="alert-body">
+        <div class="alert-title">Popular Locations Array — No API Key Needed</div>
+        Instead of requiring a Google Places API key for autocomplete, Phase 3 uses a hardcoded array of 8 TIET campus + Patiala locations. Students type in the input, and the array is filtered locally with <span class="inline-code">.filter(loc => loc.label.toLowerCase().includes(text))</span>. Clean, fast, and free.
+      </div>
+    </div>
+
+    <!-- RideHistory.jsx -->
+    <h3>📄 frontend/src/pages/student/RideHistory.jsx — All Rides</h3>
+    <p><strong>What:</strong> Shows a student's full ride history with real-time updates, filter tabs, summary stats, and the ability to cancel active rides inline.</p>
+    <p><strong>Why:</strong> Students need to track spending, see past trips for reference, and quickly cancel a pending ride if plans change.</p>
+
+    <pre><code><span class="cm">// Subscribe to student's rides on mount</span>
+<span class="fn">useEffect</span>(() => {
+  <span class="kw">if</span> (!user) <span class="kw">return</span>;
+  <span class="kw">const</span> unsub = <span class="fn">subscribeToStudentRides</span>(user.uid, (data) => {
+    <span class="fn">setRides</span>(data);
+    <span class="fn">setLoading</span>(<span class="kw">false</span>);
+  });
+  <span class="kw">return</span> () => <span class="fn">unsub</span>();   <span class="cm">// cleanup when student leaves the page</span>
+}, [user]);
+
+<span class="cm">// Filter logic — switch between All / Active / Completed / Cancelled</span>
+<span class="kw">const</span> filtered = rides.<span class="fn">filter</span>((r) => {
+  <span class="kw">if</span> (filter === <span class="str">'active'</span>)    <span class="kw">return</span> [<span class="str">'pending'</span>,<span class="str">'accepted'</span>,<span class="str">'ongoing'</span>].<span class="fn">includes</span>(r.status);
+  <span class="kw">if</span> (filter === <span class="str">'completed'</span>) <span class="kw">return</span> r.status === <span class="str">'completed'</span>;
+  <span class="kw">if</span> (filter === <span class="str">'cancelled'</span>) <span class="kw">return</span> r.status === <span class="str">'cancelled'</span>;
+  <span class="kw">return true</span>;   <span class="cm">// 'all' — show everything</span>
+});
+
+<span class="cm">// Stats calculated from rides array (not an API call — derived data)</span>
+<span class="kw">const</span> totalFare = rides
+  .<span class="fn">filter</span>((r) => r.status === <span class="str">'completed'</span>)
+  .<span class="fn">reduce</span>((sum, r) => sum + (r.fare || <span class="num">0</span>), <span class="num">0</span>);</code><span class="lang-tag">RideHistory.jsx</span></pre>
+
+    <!-- AvailableRides.jsx -->
+    <h3>📄 frontend/src/pages/driver/AvailableRides.jsx — Driver Ride Management</h3>
+    <p><strong>What:</strong> Two-tab page for drivers. "Available" tab shows all pending rides (live, any driver can accept them). "My Rides" tab shows rides this driver accepted (with complete/cancel buttons).</p>
+    <p><strong>Why:</strong> Drivers need two separate views — the marketplace of open rides, and their own accepted ride to manage.</p>
+
+    <pre><code><span class="cm">// Two separate onSnapshot subscriptions run simultaneously</span>
+<span class="fn">useEffect</span>(() => {
+  <span class="cm">// Subscription 1: ALL pending rides (visible to all drivers)</span>
+  <span class="kw">const</span> unsub = <span class="fn">subscribeToPendingRides</span>((data) => {
+    <span class="fn">setPending</span>(data);
+    <span class="fn">setLoadingP</span>(<span class="kw">false</span>);
+  });
+  <span class="kw">return</span> () => <span class="fn">unsub</span>();
+}, []);
+
+<span class="fn">useEffect</span>(() => {
+  <span class="kw">if</span> (!user) <span class="kw">return</span>;
+  <span class="cm">// Subscription 2: Only THIS driver's rides</span>
+  <span class="kw">const</span> unsub = <span class="fn">subscribeToDriverRides</span>(user.uid, (data) => {
+    <span class="fn">setMyRides</span>(data);
+    <span class="fn">setLoadingM</span>(<span class="kw">false</span>);
+  });
+  <span class="kw">return</span> () => <span class="fn">unsub</span>();
+}, [user]);
+
+<span class="cm">// Accept a ride — optimistic UI pattern</span>
+<span class="kw">const</span> <span class="fn">handleAccept</span> = <span class="kw">async</span> (rideId) => {
+  <span class="fn">setAccepting</span>(rideId);        <span class="cm">// shows "Accepting…" on that specific card</span>
+  <span class="kw">try</span> {
+    <span class="kw">await</span> <span class="fn">apiAcceptRide</span>(rideId);     <span class="cm">// PUT /api/rides/:id/accept</span>
+    toast.<span class="fn">success</span>(<span class="str">'🚗 Ride accepted! Head to pickup.'</span>);
+    <span class="fn">setTab</span>(<span class="str">'my-rides'</span>);           <span class="cm">// auto-switch to "My Rides" tab</span>
+  } <span class="kw">catch</span> (err) {
+    toast.<span class="fn">error</span>(err?.error || <span class="str">'Could not accept ride.'</span>);
+    <span class="cm">// Note: Firestore onSnapshot will automatically remove this</span>
+    <span class="cm">// ride from "pending" list if another driver accepted it first</span>
+  } <span class="kw">finally</span> {
+    <span class="fn">setAccepting</span>(<span class="kw">null</span>);          <span class="cm">// reset loading state</span>
+  }
+};</code><span class="lang-tag">AvailableRides.jsx</span></pre>
+
+    <!-- DriverEarnings.jsx -->
+    <h3>📄 frontend/src/pages/driver/DriverEarnings.jsx — Earnings Dashboard</h3>
+    <p><strong>What:</strong> A complete earnings analytics page for drivers. Shows total lifetime earnings, this week's earnings, average fare, total distance driven, and a scrollable list of all completed rides.</p>
+    <p><strong>Why:</strong> Drivers need to track their income and performance. All stats are computed from the same Firestore subscription — no extra API calls needed.</p>
+
+    <pre><code><span class="cm">// All stats derived from rides array — no extra API calls</span>
+<span class="kw">const</span> completed    = rides.<span class="fn">filter</span>((r) => r.status === <span class="str">'completed'</span>);
+<span class="kw">const</span> totalEarned  = completed.<span class="fn">reduce</span>((s, r) => s + (r.fare || <span class="num">0</span>), <span class="num">0</span>);
+<span class="kw">const</span> avgFare      = totalRides > <span class="num">0</span> ? Math.<span class="fn">round</span>(totalEarned / totalRides) : <span class="num">0</span>;
+<span class="kw">const</span> totalDistance = completed.<span class="fn">reduce</span>((s, r) => s + (r.distance || <span class="num">0</span>), <span class="num">0</span>);
+
+<span class="cm">// Weekly earnings — filter rides from the past 7 days</span>
+<span class="kw">const</span> now = Date.<span class="fn">now</span>();
+<span class="kw">const</span> weekEarnings = completed
+  .<span class="fn">filter</span>((r) => now - <span class="kw">new</span> <span class="fn">Date</span>(r.completedAt || r.createdAt).<span class="fn">getTime</span>() &lt; <span class="num">7</span> * <span class="num">24</span> * <span class="num">3600</span> * <span class="num">1000</span>)
+  .<span class="fn">reduce</span>((s, r) => s + (r.fare || <span class="num">0</span>), <span class="num">0</span>);
+<span class="cm">// 7 * 24 * 3600 * 1000 = 7 days in milliseconds</span></code><span class="lang-tag">DriverEarnings.jsx</span></pre>
+
+    <!-- Dashboard updates -->
+    <h3>📄 StudentDashboard.jsx + DriverDashboard.jsx — Live Banners</h3>
+    <p><strong>What:</strong> Both dashboards now show an animated "Active Ride" banner at the top when there's a live ride in progress. The banner shows pickup → drop, current status, and a quick link.</p>
+    <p><strong>Why:</strong> Users landing on the dashboard immediately know if they have an active ride — no need to navigate to another page to check.</p>
+
+    <pre><code><span class="cm">// StudentDashboard: subscribe on mount, show banner if active ride exists</span>
+<span class="fn">useEffect</span>(() => {
+  <span class="kw">if</span> (!user) <span class="kw">return</span>;
+  <span class="kw">const</span> unsub = <span class="fn">subscribeToStudentRides</span>(user.uid, (rides) => {
+    <span class="kw">const</span> active = rides.<span class="fn">find</span>((r) =>
+      [<span class="str">'pending'</span>, <span class="str">'accepted'</span>, <span class="str">'ongoing'</span>].<span class="fn">includes</span>(r.status)
+    );
+    <span class="fn">setActiveRide</span>(active || <span class="kw">null</span>);   <span class="cm">// null if no active ride</span>
+  });
+  <span class="kw">return</span> () => <span class="fn">unsub</span>();
+}, [user]);
+
+<span class="cm">// Banner only renders when activeRide is not null</span>
+{activeRide &amp;&amp; meta &amp;&amp; (
+  &lt;<span class="fn">div</span> style={{ background: meta.bg, border: `1px solid ${meta.dot}40` }}&gt;
+    &lt;<span class="fn">span</span> style={{ animation: <span class="str">'pulse 1.5s infinite'</span> }} /&gt;  <span class="cm">// animated dot</span>
+    Active Ride — {meta.label}
+    {activeRide.pickupAddress} → {activeRide.dropAddress}
+  &lt;/<span class="fn">div</span>&gt;
+)}</code><span class="lang-tag">StudentDashboard.jsx</span></pre>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 5: BACKEND FILES EXPLAINED -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s5">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <h2>Backend Files — Code Explained</h2>
+    </div>
+
+    <h3>📄 backend/controllers/ride.controller.js — All Ride Logic</h3>
+    <p><strong>What:</strong> Five controller functions that handle every ride operation: book, get my rides, get by ID, accept, complete, cancel, and list available.</p>
+    <p><strong>Why:</strong> The backend is the trusted authority. The frontend might calculate fare client-side, but the backend saves it to Firestore — ensuring data integrity even if someone tries to manipulate the request.</p>
+
+    <table>
+      <tr><th>Function</th><th>Route</th><th>Who calls it</th><th>What it does</th></tr>
+      <tr><td>bookRide</td><td>POST /api/rides/book</td><td>Student (BookRide.jsx)</td><td>Creates new ride document in Firestore with status="pending"</td></tr>
+      <tr><td>getMyRides</td><td>GET /api/rides/my</td><td>Any role (RideHistory, AvailableRides)</td><td>Returns rides filtered by studentId or driverId based on role</td></tr>
+      <tr><td>acceptRide</td><td>PUT /api/rides/:id/accept</td><td>Driver (AvailableRides.jsx)</td><td>Sets status="accepted", driverId, driverName, acceptedAt</td></tr>
+      <tr><td>completeRide</td><td>PUT /api/rides/:id/complete</td><td>Driver (AvailableRides.jsx)</td><td>Sets status="completed", updates driver earnings in Firestore</td></tr>
+      <tr><td>cancelRide</td><td>PUT /api/rides/:id/cancel</td><td>Student or Driver</td><td>Sets status="cancelled", records who cancelled and when</td></tr>
+      <tr><td>getAvailableRides</td><td>GET /api/rides/driver/available</td><td>Driver (used as fallback)</td><td>Returns all rides with status="pending" (also available via onSnapshot)</td></tr>
+    </table>
+
+    <pre><code><span class="cm">// bookRide — creates the Firestore document</span>
+<span class="kw">const</span> rideData = {
+  studentId:     req.user.uid,           <span class="cm">// from Firebase JWT (verifyToken)</span>
+  studentName:   req.userData?.name || <span class="str">''</span>,
+  driverId:      <span class="kw">null</span>,                    <span class="cm">// filled when driver accepts</span>
+  driverName:    <span class="kw">null</span>,
+  pickupLocation: { lat, lng },           <span class="cm">// GPS coordinates</span>
+  dropLocation:   { lat, lng },
+  pickupAddress:  pickupAddress,          <span class="cm">// human-readable string</span>
+  dropAddress:    dropAddress,
+  distance,                              <span class="cm">// in km (sent by frontend)</span>
+  fare,                                  <span class="cm">// in ₹ (sent by frontend)</span>
+  status:        <span class="str">'pending'</span>,              <span class="cm">// initial status</span>
+  paymentStatus: <span class="str">'unpaid'</span>,
+  createdAt:     <span class="kw">new</span> <span class="fn">Date</span>().<span class="fn">toISOString</span>(),
+  updatedAt:     <span class="kw">new</span> <span class="fn">Date</span>().<span class="fn">toISOString</span>(),
+};
+
+<span class="kw">const</span> rideRef = <span class="kw">await</span> db.<span class="fn">collection</span>(<span class="str">'rides'</span>).<span class="fn">add</span>(rideData);
+<span class="cm">// .add() generates a unique Firestore document ID automatically</span>
+res.<span class="fn">status</span>(<span class="num">201</span>).<span class="fn">json</span>({ rideId: rideRef.id, ride: { id: rideRef.id, ...rideData } });
+
+<span class="cm">// completeRide — uses FieldValue.increment for safe concurrent updates</span>
+<span class="kw">const</span> fare = rideDoc.<span class="fn">data</span>().fare || <span class="num">0</span>;
+<span class="kw">const</span> driverId = rideDoc.<span class="fn">data</span>().driverId;
+
+<span class="kw">const</span> { FieldValue } = <span class="fn">require</span>(<span class="str">'firebase-admin/firestore'</span>);
+<span class="kw">await</span> db.<span class="fn">collection</span>(<span class="str">'users'</span>).<span class="fn">doc</span>(driverId).<span class="fn">update</span>({
+  earnings:   FieldValue.<span class="fn">increment</span>(fare),   <span class="cm">// safely adds fare to total</span>
+  totalRides: FieldValue.<span class="fn">increment</span>(<span class="num">1</span>),       <span class="cm">// safely increments count</span>
+});</code><span class="lang-tag">ride.controller.js</span></pre>
+
+    <h3>📄 backend/routes/ride.routes.js — API Route Definitions</h3>
+    <p><strong>What:</strong> Maps HTTP methods + URLs to controller functions with appropriate middleware (verifyToken + requireRole).</p>
+
+    <pre><code><span class="cm">// Route order matters! Specific routes before parameterized ones</span>
+router.<span class="fn">get</span>(<span class="str">'/driver/available'</span>, verifyToken, <span class="fn">requireRole</span>(<span class="str">'driver'</span>), rideController.getAvailableRides);
+<span class="cm">// ↑ This MUST come before /:id or Express will treat "driver" as an :id parameter</span>
+
+router.<span class="fn">post</span>(<span class="str">'/book'</span>, verifyToken, <span class="fn">requireRole</span>(<span class="str">'student'</span>), rideController.bookRide);
+<span class="cm">// ↑ Only students can book — drivers and admins are blocked</span>
+
+router.<span class="fn">put</span>(<span class="str">'/:id/accept'</span>,   verifyToken, <span class="fn">requireRole</span>(<span class="str">'driver'</span>),  rideController.acceptRide);
+router.<span class="fn">put</span>(<span class="str">'/:id/complete'</span>, verifyToken, <span class="fn">requireRole</span>(<span class="str">'driver'</span>),  rideController.completeRide);
+router.<span class="fn">put</span>(<span class="str">'/:id/cancel'</span>,   verifyToken,                          rideController.cancelRide);
+<span class="cm">// ↑ cancel has no requireRole — both student and driver can cancel</span></code><span class="lang-tag">ride.routes.js</span></pre>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 6: FARE CALCULATION -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s6">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <h2>Fare Calculation — How It Works</h2>
+    </div>
+
+    <h3>📐 Haversine Distance Formula</h3>
+    <p>Used to calculate the straight-line distance (in km) between two GPS coordinates. Named after the haversine trigonometric function used in the formula. It accounts for the curvature of the Earth — unlike simple Pythagorean distance which would give wrong results on a globe.</p>
+
+    <pre><code><span class="kw">export const</span> <span class="fn">calcDistance</span> = (lat1, lng1, lat2, lng2) => {
+  <span class="kw">const</span> R = <span class="num">6371</span>;   <span class="cm">// Earth's radius in km</span>
+
+  <span class="cm">// Convert degree difference to radians</span>
+  <span class="kw">const</span> dLat = ((lat2 - lat1) * Math.PI) / <span class="num">180</span>;
+  <span class="kw">const</span> dLng = ((lng2 - lng1) * Math.PI) / <span class="num">180</span>;
+
+  <span class="cm">// Haversine formula — 'a' represents the square of half the chord length</span>
+  <span class="kw">const</span> a =
+    Math.<span class="fn">sin</span>(dLat / <span class="num">2</span>) ** <span class="num">2</span> +
+    Math.<span class="fn">cos</span>((lat1 * Math.PI) / <span class="num">180</span>) *
+      Math.<span class="fn">cos</span>((lat2 * Math.PI) / <span class="num">180</span>) *
+      Math.<span class="fn">sin</span>(dLng / <span class="num">2</span>) ** <span class="num">2</span>;
+
+  <span class="cm">// 'c' is the angular distance in radians between the two points</span>
+  <span class="kw">return</span> R * <span class="num">2</span> * Math.<span class="fn">atan2</span>(Math.<span class="fn">sqrt</span>(a), Math.<span class="fn">sqrt</span>(<span class="num">1</span> - a));
+  <span class="cm">// Result: straight-line distance in km</span>
+};</code><span class="lang-tag">rideService.js</span></pre>
+
+    <h3>💰 Fare Formula</h3>
+    <table>
+      <tr><th>Component</th><th>Value</th><th>Meaning</th></tr>
+      <tr><td>Base Fare</td><td>₹30</td><td>Fixed charge for every ride regardless of distance</td></tr>
+      <tr><td>Per km Rate</td><td>₹12</td><td>Added for each km of distance</td></tr>
+      <tr><td>Minimum Fare</td><td>₹30</td><td>Ensures very short trips still cost at least ₹30</td></tr>
+    </table>
+
+    <pre><code><span class="cm">// Fare = max(30, round(30 + distance × 12))</span>
+<span class="kw">export const</span> <span class="fn">calcFare</span> = (distanceKm) => {
+  <span class="kw">return</span> Math.<span class="fn">max</span>(<span class="num">30</span>, Math.<span class="fn">round</span>(<span class="num">30</span> + distanceKm * <span class="num">12</span>));
+};
+
+<span class="cm">// Examples:</span>
+<span class="cm">// 0.5 km → max(30, round(30 + 6)) = max(30, 36) = ₹36</span>
+<span class="cm">// 1 km   → max(30, round(30 + 12)) = max(30, 42) = ₹42</span>
+<span class="cm">// 5 km   → max(30, round(30 + 60)) = max(30, 90) = ₹90</span>
+<span class="cm">// 10 km  → max(30, round(30 + 120)) = max(30, 150) = ₹150</span></code><span class="lang-tag">rideService.js</span></pre>
+
+    <h3>📍 TIET Campus Coordinates Used</h3>
+    <table>
+      <tr><th>Location</th><th>Latitude</th><th>Longitude</th></tr>
+      <tr><td>TIET Main Gate</td><td>30.3568</td><td>76.3647</td></tr>
+      <tr><td>TIET Boys Hostel</td><td>30.3572</td><td>76.3651</td></tr>
+      <tr><td>TIET Library</td><td>30.3564</td><td>76.3640</td></tr>
+      <tr><td>Patiala Railway Station</td><td>30.3398</td><td>76.3869</td></tr>
+      <tr><td>Patiala Bus Stand</td><td>30.3375</td><td>76.3860</td></tr>
+      <tr><td>Model Town, Patiala</td><td>30.3482</td><td>76.3900</td></tr>
+      <tr><td>Leela Bhawan Market</td><td>30.3355</td><td>76.3872</td></tr>
+      <tr><td>Punjabi University</td><td>30.2342</td><td>76.4088</td></tr>
+    </table>
+
+    <div class="alert alert-note">
+      <div class="alert-icon">💡</div>
+      <div class="alert-body">
+        <div class="alert-title">Estimated Travel Time</div>
+        The BookRide page also shows estimated travel time. Formula: <span class="inline-code">time = (distance / 40) × 60</span> minutes. We assume average 40 km/h speed for local campus routes. This is shown as "Est. Time" in the fare card.
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 7: TERMINAL COMMANDS -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s7">
+    <div class="section-header">
+      <div class="section-num">7</div>
+      <h2>Terminal Commands — When &amp; Why</h2>
+    </div>
+
+    <h3>▶️ Start Development (same as Phase 2)</h3>
+    <p><strong>When:</strong> Every time you start working on Phase 3. <strong>Why:</strong> You still need both servers running — backend for API calls, frontend for the React app.</p>
+    <div class="terminal">
+      <div class="terminal-header"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="terminal-label">Terminal 1 — inside backend/</span></div>
+      <div class="terminal-body"><code>
+<span class="t-prompt">PS></span> <span class="t-cmd">npm run dev</span>
+<span class="t-success">🔥 Firebase Admin SDK initialized!</span>
+<span class="t-success">🚌 SmartRideTIET API running on port 5000</span>
+      </code></div>
+    </div>
+    <div class="terminal">
+      <div class="terminal-header"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="terminal-label">Terminal 2 — inside frontend/</span></div>
+      <div class="terminal-body"><code>
+<span class="t-prompt">PS></span> <span class="t-cmd">npm run dev</span>
+<span class="t-success">  VITE v8.1.3  ready in 1030 ms</span>
+<span class="t-success">  ➜  Local:   http://localhost:5173/</span>
+      </code></div>
+    </div>
+
+    <h3>🔍 Verify Build Has No Errors</h3>
+    <p><strong>When:</strong> After writing Phase 3 code, before testing in browser. <strong>Why:</strong> Catches missing imports, wrong file names, and syntax errors early.</p>
+    <div class="terminal">
+      <div class="terminal-header"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="terminal-label">PowerShell — inside frontend/</span></div>
+      <div class="terminal-body"><code>
+<span class="t-prompt">PS></span> <span class="t-cmd">npx vite build</span>
+<span class="t-success">✓ 1886 modules transformed.</span>
+<span class="t-success">✓ built in 1.72s    ← 0 errors! Phase 3 code is correct</span>
+<span class="t-out"># The chunk size warning is normal — just means the bundle is large</span>
+<span class="t-out"># It won't affect development. Ignore it for now.</span>
+      </code></div>
+    </div>
+
+    <h3>📦 No New Packages in Phase 3</h3>
+    <p><strong>Why:</strong> Phase 3 uses only packages already installed in Phase 2. Firebase SDK already includes Firestore's <span class="inline-code">onSnapshot</span>. All tools needed were ready.</p>
+    <div class="terminal">
+      <div class="terminal-header"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="terminal-label">Terminal — inside frontend/ (Phase 2 already installed these)</span></div>
+      <div class="terminal-body"><code>
+<span class="t-out"># Already installed from Phase 2 — no new installs needed for Phase 3:</span>
+<span class="t-out"># firebase       → provides onSnapshot, collection, query, where, etc.</span>
+<span class="t-out"># axios          → api.js already uses this for all API calls</span>
+<span class="t-out"># react-hot-toast → toast.success / toast.error notifications</span>
+<span class="t-out"># react-router-dom → Link, useNavigate already in use</span>
+      </code></div>
+    </div>
+
+    <h3>🔥 Check Firestore Data in Firebase Console</h3>
+    <p><strong>When:</strong> After booking a test ride — verify it actually saved to Firestore. <strong>Why:</strong> Confirms backend + Firestore connection is working.</p>
+    <div class="terminal">
+      <div class="terminal-header"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="terminal-label">Browser — Firebase Console</span></div>
+      <div class="terminal-body"><code>
+<span class="t-out">1. Go to: https://console.firebase.google.com</span>
+<span class="t-out">2. Select your SmartRideTIET project</span>
+<span class="t-out">3. Left sidebar → Build → Firestore Database</span>
+<span class="t-out">4. Click the "rides" collection</span>
+<span class="t-success">   → You should see your test ride document with all fields</span>
+<span class="t-success">   → Click it to see: studentId, status:"pending", fare, distance, etc.</span>
+      </code></div>
+    </div>
+
+    <div class="alert alert-note">
+      <div class="alert-icon">💡</div>
+      <div class="alert-body">
+        <div class="alert-title">VS Code Tip — Two Terminals Side by Side</div>
+        Press <strong>Ctrl + Shift + 5</strong> in VS Code terminal to split into two panes. Run backend in one, frontend in other. Both run simultaneously without switching tabs.
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 8: RIDE FLOW -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s8">
+    <div class="section-header">
+      <div class="section-num">8</div>
+      <h2>Ride Flow — How Everything Connects</h2>
+    </div>
+
+    <h3>🎓 Student Books a Ride</h3>
+    <div class="flow-diagram">
+<span class="flow-purple">Student opens /student/book</span>
+  ↓
+<span class="flow-arrow">Selects pickup + drop from TIET location chips/search</span>
+  ↓
+<span class="flow-cyan">calcDistance() runs haversine formula → distance in km</span>
+  ↓
+<span class="flow-cyan">calcFare(distance) → fare = max(30, round(30 + km × 12)) in ₹</span>
+  ↓
+<span class="flow-arrow">Fare card appears: distance, estimated time, fare amount</span>
+  ↓
+<span class="flow-purple">Student clicks "Confirm Booking"</span>
+  ↓
+<span class="flow-arrow">POST /api/rides/book → verifyToken → requireRole('student') → bookRide()</span>
+  ↓
+<span class="flow-cyan">Backend saves ride document to Firestore "rides" collection with status="pending"</span>
+  ↓
+<span class="flow-green">Response: { rideId: "abc123" } → setActiveRide("abc123")</span>
+  ↓
+<span class="flow-cyan">subscribeToRide("abc123") starts → onSnapshot listener attached</span>
+  ↓
+<span class="flow-green">Live status banner appears on BookRide page — "Waiting for driver…" 🟡</span>
+    </div>
+
+    <h3>🚗 Driver Accepts the Ride</h3>
+    <div class="flow-diagram">
+<span class="flow-purple">Driver opens /driver/available</span>
+  ↓
+<span class="flow-cyan">subscribeToPendingRides() starts → onSnapshot on rides where status="pending"</span>
+  ↓
+<span class="flow-green">Student's new ride appears instantly in the list (Firestore push)</span>
+  ↓
+<span class="flow-purple">Driver clicks "Accept Ride" on that card</span>
+  ↓
+<span class="flow-arrow">PUT /api/rides/abc123/accept → verifyToken → requireRole('driver') → acceptRide()</span>
+  ↓
+<span class="flow-cyan">Backend updates Firestore: status="accepted", driverId, driverName, acceptedAt</span>
+  ↓
+<span class="flow-green">Student's BookRide onSnapshot fires → banner updates: "Driver on the way 🔵"</span>
+  ↓
+<span class="flow-green">Driver's pending list updates: ride disappears (no longer "pending")</span>
+  ↓
+<span class="flow-green">Driver auto-switches to "My Rides" tab — sees the accepted ride</span>
+    </div>
+
+    <h3>🏁 Driver Completes the Ride</h3>
+    <div class="flow-diagram">
+<span class="flow-purple">Driver clicks "Mark Complete" on the active ride in "My Rides" tab</span>
+  ↓
+<span class="flow-arrow">PUT /api/rides/abc123/complete → verifyToken → requireRole('driver') → completeRide()</span>
+  ↓
+<span class="flow-cyan">Backend updates ride: status="completed", completedAt</span>
+  ↓
+<span class="flow-cyan">Backend updates driver: earnings += fare, totalRides += 1 (via FieldValue.increment)</span>
+  ↓
+<span class="flow-green">Student's onSnapshot fires → banner updates: "Completed ✅" toast notification</span>
+  ↓
+<span class="flow-green">Student's RideHistory page updates automatically (also uses onSnapshot)</span>
+  ↓
+<span class="flow-green">Driver's DriverEarnings page updates automatically — new total shown</span>
+    </div>
+
+    <h3>📊 Firestore "rides" Document Structure</h3>
+    <pre><code><span class="cm">// Collection: rides → Document ID auto-generated (e.g. "XkP9mQ2abc")</span>
+{
+  <span class="prop">studentId</span>:      <span class="str">"firebase-uid-of-student"</span>,
+  <span class="prop">studentName</span>:    <span class="str">"Arjun Singh"</span>,
+  <span class="prop">driverId</span>:       <span class="kw">null</span>,                    <span class="cm">// → filled on accept</span>
+  <span class="prop">driverName</span>:     <span class="kw">null</span>,                    <span class="cm">// → filled on accept</span>
+  <span class="prop">pickupLocation</span>: { lat: <span class="num">30.3568</span>, lng: <span class="num">76.3647</span> },
+  <span class="prop">dropLocation</span>:   { lat: <span class="num">30.3398</span>, lng: <span class="num">76.3869</span> },
+  <span class="prop">pickupAddress</span>:  <span class="str">"TIET Main Gate"</span>,
+  <span class="prop">dropAddress</span>:    <span class="str">"Patiala Railway Stn"</span>,
+  <span class="prop">distance</span>:       <span class="num">2.4</span>,                     <span class="cm">// km</span>
+  <span class="prop">fare</span>:           <span class="num">59</span>,                      <span class="cm">// ₹ (30 + 2.4×12 = 58.8 → round → 59)</span>
+  <span class="prop">status</span>:         <span class="str">"pending"</span>,              <span class="cm">// "pending" | "accepted" | "completed" | "cancelled"</span>
+  <span class="prop">paymentStatus</span>:  <span class="str">"unpaid"</span>,               <span class="cm">// payment handled in Phase 5</span>
+  <span class="prop">createdAt</span>:      <span class="str">"2026-07-05T05:30:00.000Z"</span>,
+  <span class="prop">updatedAt</span>:      <span class="str">"2026-07-05T05:32:00.000Z"</span>,
+  <span class="prop">acceptedAt</span>:     <span class="kw">null</span>,                    <span class="cm">// → filled on accept</span>
+  <span class="prop">completedAt</span>:    <span class="kw">null</span>,                    <span class="cm">// → filled on complete</span>
+  <span class="prop">cancelledAt</span>:    <span class="kw">null</span>,                    <span class="cm">// → filled on cancel</span>
+  <span class="prop">cancelledBy</span>:    <span class="kw">null</span>,                    <span class="cm">// → uid of who cancelled</span>
+}</code><span class="lang-tag">Firestore rides/{rideId}</span></pre>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 9: ERRORS -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s9">
+    <div class="section-header">
+      <div class="section-num">9</div>
+      <h2>Errors Faced &amp; How We Fixed Them</h2>
+    </div>
+
+    <!-- Error 1 -->
+    <div class="error-card">
+      <div class="error-title">❌ Error 1 — Firestore Missing Index for Compound Query</div>
+      <div class="error-msg">FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/...</div>
+      <p style="color:#a0a0c0;font-size:0.88rem;margin-top:0.5rem"><strong>Why it happened:</strong> Firestore requires a composite index when you combine <span class="inline-code">where()</span> and <span class="inline-code">orderBy()</span> on different fields. E.g., querying <span class="inline-code">where('studentId', '==', uid).orderBy('createdAt', 'desc')</span> needs an index for studentId + createdAt together.</p>
+      <div class="fix-title">✅ Fix — Click the link in the error message:</div>
+      <div class="error-msg" style="color:#86efac">// The error message contains a direct URL to create the index!
+// Click it → Firebase Console opens → Click "Create index"
+// Wait 1-2 minutes for the index to build → query works
+
+// Or create manually:
+// Firestore → Indexes → Add Index
+// Collection: rides | Fields: studentId ASC, createdAt DESC</div>
+    </div>
+
+    <!-- Error 2 -->
+    <div class="error-card">
+      <div class="error-title">❌ Error 2 — onSnapshot listener memory leak warning</div>
+      <div class="error-msg">Warning: Can't perform a React state update on an unmounted component.
+  at RideHistory (RideHistory.jsx:45)</div>
+      <p style="color:#a0a0c0;font-size:0.88rem;margin-top:0.5rem"><strong>Why it happened:</strong> The <span class="inline-code">onSnapshot</span> was never unsubscribed. When the student navigated away from RideHistory, the listener kept running and tried to call <span class="inline-code">setRides()</span> on the unmounted component.</p>
+      <div class="fix-title">✅ Fix — Always return the unsubscribe function from useEffect:</div>
+      <div class="error-msg" style="color:#86efac">useEffect(() => {
+  const unsub = subscribeToStudentRides(user.uid, (data) => {
+    setRides(data);
+  });
+  return () => unsub();  // ← THIS LINE prevents the memory leak
+}, [user]);</div>
+    </div>
+
+    <!-- Error 3 -->
+    <div class="error-card">
+      <div class="error-title">❌ Error 3 — Same pickup and drop location selected</div>
+      <div class="error-msg">[App books a ride with distance = 0 and fare = ₹30 — no error shown]</div>
+      <p style="color:#a0a0c0;font-size:0.88rem;margin-top:0.5rem"><strong>Why it happened:</strong> No validation to check if pickup and drop are the same location. A student could accidentally select "TIET Main Gate" as both pickup and drop.</p>
+      <div class="fix-title">✅ Fix — Add validation in handleBook:</div>
+      <div class="error-msg" style="color:#86efac">const handleBook = async () => {
+  if (pickupLoc.label === dropLoc.label) {
+    toast.error('Pickup and drop cannot be the same location.');
+    return;   // stop execution before API call
+  }
+  // ... rest of booking logic
+};</div>
+    </div>
+
+    <!-- Error 4 -->
+    <div class="error-card">
+      <div class="error-title">❌ Error 4 — Route conflict: GET /api/rides/driver/available returning 404</div>
+      <div class="error-msg">{"error": "Ride not found."}  ← treating "driver" as a ride ID!</div>
+      <p style="color:#a0a0c0;font-size:0.88rem;margin-top:0.5rem"><strong>Why it happened:</strong> In <span class="inline-code">ride.routes.js</span>, the route <span class="inline-code">GET /:id</span> was defined before <span class="inline-code">GET /driver/available</span>. Express matched "driver" as the <span class="inline-code">:id</span> parameter and looked for a ride with ID "driver" — which doesn't exist.</p>
+      <div class="fix-title">✅ Fix — Define specific routes BEFORE parameterized ones:</div>
+      <div class="error-msg" style="color:#86efac">// ✅ CORRECT ORDER in ride.routes.js:
+router.get('/driver/available', ...);   // ← specific route FIRST
+router.get('/my', ...);                 // ← specific route
+router.get('/:id', ...);               // ← parameterized route LAST
+
+// ❌ WRONG — would cause "driver" to be treated as :id:
+// router.get('/:id', ...);
+// router.get('/driver/available', ...);</div>
+    </div>
+
+    <!-- Error 5 -->
+    <div class="error-card">
+      <div class="error-title">❌ Error 5 — onSnapshot not updating when another driver accepts "your" visible ride</div>
+      <div class="error-msg">[Ride shows as "pending" in one driver's list even after another driver accepted it]</div>
+      <p style="color:#a0a0c0;font-size:0.88rem;margin-top:0.5rem"><strong>Why it happened:</strong> The <span class="inline-code">subscribeToPendingRides</span> query filters by <span class="inline-code">status="pending"</span>. When a ride is accepted, its status changes to "accepted" — Firestore automatically removes it from the snapshot because it no longer matches the query. But the component sometimes kept a stale visual if the Firestore index wasn't ready yet.</p>
+      <div class="fix-title">✅ Fix — Wait for Firestore index to build (usually 1-2 mins after creating):</div>
+      <div class="error-msg" style="color:#86efac">// After creating the composite index in Firebase Console:
+// 1. Wait for "Building" to show "Enabled" status
+// 2. Hard refresh the browser (Ctrl+Shift+R)
+// 3. onSnapshot will now correctly remove accepted rides from the list</div>
+    </div>
+
+    <!-- Error 6 -->
+    <div class="error-card">
+      <div class="error-title">❌ Error 6 — FieldValue is undefined in completeRide</div>
+      <div class="error-msg">TypeError: Cannot read properties of undefined (reading 'increment')</div>
+      <p style="color:#a0a0c0;font-size:0.88rem;margin-top:0.5rem"><strong>Why it happened:</strong> <span class="inline-code">FieldValue</span> was being destructured from <span class="inline-code">'firebase-admin/firestore'</span> inside the function but the require call was wrong — the package path changed in newer versions of firebase-admin.</p>
+      <div class="fix-title">✅ Fix — Correct import path for FieldValue in firebase-admin v11+:</div>
+      <div class="error-msg" style="color:#86efac">// ✅ Correct (firebase-admin v11+):
+const { FieldValue } = require('firebase-admin/firestore');
+
+// ❌ Wrong (old pattern):
+const { FieldValue } = require('firebase-admin').firestore;</div>
+    </div>
+
+    <!-- Error 7 -->
+    <div class="error-card">
+      <div class="error-title">❌ Error 7 — Chunk size warning after build</div>
+      <div class="error-msg">(!) Some chunks are larger than 500 kB after minification.
+dist/assets/index-C0BLQ6Ry.js  1,565.21 kB</div>
+      <p style="color:#a0a0c0;font-size:0.88rem;margin-top:0.5rem"><strong>Why it happened:</strong> The entire app (Firebase SDK + Firestore + React + all components) is bundled into one JavaScript file. At 1565KB it's large but not a problem for a development project — this is just a warning, not an error.</p>
+      <div class="fix-title">✅ Fix — For development, ignore it. Production fix uses code splitting:</div>
+      <div class="error-msg" style="color:#86efac">// For now: this is just a WARNING, not an error. The app still works.
+// Build succeeds: ✓ built in 1.72s (0 errors)
+// For production (Phase 7+), we'd add dynamic imports:
+// const BookRide = lazy(() => import('./pages/student/BookRide'));
+// This splits the bundle into smaller chunks loaded on demand.</div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 10: FINAL CHECKLIST -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s10">
+    <div class="section-header">
+      <div class="section-num">10</div>
+      <h2>Phase 3 — Final Checklist</h2>
+    </div>
+
+    <h3>✅ New Service File</h3>
+    <ul class="checklist">
+      <li><span class="check-done">✅</span> <span class="inline-code">rideService.js</span> created with all 4 onSnapshot functions</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">subscribeToStudentRides(uid, callback)</span> — student's own rides</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">subscribeToDriverRides(uid, callback)</span> — driver's accepted rides</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">subscribeToPendingRides(callback)</span> — all pending rides (for drivers)</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">subscribeToRide(rideId, callback)</span> — single ride tracking</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">calcDistance(lat1,lng1,lat2,lng2)</span> — haversine formula</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">calcFare(distanceKm)</span> — fare = max(30, round(30 + km×12))</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">getRideStatusMeta(status)</span> — color, label, bg for each status</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">formatTime(iso)</span> — ISO string → human-readable date</li>
+    </ul>
+
+    <h3>✅ Student Pages</h3>
+    <ul class="checklist">
+      <li><span class="check-done">✅</span> <span class="inline-code">BookRide.jsx</span> — Full booking page (was placeholder in Phase 2)</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">BookRide.css</span> — Premium dark-theme CSS with glassmorphism</li>
+      <li><span class="check-done">✅</span> Location search with 8 TIET/Patiala predefined locations</li>
+      <li><span class="check-done">✅</span> Auto-calculated fare card (distance + time + amount) shown before booking</li>
+      <li><span class="check-done">✅</span> POST /api/rides/book called on confirm</li>
+      <li><span class="check-done">✅</span> Live status banner after booking (onSnapshot)</li>
+      <li><span class="check-done">✅</span> Driver info shown when ride accepted</li>
+      <li><span class="check-done">✅</span> Cancel ride button for active rides</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">RideHistory.jsx</span> — Full history page (was placeholder)</li>
+      <li><span class="check-done">✅</span> Filter tabs: All / Active / Completed / Cancelled</li>
+      <li><span class="check-done">✅</span> Stats: Total rides, Completed, Total spent</li>
+      <li><span class="check-done">✅</span> Cancel button on active rides in history</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">StudentDashboard.jsx</span> — Live "Active Ride" banner added</li>
+    </ul>
+
+    <h3>✅ Driver Pages</h3>
+    <ul class="checklist">
+      <li><span class="check-done">✅</span> <span class="inline-code">AvailableRides.jsx</span> — Full rides page (was placeholder)</li>
+      <li><span class="check-done">✅</span> "Available" tab: live pending rides from all students</li>
+      <li><span class="check-done">✅</span> "My Rides" tab: driver's own accepted/completed rides</li>
+      <li><span class="check-done">✅</span> Accept ride → PUT /api/rides/:id/accept → auto-switches to My Rides tab</li>
+      <li><span class="check-done">✅</span> Mark Complete → PUT /api/rides/:id/complete → earnings update</li>
+      <li><span class="check-done">✅</span> Stats bar: Pending Nearby / Active Rides / Earnings Today</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">DriverEarnings.jsx</span> — Full earnings page (was placeholder)</li>
+      <li><span class="check-done">✅</span> Total lifetime earnings, this week, avg fare, distance</li>
+      <li><span class="check-done">✅</span> Scrollable completed ride list with fare per ride</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">DriverDashboard.jsx</span> — Today's earnings strip + Active Ride banner</li>
+    </ul>
+
+    <h3>✅ Backend (Already Ready from Phase 2)</h3>
+    <ul class="checklist">
+      <li><span class="check-done">✅</span> <span class="inline-code">ride.controller.js</span> — bookRide, acceptRide, completeRide, cancelRide, getAvailableRides</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">ride.routes.js</span> — all 6 routes with correct middleware</li>
+      <li><span class="check-done">✅</span> Route order correct: <span class="inline-code">/driver/available</span> before <span class="inline-code">/:id</span></li>
+      <li><span class="check-done">✅</span> FieldValue.increment() used for atomic earnings update</li>
+    </ul>
+
+    <h3>✅ Firestore</h3>
+    <ul class="checklist">
+      <li><span class="check-done">✅</span> "rides" collection created automatically on first booking</li>
+      <li><span class="check-done">✅</span> Composite index for <span class="inline-code">studentId + createdAt</span> created in Firebase Console</li>
+      <li><span class="check-done">✅</span> Composite index for <span class="inline-code">driverId + createdAt</span> created</li>
+      <li><span class="check-done">✅</span> Composite index for <span class="inline-code">status + createdAt</span> created (for pending rides query)</li>
+    </ul>
+
+    <h3>✅ Verification</h3>
+    <ul class="checklist">
+      <li><span class="check-done">✅</span> <span class="inline-code">npx vite build</span> → 1886 modules, 0 errors</li>
+      <li><span class="check-done">✅</span> Both servers start without errors</li>
+      <li><span class="check-done">✅</span> Student can select pickup + drop, see fare, confirm booking</li>
+      <li><span class="check-done">✅</span> Ride document appears in Firestore Console after booking</li>
+      <li><span class="check-done">✅</span> Driver sees the pending ride in Available Rides</li>
+      <li><span class="check-done">✅</span> Driver accepts → student's page updates instantly (no refresh)</li>
+      <li><span class="check-done">✅</span> Driver marks complete → ride status updates everywhere instantly</li>
+      <li><span class="check-done">✅</span> Student's RideHistory shows all rides with correct status badges</li>
+      <li><span class="check-done">✅</span> Driver's DriverEarnings shows updated totals after completion</li>
+    </ul>
+
+    <div class="alert alert-success" style="margin-top:2rem">
+      <div class="alert-icon">🎉</div>
+      <div class="alert-body">
+        <div class="alert-title">Phase 3 Complete!</div>
+        The entire ride booking system is live. Students can book rides and track them in real-time. Drivers see a live feed of available rides, accept them, mark completions, and track their earnings. All powered by Firestore <span class="inline-code">onSnapshot</span> — no page refreshes needed. Next step: <strong>Phase 4 — Admin Dashboard</strong> (stats, user management, all-rides view, analytics).
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:3rem;padding:2rem;background:var(--bg3);border:1px solid var(--border);border-radius:16px">
+      <div style="font-size:2rem;margin-bottom:0.5rem">🚌</div>
+      <div style="font-weight:800;font-size:1.2rem;margin-bottom:0.25rem">SmartRideTIET</div>
+      <div style="color:var(--text3);font-size:0.85rem">Phase 3 Notes · Built for TIET Campus Community</div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+  document.querySelectorAll('.toc a').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(link.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+
+</body>
+</html>

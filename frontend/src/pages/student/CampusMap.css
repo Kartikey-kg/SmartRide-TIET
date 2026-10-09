@@ -1,0 +1,463 @@
+/* src/pages/student/CampusMap.css */
+/* Campus Map Page Styles — Phase 4 */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* ── Page Shell ──────────────────────────────────────────────────── */
+.campus-map-page {
+  min-height: 100vh;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  padding-top: 64px;
+}
+
+/* ── Header ──────────────────────────────────────────────────────── */
+.campus-map-header {
+  background: linear-gradient(135deg, rgba(80,53,44,0.06), rgba(201,168,106,0.03));
+  border-bottom: 1px solid var(--border-color);
+  padding: 1.25rem 1.5rem;
+}
+
+.campus-map-header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.campus-map-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0 0 0.2rem;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.campus-map-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.campus-map-book-btn {
+  background: linear-gradient(135deg, rgba(80,53,44,0.12), rgba(80,53,44,0.05));
+  border: 1px solid rgba(80,53,44,0.4);
+  border-radius: 12px;
+  padding: 0.6rem 1.2rem;
+  color: var(--primary-red);
+  font-weight: 700;
+  font-size: 0.88rem;
+  text-decoration: none;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.campus-map-book-btn:hover {
+  background: linear-gradient(135deg, rgba(80,53,44,0.2), rgba(80,53,44,0.1));
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(80,53,44,0.2);
+}
+
+/* ── Layout ──────────────────────────────────────────────────────── */
+.campus-map-layout {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 0;
+  min-height: calc(100vh - 130px);
+}
+
+@media (max-width: 900px) {
+  .campus-map-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Sidebar ─────────────────────────────────────────────────────── */
+.campus-map-sidebar {
+  background: var(--bg-card);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 1rem;
+  gap: 0.75rem;
+}
+
+/* Search */
+.sidebar-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(42, 29, 22, 0.03);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  padding: 0.5rem 0.75rem;
+}
+.sidebar-search-icon { font-size: 0.9rem; }
+.sidebar-search-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-family: 'Inter', sans-serif;
+}
+.sidebar-search-input::placeholder { color: var(--text-muted); }
+.sidebar-search-clear {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 0;
+  line-height: 1;
+}
+.sidebar-search-clear:hover { color: var(--text-primary); }
+
+/* Categories */
+.sidebar-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.sidebar-cat-btn {
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+  border: 1px solid var(--border-light);
+  background: rgba(42, 29, 22, 0.03);
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+.sidebar-cat-btn:hover {
+  border-color: var(--primary-red);
+  color: var(--primary-red);
+}
+.sidebar-cat-btn.active {
+  background: rgba(80, 53, 44, 0.1);
+  border-color: var(--primary-red);
+  color: var(--primary-red);
+}
+
+/* Landmark list */
+.sidebar-landmark-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding-right: 0.2rem;
+}
+.sidebar-landmark-list::-webkit-scrollbar { width: 4px; }
+.sidebar-landmark-list::-webkit-scrollbar-track { background: transparent; }
+.sidebar-landmark-list::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 4px; }
+
+.sidebar-empty {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 2rem;
+}
+
+.sidebar-landmark-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 10px;
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+  transition: all 0.2s;
+  background: rgba(42, 29, 22, 0.02);
+}
+.sidebar-landmark-item:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--primary-red);
+}
+.sidebar-landmark-item.selected {
+  border-width: 1px;
+}
+
+.sidebar-landmark-emoji {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+.sidebar-landmark-info { flex: 1; min-width: 0; }
+.sidebar-landmark-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sidebar-landmark-desc {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sidebar-landmark-cat {
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Map Main ────────────────────────────────────────────────────── */
+.campus-map-main {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  gap: 0.75rem;
+  overflow: hidden;
+}
+
+/* Controls */
+.map-controls {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+.map-control-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+.map-control-btn:hover {
+  background: rgba(80, 53, 44, 0.1);
+  color: var(--primary-red);
+  border-color: rgba(80, 53, 44, 0.3);
+}
+
+/* Map image container */
+.campus-map-image-wrap {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  flex: 1;
+  min-height: 480px;
+  transition: all 0.4s ease;
+  cursor: crosshair;
+  background: var(--bg-card);
+}
+.campus-map-image-wrap.zoomed {
+  position: fixed;
+  top: 70px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  border-radius: 0;
+  overflow: auto;
+  min-height: unset;
+}
+
+.campus-map-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  user-select: none;
+  pointer-events: none;
+}
+.campus-map-image-wrap.zoomed .campus-map-img {
+  width: auto;
+  height: auto;
+  min-width: 100%;
+  min-height: 100%;
+}
+
+/* ── Pins ────────────────────────────────────────────────────────── */
+.map-pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  cursor: pointer;
+}
+
+.map-pin-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  position: relative;
+}
+.map-pin-dot::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid var(--pin-color, #c084fc);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.map-pin:hover .map-pin-dot::after,
+.map-pin--selected .map-pin-dot::after {
+  opacity: 0.5;
+}
+.map-pin:hover .map-pin-dot,
+.map-pin--selected .map-pin-dot {
+  width: 28px;
+  height: 28px;
+  border-color: #fff;
+  z-index: 11;
+}
+
+.map-pin-emoji {
+  font-size: 0.65rem;
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* Pin label (small text below pin) */
+.map-pin-label {
+  position: absolute;
+  top: 26px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  padding: 2px 5px;
+  font-size: 0.58rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.map-pin:hover .map-pin-label {
+  opacity: 1;
+}
+
+/* Tooltip card */
+.map-pin-tooltip {
+  position: absolute;
+  bottom: 34px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 0.75rem;
+  min-width: 180px;
+  max-width: 220px;
+  z-index: 20;
+  animation: tooltipIn 0.2s ease;
+  box-shadow: var(--shadow-lg);
+}
+@keyframes tooltipIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.map-pin-tooltip-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.3rem;
+}
+.map-pin-tooltip-desc {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+.map-pin-tooltip-fare {
+  font-size: 0.72rem;
+  color: var(--olive-green);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.map-pin-tooltip-book {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.35rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid;
+  transition: all 0.2s;
+}
+.map-pin-tooltip-book:hover {
+  filter: brightness(1.2);
+}
+
+/* ── Legend ──────────────────────────────────────────────────────── */
+.map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+}
+.map-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+.map-legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.map-legend-label { font-weight: 500; }
+
+/* ── Fare Notice ─────────────────────────────────────────────────── */
+.map-fare-notice {
+  background: rgba(78, 122, 93, 0.08);
+  border: 1px solid rgba(78, 122, 93, 0.25);
+  border-radius: 10px;
+  padding: 0.65rem 1rem;
+  font-size: 0.82rem;
+  color: var(--olive-green);
+}
+
+/* ── Responsive ──────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .campus-map-layout {
+    flex-direction: column;
+  }
+  .campus-map-sidebar {
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+    max-height: 320px;
+  }
+  .campus-map-image-wrap {
+    min-height: 340px;
+  }
+}

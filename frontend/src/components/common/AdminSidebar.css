@@ -1,0 +1,236 @@
+/* AdminSidebar.css — Phase 6 */
+
+:root {
+  --asb-width:  240px;
+  --asb-collapsed-width: 64px;
+  --asb-bg:     var(--charcoal-black); /* Cocoa Charcoal sidebar base */
+  --asb-border: var(--border-color);    /* Translucent Terracotta border */
+  --asb-accent: var(--accent-gold);     /* Accent Gold */
+  --asb-muted:  var(--text-muted);      /* Warm Stone / Concrete Gray */
+  --asb-text:   var(--text-primary);    /* Soft White */
+}
+
+/* ── Overlay (mobile) ────────────────────────────────────── */
+.asb-overlay {
+  display: none;
+}
+@media (max-width: 768px) {
+  .asb-overlay {
+    display: block;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 199;
+  }
+}
+
+/* ── Root ────────────────────────────────────────────────── */
+.asb-root {
+  position: fixed;
+  top: 0; left: 0;
+  height: 100vh;
+  background: var(--asb-bg);
+  border-right: 1px solid var(--asb-border);
+  display: flex;
+  flex-direction: column;
+  z-index: 200;
+  transition: width 0.25s cubic-bezier(.4,0,.2,1);
+  overflow: hidden;
+}
+.asb-root.asb-collapsed {
+  width: var(--asb-collapsed-width) !important;
+}
+
+/* Disable transitions entirely during drag resize to prevent lag */
+.asb-root.asb-resizing,
+body.asb-resizing .asb-root,
+body.asb-resizing .admin-with-sidebar {
+  transition: none !important;
+}
+
+/* ── Drag Resize Handle ──────────────────────────────────── */
+.asb-resize-handle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 5px;
+  cursor: col-resize;
+  z-index: 10;
+  background: transparent;
+  transition: background 0.2s ease;
+}
+.asb-resize-handle:hover,
+body.asb-resizing .asb-resize-handle {
+  background: rgba(201, 168, 106, 0.4);
+}
+
+/* ── Brand ───────────────────────────────────────────────── */
+.asb-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.25rem 1rem 1rem;
+  border-bottom: 1px solid var(--asb-border);
+  flex-shrink: 0;
+}
+.asb-brand-logo {
+  height: 24px;
+  width: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.asb-brand-text {
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: var(--asb-accent);
+  white-space: nowrap;
+  letter-spacing: -0.2px;
+}
+.asb-brand-text span { color: var(--primary-red); }
+
+.asb-toggle {
+  margin-left: auto;
+  background: rgba(201,168,106,0.1);
+  border: 1px solid rgba(201,168,106,0.2);
+  color: var(--asb-accent);
+  border-radius: 6px;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.asb-toggle:hover { background: rgba(201,168,106,0.2); }
+
+/* ── Admin Badge ─────────────────────────────────────────── */
+.asb-admin-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid var(--asb-border);
+  flex-shrink: 0;
+}
+.asb-avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-gold), var(--secondary-red));
+  color: #fff;
+  font-weight: 800; font-size: 0.8rem;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.asb-admin-name {
+  font-size: 0.85rem; font-weight: 700;
+  color: var(--asb-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.asb-admin-role {
+  font-size: 0.7rem; color: var(--asb-muted);
+  white-space: nowrap;
+}
+
+/* ── Nav ─────────────────────────────────────────────────── */
+.asb-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(201,168,106,0.2) transparent;
+}
+.asb-nav::-webkit-scrollbar { width: 4px; }
+.asb-nav::-webkit-scrollbar-thumb { background: rgba(201,168,106,0.15); border-radius: 2px; }
+
+.asb-group { margin-bottom: 0.25rem; }
+
+.asb-section-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: #B6A79A;
+  padding: 0.6rem 1rem 0.2rem;
+  white-space: nowrap;
+}
+
+.asb-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 0.85rem;
+  margin: 0.1rem 0.5rem;
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--asb-muted);
+  font-size: 0.84rem;
+  font-weight: 500;
+  transition: all 0.17s;
+  white-space: nowrap;
+  position: relative;
+}
+.asb-link:hover {
+  background: rgba(201,168,106,0.08);
+  color: var(--asb-accent);
+}
+.asb-link-active {
+  background: rgba(201,168,106,0.14);
+  color: var(--asb-accent);
+  font-weight: 700;
+}
+.asb-link-icon { font-size: 1rem; flex-shrink: 0; }
+.asb-link-label { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+.asb-link-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--asb-accent);
+  flex-shrink: 0;
+}
+
+/* Collapsed state */
+.asb-collapsed .asb-link {
+  justify-content: center;
+  padding: 0.55rem;
+  margin: 0.1rem 0.4rem;
+}
+.asb-collapsed .asb-link-icon { font-size: 1.15rem; }
+
+/* ── Footer ──────────────────────────────────────────────── */
+.asb-footer {
+  border-top: 1px solid var(--asb-border);
+  padding: 0.75rem 0.5rem;
+  flex-shrink: 0;
+}
+.asb-logout {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.5rem 0.85rem;
+  background: rgba(184, 100, 80, 0.06);
+  border: 1px solid rgba(184, 100, 80, 0.2);
+  border-radius: 10px;
+  color: var(--primary-red);
+  font-size: 0.84rem; font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+  justify-content: flex-start;
+}
+.asb-logout:hover { background: rgba(184, 100, 80, 0.12); }
+
+.asb-collapsed .asb-logout {
+  justify-content: center;
+  padding: 0.55rem;
+}
+
+/* ── Page offset helper ───────────────────────────────────── */
+.admin-with-sidebar {
+  margin-left: var(--asb-width);
+  transition: margin-left 0.25s cubic-bezier(.4,0,.2,1);
+}
+@media (max-width: 768px) {
+  .admin-with-sidebar { margin-left: 0 !important; }
+  .asb-root { transform: translateX(0); }
+}

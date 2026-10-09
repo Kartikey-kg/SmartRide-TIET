@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Firebase Console – Complete Reference Notes</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap');
+
+    :root {
+      --bg: #0c0f19;
+      --bg2: #111625;
+      --bg3: #171d32;
+      --border: #222d4a;
+      --firebase-orange: #ff9100;
+      --firebase-yellow: #ffa000;
+      --firebase-blue: #1976d2;
+      --purple: #7c3aed;
+      --blue: #2563eb;
+      --green: #10b981;
+      --orange: #f97316;
+      --red: #ef4444;
+      --yellow: #eab308;
+      --cyan: #06b6d4;
+      --text: #f3f4f6;
+      --text2: #9ca3af;
+      --text3: #6b7280;
+      --grad: linear-gradient(135deg, #ffa000, #ff6f00, #1976d2);
+      --firebase-grad: linear-gradient(135deg, #ff9100, #ff3d00);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    /* ── Print PDF button ── */
+    .pdf-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: rgba(12,15,25,0.97);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 999;
+      backdrop-filter: blur(10px);
+    }
+    .pdf-bar-title { font-weight: 700; font-size: 1rem; }
+    .pdf-bar-title span { background: var(--firebase-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .btn-pdf {
+      background: var(--firebase-grad);
+      color: white;
+      border: none;
+      padding: 0.55rem 1.4rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+      box-shadow: 0 4px 15px rgba(255,107,0,0.3);
+    }
+    .btn-pdf:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(255,107,0,0.5); }
+
+    /* ── Main Layout ── */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 6rem 2rem 4rem;
+    }
+
+    /* ── Cover ── */
+    .cover {
+      text-align: center;
+      padding: 3rem 0 4rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 3rem;
+    }
+    .cover-badge {
+      display: inline-block;
+      background: rgba(255,145,0,0.15);
+      border: 1px solid rgba(255,145,0,0.4);
+      border-radius: 50px;
+      padding: 0.35rem 1rem;
+      font-size: 0.85rem;
+      color: #ffb74d;
+      margin-bottom: 1.5rem;
+    }
+    .cover h1 { font-size: 3rem; font-weight: 900; line-height: 1.1; margin-bottom: 1rem; }
+    .cover h1 span { background: var(--firebase-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .cover p { color: var(--text2); max-width: 600px; margin: 0 auto 2rem; }
+    .cover-meta {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .meta-item { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 0.75rem 1.25rem; text-align: left; min-width: 150px; }
+    .meta-label { font-size: 0.75rem; color: var(--text3); text-transform: uppercase; font-weight: 700; margin-bottom: 0.2rem; }
+    .meta-value { font-size: 0.95rem; font-weight: 700; }
+
+    /* ── Table of Contents ── */
+    .toc { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem 2rem; margin-bottom: 3rem; }
+    .toc h2 { font-size: 1.2rem; font-weight: 800; margin-bottom: 1rem; }
+    .toc ol { padding-left: 1.5rem; }
+    .toc li { margin-bottom: 0.5rem; font-size: 0.95rem; color: var(--text2); }
+    .toc a { color: var(--text2); text-decoration: none; transition: color 0.15s; }
+    .toc a:hover { color: #ffb74d; }
+
+    /* ── Section Header ── */
+    .section { margin-bottom: 3rem; }
+    .section-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+    .section-num { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,145,0,0.15); border: 1px solid rgba(255,145,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 800; color: #ffe082; flex-shrink: 0; }
+    .section h2 { font-size: 1.6rem; font-weight: 850; letter-spacing: -0.5px; }
+    .section h3 { font-size: 1.15rem; font-weight: 700; color: #e5e7eb; margin-top: 2rem; margin-bottom: 0.75rem; }
+    .section p { margin-bottom: 1rem; color: var(--text2); font-size: 0.95rem; }
+    .section strong { color: var(--text); }
+    .section ul, .section ol { padding-left: 1.5rem; margin-bottom: 1rem; color: var(--text2); font-size: 0.95rem; }
+    .section li { margin-bottom: 0.5rem; }
+
+    /* ── Table style ── */
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; font-size: 0.9rem; }
+    th { text-align: left; padding: 0.75rem 1rem; background: var(--bg3); color: var(--text2); font-weight: 600; border-bottom: 2px solid var(--border); }
+    td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); color: var(--text2); vertical-align: top; }
+    tr:hover td { background: rgba(255,255,255,0.01); }
+
+    /* ── Alert boxes ── */
+    .alert { display: flex; gap: 1rem; padding: 1.25rem 1.5rem; border-radius: 12px; margin: 1.5rem 0; border: 1px solid transparent; }
+    .alert-note { background: rgba(59,130,246,0.06); border-color: rgba(59,130,246,0.15); }
+    .alert-warn { background: rgba(249,115,22,0.06); border-color: rgba(249,115,22,0.15); }
+    .alert-success { background: rgba(16,185,129,0.06); border-color: rgba(16,185,129,0.15); }
+    .alert-error { background: rgba(239,68,68,0.06); border-color: rgba(239,68,68,0.15); }
+    .alert-icon { font-size: 1.25rem; flex-shrink: 0; }
+    .alert-title { font-weight: 700; color: var(--text); margin-bottom: 0.25rem; font-size: 0.95rem; }
+    .alert-body { font-size: 0.88rem; color: var(--text2); }
+
+    /* ── Code display ── */
+    .inline-code { font-family: 'Fira Code', monospace; font-size: 0.82rem; background: var(--bg3); border: 1px solid var(--border); padding: 0.15rem 0.35rem; border-radius: 5px; color: #e5e7eb; }
+    pre { background: #070a14; border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem 1.5rem; overflow-x: auto; margin: 1rem 0 1.5rem; }
+    pre code { font-family: 'Fira Code', monospace; font-size: 0.83rem; color: #e5e7eb; }
+
+    /* Colors inside code */
+    .key { color: #f472b6; }
+    .val { color: #34d399; }
+    .comment { color: #6b7280; font-style: italic; }
+    .keyword { color: #60a5fa; }
+
+    /* ── Terminal style ── */
+    .terminal { background: #070a14; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 1rem 0 1.5rem; }
+    .terminal-header { background: var(--bg3); padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.4rem; border-bottom: 1px solid var(--border); }
+    .t-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+    .t-red { background: #ff5f56; }
+    .t-yellow { background: #ffbd2e; }
+    .t-green { background: #27c93f; }
+    .t-title { font-size: 0.75rem; color: var(--text3); font-family: 'Fira Code', monospace; margin-left: auto; }
+    .terminal-body { padding: 1.25rem 1.5rem; font-family: 'Fira Code', monospace; font-size: 0.83rem; line-height: 1.6; }
+    .t-prompt { color: #10b981; }
+    .t-cmd { color: #f3f4f6; }
+    .t-out { color: #6b7280; }
+    .t-success { color: #10b981; }
+
+    /* ── Error card ── */
+    .error-card { background: rgba(239,68,68,0.05); border: 1px solid rgba(239,68,68,0.2); border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; }
+    .error-title { color: #f87171; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+    .fix-title { color: #34d399; font-weight: 700; font-size: 0.9rem; margin-top: 1rem; margin-bottom: 0.4rem; }
+
+    /* ── Concept box ── */
+    .concept { background: rgba(255,145,0,0.06); border-left: 3px solid var(--firebase-orange); border-radius: 0 10px 10px 0; padding: 1rem 1.25rem; margin: 1rem 0; }
+    .concept-term { font-weight: 700; color: #ffb74d; margin-bottom: 0.3rem; }
+    .concept p { margin-bottom: 0; font-size: 0.9rem; }
+
+    /* ── File tree ── */
+    .filetree { background: #070a14; border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem 1.5rem; font-family: 'Fira Code', monospace; font-size: 0.83rem; line-height: 2; margin: 1rem 0 1.5rem; }
+    .ft-dir { color: #60a5fa; }
+    .ft-file { color: #e5e7eb; }
+    .ft-new { color: #34d399; }
+    .ft-comment { color: #4b5563; }
+
+    /* ── Flow diagram ── */
+    .flow-diagram { background: #070a14; border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem 1.5rem; font-family: 'Fira Code', monospace; font-size: 0.83rem; line-height: 2.2; margin: 1rem 0 1.5rem; color: var(--text2); }
+    .flow-diagram .flow-orange { color: #ffa000; }
+    .flow-diagram .flow-blue { color: #60a5fa; }
+    .flow-diagram .flow-green { color: #34d399; }
+    .flow-diagram .flow-red { color: #f87171; }
+    .flow-diagram .flow-arrow { color: #4b5563; }
+
+    /* ── Checklist ── */
+    .checklist { list-style: none; }
+    .checklist li { display: flex; align-items: flex-start; gap: 0.6rem; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text2); }
+    .check-done { color: var(--green); font-size: 1rem; flex-shrink: 0; }
+
+    /* ── Print styles ── */
+    @media print {
+      .pdf-bar { display: none !important; }
+      body { background: white; color: #111; font-size: 12px; }
+      :root {
+        --bg: white; --bg2: #f8f8f8; --bg3: #f0f0f8;
+        --border: #ddd; --text: #111; --text2: #444; --text3: #888;
+        --firebase-orange: #e65100; --firebase-yellow: #f57c00; --firebase-blue: #0288d1;
+      }
+      .container { padding-top: 1rem; max-width: 100%; }
+      pre, .terminal-body { background: #f5f5f5 !important; border-color: #ddd; }
+      pre code, .terminal-body code { color: #222; }
+      .alert-note { background: #eff6ff !important; }
+      .alert-warn { background: #fffbeb !important; }
+      .alert-error { background: #fef2f2 !important; }
+      .alert-success { background: #f0fdf4 !important; }
+      .concept { background: #fffde7 !important; }
+      .error-msg { background: #fff5f5 !important; color: #c00 !important; }
+      .filetree, .flow-diagram { background: #f5f5f5 !important; }
+      pre { page-break-inside: avoid; }
+      .section { page-break-inside: avoid; }
+      h2, h3 { page-break-after: avoid; }
+      a { color: inherit; text-decoration: none; }
+    }
+
+    .divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+    .tag { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-right: 0.3rem; }
+    .tag-orange { background: rgba(255,145,0,0.15); color: #ffe082; border: 1px solid rgba(255,145,0,0.3); }
+    .tag-blue   { background: rgba(3,155,229,0.15);  color: #90caf9; border: 1px solid rgba(3,155,229,0.3); }
+    .tag-green  { background: rgba(16,185,129,0.15);  color: #a7f3d0; border: 1px solid rgba(16,185,129,0.3); }
+    .tag-purple { background: rgba(124,58,237,0.15); color: #c4b5fd; border: 1px solid rgba(124,58,237,0.3); }
+  </style>
+</head>
+<body>
+
+<!-- PDF Download Bar -->
+<div class="pdf-bar">
+  <div class="pdf-bar-title">🔥 Firebase<span>Console</span> — Complete Reference Notes</div>
+  <button class="btn-pdf" onclick="window.print()">
+    📥 Download as PDF
+  </button>
+</div>
+
+<div class="container">
+
+  <!-- ── COVER ── -->
+  <div class="cover">
+    <div class="cover-badge">⚡ Professional Developer Guide</div>
+    <h1>Firebase Console<br /><span>Reference Notes</span></h1>
+    <p>Comprehensive learning resource and implementation guide for Firebase Project Administration, Authentication, Cloud Firestore Management, Security Rules configuration, Admin SDK Service Credentials, and practical integration step-by-step blueprints for <strong>SmartRideTIET</strong>.</p>
+    <div class="cover-meta">
+      <div class="meta-item"><div class="meta-label">Topic</div><div class="meta-value">Firebase Console UI</div></div>
+      <div class="meta-item"><div class="meta-label">Level</div><div class="meta-value">Beginner to Advanced</div></div>
+      <div class="meta-item"><div class="meta-label">Applied In</div><div class="meta-value" style="color:#ffa000">SmartRideTIET 🚕</div></div>
+      <div class="meta-item"><div class="meta-label">Doc Version</div><div class="meta-value">v1.1 (React + Admin SDK)</div></div>
+    </div>
+  </div>
+
+  <!-- ── TABLE OF CONTENTS ── -->
+  <div class="toc">
+    <h2>📋 Table of Contents</h2>
+    <ol>
+      <li><a href="#introduction">1. Introduction to Firebase Console</a></li>
+      <li><a href="#core-architecture">2. Architecture &amp; Project Structure</a></li>
+      <li><a href="#auth-management">3. Authentication Settings &amp; Setup</a></li>
+      <li><a href="#firestore-management">4. Cloud Firestore Management &amp; Indexing</a></li>
+      <li><a href="#security-rules">5. Writing &amp; Deploying Security Rules</a></li>
+      <li><a href="#service-accounts">6. Service Accounts &amp; Firebase Admin SDK Credentials</a></li>
+      <li><a href="#project-integration">7. Step-by-Step Application: Integration on SmartRideTIET</a></li>
+      <li><a href="#tradeoffs-limitations">8. Advantages, Limitations, &amp; Best Practices</a></li>
+      <li><a href="#common-mistakes">9. Common Mistakes &amp; Troubleshooting</a></li>
+      <li><a href="#interview-exam">10. Interview Q&amp;A &amp; Exam Highlights</a></li>
+      <li><a href="#faq">11. Frequently Asked Questions (FAQ)</a></li>
+      <li><a href="#summary-glossary">12. Revision Summary &amp; Glossary</a></li>
+    </ol>
+  </div>
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 1: INTRODUCTION -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="introduction">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <h2>Introduction to Firebase Console</h2>
+    </div>
+
+    <p>The **Firebase Console** (accessible at <a href="https://console.firebase.google.com" target="_blank" style="color:#ffa000; text-decoration:underline;">console.firebase.google.com</a>) is a web-based, graphical administrative dashboard provided by Google. It acts as the unified control center for managing your backend infrastructure, real-time databases, hosting configurations, serverless analytics, and auth protocols.</p>
+
+    <div class="concept">
+      <div class="concept-term">💡 Analogy: The Spacecraft Control Center</div>
+      <p>Think of your client-side application (React website, mobile app) as a spaceship travelling in space, and your backend servers as the physical engines. The <strong>Firebase Console</strong> is the Mission Control Room on Earth. From it, you can view diagnostic logs, tweak steering variables (Firestore documents), check passenger manifests (Authentication lists), adjust security shield configurations (Security Rules), and grant landing keys (Admin SDK private key JSON configurations).</p>
+    </div>
+
+    <h3>🔍 The "Why", "How", and "Where"</h3>
+    <ul>
+      <li><strong>Why:</strong> Writing raw backend code for databases, OAuth integrations, file hosting, and notification queues from scratch is time-consuming. Firebase Console abstracts these services, letting you monitor, visually edit, and manage them securely without SQL terminals or manual servers configuration.</li>
+      <li><strong>How:</strong> The console translates visual UI clicks into system instructions (e.g. creating a Firestore collection, generating OAuth keys, setting up CORS configurations) and maps directly to a Google Cloud Platform (GCP) project.</li>
+      <li><strong>Where:</strong> Hosted by Google, it is accessed online. All configurations applied in the console take effect in real-time or are bundled into configurations file downloaded to your project workspace.</li>
+    </ul>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 2: ARCHITECTURE & PROJECT STRUCTURE -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="core-architecture">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <h2>Architecture &amp; Project Structure</h2>
+    </div>
+
+    <p>Behind the scenes, every Firebase Project is a specialized **Google Cloud Platform (GCP) Project**. When you create a project in the Firebase Console, GCP automatically allocates resources, sets up billing defaults, and binds Google Identity services under a unique project ID.</p>
+
+    <h3>🌐 ASCII Architecture: The Firebase Ecosystem Flow</h3>
+    <div class="flow-diagram">
+      [ Client Application (Vite/React) ] <span class="flow-blue">Client SDK</span>
+            │
+            ▼ (Direct Reads/Writes subject to Security Rules)
+      ┌────────────────────────────────────────────────────────┐
+      │               <strong>GOOGLE CLOUD / FIREBASE</strong>                  │
+      │                                                        │
+      │  ┌──────────────┐    ┌──────────────┐    ┌──────────┐  │
+      │  │ <span class="flow-orange">Auth Service</span> │    │  <span class="flow-orange">Firestore</span>   │    │ <span class="flow-orange">Storage</span>  │  │
+      │  └──────┬───────┘    └──────┬───────┘    └────┬─────┘  │
+      └─────────┼───────────────────┼─────────────────┼────────┘
+                ▲                   ▲                 ▲
+                │                   │                 │
+                └───────────┬───────┴─────────────────┘
+                            │ (Privileged Admin Control bypasses rules)
+                            ▼
+      [ Backend Server Node.js / Express ] <span class="flow-green">Firebase Admin SDK (.json key)</span>
+    </div>
+
+    <h3>📁 Web Configuration vs. Admin SDK Configuration</h3>
+    <p>A key concept that developers often mix up is the distinction between <strong>Client-side configuration</strong> (publicly visible config) and <strong>Server-side credentials</strong> (highly confidential).</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Attribute</th>
+          <th>Web Client Config (<span class="inline-code">firebaseConfig</span>)</th>
+          <th>Admin SDK Service Key (<span class="inline-code">serviceAccountKey.json</span>)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Access Type</strong></td>
+          <td>Public client-side configuration</td>
+          <td>Private server-side credentials</td>
+        </tr>
+        <tr>
+          <td><strong>Location</strong></td>
+          <td>React Frontend code (<span class="inline-code">src/services/firebase.js</span>)</td>
+          <td>Express Backend config (<span class="inline-code">backend/config/...</span>)</td>
+        </tr>
+        <tr>
+          <td><strong>Security Privilege</strong></td>
+          <td>Strictly governed by <strong>Firestore Security Rules</strong></td>
+          <td>Bypasses all rules (full read/write permissions)</td>
+        </tr>
+        <tr>
+          <td><strong>Content Example</strong></td>
+          <td>Public keys, domain names, app IDs</td>
+          <td>Cryptographic RSA private key and email client credentials</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="alert alert-warn">
+      <div class="alert-icon">⚠️</div>
+      <div class="alert-body">
+        <div class="alert-title">Critical Security Warning</div>
+        Never commit the Admin SDK <span class="inline-code">serviceAccountKey.json</span> file to version control (GitHub). If leaked, anyone can read, modify, or delete your entire production database, bypassing all application-level restrictions.
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 3: AUTHENTICATION SETTINGS -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="auth-management">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <h2>Authentication Settings &amp; Setup</h2>
+    </div>
+
+    <p>The **Authentication Section** in the Firebase Console is where you manage user records, customize verification emails, and toggle sign-in methods. Firebase handles OAuth flows, credential hashing, and session management token rotations automatically.</p>
+
+    <h3>🛠️ Configured Sign-In Providers</h3>
+    <ul>
+      <li><strong>Email / Password Auth:</strong> Standard registration using verify-link systems. Can be configured to require Email Link verification.</li>
+      <li><strong>Google Sign-In Auth:</strong> Integrates Google Accounts authentication using client ID and server secrets configured automatically on Google's backend.</li>
+      <li><strong>Phone / Custom Auth:</strong> Integrates OTP confirmations via SMS or tokens signed by your custom auth servers.</li>
+    </ul>
+
+    <h3>🔑 Admin Authentication Dashboard Interface</h3>
+    <p>From the **Users Tab** in the Firebase Console, you can:</p>
+    <ol>
+      <li>View signed-up user accounts with unique <strong>UIDs</strong>, created dates, and last sign-in timestamps.</li>
+      <li>Perform administrative tasks such as manually deleting a compromised user profile, resetting passwords, or disabling accounts.</li>
+      <li>Search for users using UIDs or email lookup bars.</li>
+    </ol>
+
+    <div class="concept">
+      <div class="concept-term">💡 Real-World Example: SmartRideTIET User Roles</div>
+      <p>When a campus driver registers at SmartRideTIET, their details are recorded inside the Firebase Authentication tables. We store their unique <span class="inline-code">UID</span>, and map it directly to a custom document in the <span class="inline-code">/users</span> Firestore database collection, allowing us to store custom profile metadata like active driving license state, active wallets balance, and ride ratings.</p>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 4: CLOUD FIRESTORE MANAGEMENT -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="firestore-management">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <h2>Cloud Firestore Management &amp; Indexing</h2>
+    </div>
+
+    <p>**Cloud Firestore** is a NoSQL document database built for high scalability and automatic synchronization. Data is structured hierarchically in collections, documents, and subcollections.</p>
+
+    <h3>🏢 Database Hierarchical Structure</h3>
+    <div class="flow-diagram">
+      ┌─────────────────────────┐
+      │ <span class="flow-orange">Collection</span> (e.g. "users") │
+      └───────────┬─────────────┘
+                  │
+                  ▼
+         ┌───────────────────┐
+         │ <span class="flow-blue">Document</span> ("uid123") │
+         └────────┬──────────┘
+                  ├───────────► <span class="flow-green">Fields</span> { name: "Kartik", role: "driver" }
+                  │
+                  ▼
+         ┌─────────────────────────────────────┐
+         │ <span class="flow-orange">Subcollection</span> (e.g. "ridesHistory")  │
+         └─────────────────────────────────────┘
+    </div>
+
+    <h3>⚡ Indexing: The Secret to Firestore Speed</h3>
+    <p>Firestore achieves its high performance because all query times are proportional to the size of the <strong>result set</strong>, not the size of the <strong>database</strong>. To achieve this, Firestore requires indexes for query executions.</p>
+
+    <ul>
+      <li><strong>Single-field Indexes:</strong> Automatically created by Firestore for every basic field in a document. Allows querying on a single property (e.g. <span class="inline-code">role == "student"</span>).</li>
+      <li><strong>Composite Indexes:</strong> Required when querying across multiple fields or applying sorting constraints (e.g. finding all rides with status <span class="inline-code">"pending"</span> ordered by <span class="inline-code">createdAt DESC</span>).</li>
+    </ul>
+
+    <div class="alert alert-note">
+      <div class="alert-icon">💡</div>
+      <div class="alert-body">
+        <div class="alert-title">Automatic Index Link Generation</div>
+        If you run a multi-field query in React and it fails, check your browser developer tools console. Firestore SDK prints a unique link that directs you to the Firebase Console, pre-filling all field inputs needed to compile the index with a single click.
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 5: SECURITY RULES -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="security-rules">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <h2>Writing &amp; Deploying Security Rules</h2>
+    </div>
+
+    <p>Because clients (React frontend) connect directly to Firestore databases, security is enforced at the database tier using **Firestore Security Rules**. When a client triggers a read/write operation, Firestore checks the corresponding ruleset before returning data.</p>
+
+    <h3>🔒 Secure Rules Configuration</h3>
+    <pre><code>rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    <span class="comment">// ── User Profile Rules ──</span>
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    <span class="comment">// ── Rides Collection Rules ──</span>
+    match /rides/{rideId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null;
+    }
+  }
+}</code></pre>
+
+    <h3>⚠️ Security Rules Checklist</h3>
+    <ul class="checklist">
+      <li><span class="check-done">✓</span> <strong>Authorization Check:</strong> Validate that <span class="inline-code">request.auth != null</span> before permitting read/write operations.</li>
+      <li><span class="check-done">✓</span> <strong>Owner Validation:</strong> Prevent users from editing someone else's document (verify <span class="inline-code">request.auth.uid == userId</span>).</li>
+      <li><span class="check-done">✓</span> <strong>Prevent Open Access:</strong> Never leave default templates like <span class="inline-code">allow read, write: if true;</span> deployed in production environments.</li>
+    </ul>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 6: SERVICE ACCOUNTS -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="service-accounts">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <h2>Service Accounts &amp; Admin SDK Setup</h2>
+    </div>
+
+    <p>A **Service Account** is a special type of Google account used by an application (e.g. backend server Node.js) rather than a human user. Generating a service account allows the Node.js Express server to authenticate securely with Firebase Admin SDK services.</p>
+
+    <h3>🔑 Steps to Generate Credentials in Firebase Console</h3>
+    <ol>
+      <li>Navigate to the **Firebase Console Settings Cog (⚙️)** > select **Project Settings**.</li>
+      <li>Click on the **Service Accounts** tab.</li>
+      <li>Select **Node.js** options configurations, and click the **Generate new private key** button.</li>
+      <li>A prompt will download a private cryptographic <span class="inline-code">.json</span> file containing private credentials.</li>
+      <li>Save this credential file inside your backend config folder as <span class="inline-code">serviceAccountKey.json</span>.</li>
+    </ol>
+
+    <div class="concept">
+      <div class="concept-term">🧠 Memory Trick: "S-A-K" Mnemonic</div>
+      <p>Remember: <strong>S-A-K</strong> stands for <strong>Service Account Key</strong>, but you can think of it as <strong>"Server Access Key"</strong>. It goes exclusively to the <strong>Server</strong>, bypasses rules, and must remain completely <strong>Secret</strong>!</p>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 7: STEP-BY-STEP INTEGRATION -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="project-integration">
+    <div class="section-header">
+      <div class="section-num">7</div>
+      <h2>Step-by-Step Integration: Applied on SmartRideTIET</h2>
+    </div>
+
+    <p>To successfully hook up the React client and Express backend of our <strong>SmartRideTIET</strong> campus ride-sharing application with Firebase, follow this exact setup checklist:</p>
+
+    <h3>🌐 Step 1: Create Firebase Project</h3>
+    <p>Access the console, click **Add Project**, name it <span class="inline-code">smartridetiet</span>, disable/enable Google Analytics based on requirements, and create the resource.</p>
+
+    <h3>🛠️ Step 2: Register Client App (Frontend)</h3>
+    <p>Register a new Web App under project dashboard. Extract the generated keys configuration code and configure local environment variables:</p>
+
+    <div class="terminal">
+      <div class="terminal-header">
+        <span class="t-dot t-red"></span>
+        <span class="t-dot t-yellow"></span>
+        <span class="t-dot t-green"></span>
+        <span class="t-title">frontend/.env — Frontend Keys</span>
+      </div>
+      <div class="terminal-body">
+        VITE_FIREBASE_API_KEY="AIzaSyA..."<br />
+        VITE_FIREBASE_AUTH_DOMAIN="smartridetiet.firebaseapp.com"<br />
+        VITE_FIREBASE_PROJECT_ID="smartridetiet"<br />
+        VITE_FIREBASE_STORAGE_BUCKET="smartridetiet.appspot.com"<br />
+        VITE_FIREBASE_MESSAGING_SENDER_ID="1234567890"<br />
+        VITE_FIREBASE_APP_ID="1:123456:web:abcdef"<br />
+        VITE_API_URL="http://localhost:5000/api"
+      </div>
+    </div>
+
+    <h3>⚙️ Step 3: Register Server-Side Credentials (Backend)</h3>
+    <p>Following Section 6, download the service account keys JSON file, save it to <span class="inline-code">backend/config/serviceAccountKey.json</span>, and reference it inside the Express server initialization:</p>
+
+    <pre><code><span class="keyword">const</span> { initializeApp, cert } = require('firebase-admin/app');
+<span class="keyword">const</span> { getFirestore } = require('firebase-admin/firestore');
+
+<span class="keyword">const</span> serviceAccount = require(<span class="val">'./serviceAccountKey.json'</span>);
+
+initializeApp({
+  credential: cert(serviceAccount)
+});
+
+<span class="keyword">const</span> db = getFirestore();
+module.exports = { db };</code></pre>
+
+    <h3>📊 Step 4: Configure Database Schema in Cloud Firestore</h3>
+    <p>Create these collections visually inside the console, or let the app automatically initialize them on first write:</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Collection</th>
+          <th>Sample Fields</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="inline-code">/users</span></td>
+          <td><span class="inline-code">email</span>, <span class="inline-code">name</span>, <span class="inline-code">role</span> (student/driver/admin), <span class="inline-code">walletBalance</span></td>
+          <td>User account profiles</td>
+        </tr>
+        <tr>
+          <td><span class="inline-code">/rides</span></td>
+          <td><span class="inline-code">riderId</span>, <span class="inline-code">driverId</span>, <span class="inline-code">pickup</span>, <span class="inline-code">dropoff</span>, <span class="inline-code">fare</span>, <span class="inline-code">status</span></td>
+          <td>Active trip requests</td>
+        </tr>
+        <tr>
+          <td><span class="inline-code">/settings</span></td>
+          <td><span class="inline-code">surgeMultiplier</span>, <span class="inline-code">baseFare</span>, <span class="inline-code">warningBanner</span></td>
+          <td>Global variables configured by administrators</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 8: ADVANTAGES, LIMITATIONS -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="tradeoffs-limitations">
+    <div class="section-header">
+      <div class="section-num">8</div>
+      <h2>Advantages, Limitations, &amp; Best Practices</h2>
+    </div>
+
+    <h3>🟢 Advantages</h3>
+    <ul>
+      <li><strong>Rapid Deployment:</strong> Toggles complex systems like social authentication (Google Sign-in) and push notifications within minutes.</li>
+      <li><strong>Real-time Out-of-the-Box:</strong> Datastores sync automatically with WebSocket protocols, eliminating redundant polling endpoints.</li>
+      <li><strong>Flexible Scale:</strong> Serverless structure scales instantly with zero manual cluster hosting.</li>
+    </ul>
+
+    <h3>🔴 Limitations</h3>
+    <ul>
+      <li><strong>Data Viewer Caps:</strong> Firestore UI console viewer caps exports and manual lists views at 10,000 documents per query.</li>
+      <li><strong>No Complex Joins:</strong> Firestore queries are document-centric. Relational complex queries require custom server normalization.</li>
+      <li><strong>Vendor Lock-in:</strong> Migration away from GCP to alternative clouds requires writing custom script pipelines for exporting JSONs.</li>
+    </ul>
+
+    <h3>🎯 Industry Best Practices</h3>
+    <ul class="checklist">
+      <li><span class="check-done">✓</span> <strong>Environment Separation:</strong> Maintain separate projects for development (<span class="inline-code">smartridetiet-dev</span>) and production (<span class="inline-code">smartridetiet-prod</span>).</li>
+      <li><span class="check-done">✓</span> <strong>Strict Access Control:</strong> Limit access to Firebase console keys inside enterprise workspaces using Google IAM permissions.</li>
+      <li><span class="check-done">✓</span> <strong>Define Rules Early:</strong> Write security rules concurrently with database initialization instead of postponing security checks.</li>
+    </ul>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 9: COMMON MISTAKES -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="common-mistakes">
+    <div class="section-header">
+      <div class="section-num">9</div>
+      <h2>Common Mistakes &amp; Troubleshooting</h2>
+    </div>
+
+    <div class="error-card">
+      <div class="error-title">❌ Mistake 1: Commit serviceAccountKey.json to public GitHub repo</div>
+      <p><strong>Cause:</strong> Developers save administrative private keys directly in git directories, triggering automatic scanners to capture credentials.</p>
+      <div class="fix-title">🔧 The Fix:</div>
+      <p>Immediately revoke the private key in the Firebase Console (⚙️ > Settings > Service Accounts), generate a new one, and add the path to your root project <span class="inline-code">.gitignore</span>:</p>
+      <pre><code># Ignore server credential files
+backend/config/serviceAccountKey.json</code></pre>
+    </div>
+
+    <div class="error-card">
+      <div class="error-title">❌ Mistake 2: Missing Index Error for Compound Queries</div>
+      <p><strong>Cause:</strong> React logs show Firestore error warnings: <span class="inline-code">Error: The query requires an index.</span></p>
+      <div class="fix-title">🔧 The Fix:</div>
+      <p>Click the unique URL printed alongside the console warning to launch the Firestore Console, verify index properties are correct, and click "Build Index". Wait a few minutes for building logs to resolve.</p>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 10: INTERVIEW PREP & EXAM HIGHLIGHTS -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="interview-exam">
+    <div class="section-header">
+      <div class="section-num">10</div>
+      <h2>Interview Q&amp;A &amp; Exam Highlights</h2>
+    </div>
+
+    <h3>🙋 Interview Questions &amp; Detailed Answers</h3>
+    
+    <p><strong>Q1: What is the main security difference between client-side Firebase SDK writes and backend Firebase Admin SDK operations?</strong><br />
+    <em>Answer:</em> Client-side Firebase SDK writes must adhere strictly to Firestore Security Rules. The database evaluates rules for every incoming request. The backend Firebase Admin SDK relies on a Service Account private key file, which bypasses all security rules, giving the server full access to read and write all database fields.</p>
+
+    <p><strong>Q2: Why does Firestore require composite indexes, and how does this affect scalability?</strong><br />
+    <em>Answer:</em> Firestore requires composite indexes for complex queries involving multiple filters and sorting variables to ensure query times remain proportional to the size of the result set, not the total collections size. By pre-building sorted trees, Firestore guarantees fast page loads even with millions of documents.</p>
+
+    <h3>✏️ Exam-Oriented Reference Points</h3>
+    <ul>
+      <li><strong>NoSQL Schema Principle:</strong> Databases store duplicate normalized information instead of running complex SQL JOIN operations.</li>
+      <li><strong>Idempotency:</strong> Cloud Functions and transactions should remain idempotent (running them multiple times yields the same result without data corruption).</li>
+      <li><strong>IAM Role Principle:</strong> Never grant default Owner status to API keys. Apply the principle of least privilege.</li>
+    </ul>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 11: FAQ -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="faq">
+    <div class="section-header">
+      <div class="section-num">11</div>
+      <h2>Frequently Asked Questions (FAQ)</h2>
+    </div>
+
+    <p><strong>Q: Does adding client keys in React .env make the application vulnerable?</strong><br />
+    A: No, these settings are public variables that specify your project ID so requests reach Google's database. Security is enforced by Firestore Rules, not by hidden client keys.</p>
+
+    <p><strong>Q: Can I run multiple Firestore instances in a single Firebase project?</strong><br />
+    A: Yes, Firebase allows you to register multiple Firestore databases under a single project (e.g. for testing separate collections or segmenting staging data).</p>
+
+    <p><strong>Q: How do Firebase Security Rules scale?</strong><br />
+    A: Firebase rules compile into custom Google Common Expression Language (CEL) execution maps, processing evaluation constraints instantly during query pipelines.</p>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 12: SUMMARY & GLOSSARY -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="summary-glossary">
+    <div class="section-header">
+      <div class="section-num">12</div>
+      <h2>Revision Summary &amp; Glossary</h2>
+    </div>
+
+    <h3>📝 Quick Revision Summary</h3>
+    <p>The Firebase Console is the administrative portal mapping to GCP cloud resources. Frontend clients connect to Auth/Firestore with public configurations, restricted by Security Rules. Backend servers connect via the Admin SDK using Service Account Keys (.json), which bypass all security checks. Composite indexes are necessary for complex queries to keep reads fast. Never leak server keys to public git repos!</p>
+
+    <h3>📚 Glossary of Terms</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Term</th>
+          <th>Definition</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Firebase Console</strong></td>
+          <td>Web dashboard to manage Firebase databases, auth, hosting, and backend integrations.</td>
+        </tr>
+        <tr>
+          <td><strong>Service Account</strong></td>
+          <td>A machine-to-machine credential file (.json) granting administrative server access.</td>
+        </tr>
+        <tr>
+          <td><strong>Security Rules</strong></td>
+          <td>A database-level permission system that checks incoming client-side reads and writes.</td>
+        </tr>
+        <tr>
+          <td><strong>Composite Index</strong></td>
+          <td>A pre-compiled sorting structure required by Firestore for queries querying multiple fields.</td>
+        </tr>
+        <tr>
+          <td><strong>UID</strong></td>
+          <td>A unique string assigned by Firebase Authentication to identify individual users.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,275 @@
+/* src/pages/student/PaymentPage.css */
+/* Phase 5 — Payment Page styles */
+
+.payment-page {
+  min-height: 100vh;
+  background: var(--bg-page);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-primary);
+}
+
+.payment-body {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 5rem;
+}
+
+/* ── Hero ─────────────────────────────────────────── */
+.payment-hero {
+  background: linear-gradient(135deg, rgba(80,53,44,0.08) 0%, rgba(184,100,80,0.05) 100%);
+  border: 1px solid rgba(80,53,44,0.2);
+  border-radius: 20px;
+  padding: 1.8rem 2rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+.payment-hero-icon {
+  width: 54px; height: 54px;
+  background: var(--gradient-primary);
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  box-shadow: 0 0 22px rgba(80,53,44,0.3);
+}
+.payment-hero h1 {
+  font-size: 1.35rem; font-weight: 800;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 0.2rem;
+}
+.payment-hero p { font-size: 0.83rem; color: var(--text-secondary); }
+
+/* ── Cards ───────────────────────────────────────── */
+.pay-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.2rem;
+  box-shadow: var(--shadow-sm);
+}
+.pay-card-title {
+  font-size: 0.72rem; text-transform: uppercase;
+  letter-spacing: 1.2px; color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+/* ── Route Summary ───────────────────────────────── */
+.pay-route {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.pay-route-stop {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.6rem 0;
+}
+.pay-route-dot {
+  width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0;
+}
+.pay-route-dot.pickup { background: var(--olive-green); box-shadow: 0 0 8px rgba(78,122,93,0.5); }
+.pay-route-dot.dest   { background: var(--primary-red); box-shadow: 0 0 8px rgba(80,53,44,0.5); }
+.pay-route-line {
+  width: 2px; height: 28px; background: var(--border-light);
+  margin-left: 5px;
+}
+.pay-route-label { font-size: 0.72rem; color: var(--text-secondary); }
+.pay-route-val   { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); }
+
+/* ── Fare Breakdown ─────────────────────────────── */
+.pay-fare-rows { display: flex; flex-direction: column; gap: 0.55rem; }
+.pay-fare-row {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 0.83rem; color: var(--text-secondary);
+}
+.pay-fare-row.total {
+  font-size: 1.05rem; font-weight: 700; color: var(--text-primary);
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--border-light);
+  margin-top: 0.35rem;
+}
+.pay-fare-amount {
+  color: var(--primary-red); font-size: 1.25rem;
+  font-weight: 800;
+}
+.pay-fare-badge {
+  font-size: 0.65rem; font-weight: 700;
+  background: rgba(78,122,93,0.12);
+  color: var(--olive-green); border-radius: 6px;
+  padding: 2px 7px; margin-left: 0.4rem;
+}
+
+/* ── Method Selection ───────────────────────────── */
+.pay-methods { display: flex; flex-direction: column; gap: 0.7rem; }
+.pay-method-opt {
+  display: flex; align-items: center; gap: 0.85rem;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-light);
+  border-radius: 14px; padding: 1rem 1.1rem;
+  cursor: pointer; transition: all 0.2s;
+  color: var(--text-primary); text-align: left; width: 100%;
+}
+.pay-method-opt:hover:not(:disabled) {
+  border-color: rgba(80,53,44,0.35);
+  background: rgba(80,53,44,0.05);
+}
+.pay-method-opt.selected {
+  border-color: var(--primary-red);
+  background: rgba(80,53,44,0.08);
+  box-shadow: 0 0 0 1px rgba(80,53,44,0.1);
+}
+.pay-method-opt:disabled { opacity: 0.45; cursor: not-allowed; }
+.pay-method-emoji { font-size: 1.5rem; }
+.pay-method-info { flex: 1; }
+.pay-method-name { font-size: 0.9rem; font-weight: 600; }
+.pay-method-desc { font-size: 0.73rem; color: var(--text-secondary); margin-top: 2px; }
+.pay-method-radio {
+  width: 18px; height: 18px;
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.pay-method-opt.selected .pay-method-radio {
+  border-color: var(--primary-red);
+  background: var(--primary-red);
+  box-shadow: 0 0 8px rgba(80,53,44,0.4);
+}
+.pay-method-opt.selected .pay-method-radio::after {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--bg-card);
+  border-radius: 50%;
+}
+.pay-low-badge {
+  font-size: 0.63rem; background: rgba(184,100,80,0.12);
+  color: var(--secondary-red); border-radius: 5px; padding: 1px 6px;
+  margin-left: 0.5rem;
+}
+
+/* ── Wallet Balance Widget ──────────────────────── */
+.pay-wallet-widget {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.pay-wallet-bal-label { font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 0.2rem; }
+.pay-wallet-bal {
+  font-size: 1.6rem; font-weight: 800;
+  background: linear-gradient(135deg, var(--olive-green), var(--primary-red));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.pay-wallet-topup-link {
+  font-size: 0.8rem; color: var(--primary-red);
+  text-decoration: none; font-weight: 600;
+  border: 1px solid var(--border-color);
+  border-radius: 8px; padding: 0.4rem 0.8rem;
+  transition: all 0.2s;
+}
+.pay-wallet-topup-link:hover {
+  background: rgba(80, 53, 44, 0.1);
+  border-color: var(--primary-red);
+}
+
+/* ── CTA Button ─────────────────────────────────── */
+.pay-cta-btn {
+  width: 100%;
+  background: var(--gradient-primary);
+  border: none; border-radius: 14px;
+  color: #fff; font-weight: 800; font-size: 1rem;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.25s;
+  display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+  margin-top: 1.5rem;
+  box-shadow: 0 6px 25px rgba(80,53,44,0.3);
+  min-height: 52px;
+}
+.pay-cta-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 35px rgba(80,53,44,0.4);
+}
+.pay-cta-btn:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
+
+/* ── Spinner ─────────────────────────────────────── */
+.pay-spinner {
+  width: 20px; height: 20px;
+  border: 2.5px solid rgba(255,255,255,0.25);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spinPay 0.7s linear infinite;
+}
+@keyframes spinPay { to { transform: rotate(360deg); } }
+
+/* ── Secure Badge ────────────────────────────────── */
+.pay-secure {
+  text-align: center; color: var(--text-muted);
+  font-size: 0.73rem; margin-top: 0.9rem;
+}
+
+/* ── Success Screen ──────────────────────────────── */
+.pay-success {
+  text-align: center; padding: 3rem 1rem;
+}
+.pay-success-icon {
+  font-size: 4rem; margin-bottom: 1rem;
+  animation: popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+}
+@keyframes popIn {
+  from { transform: scale(0); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+.pay-success h2 { font-size: 1.5rem; font-weight: 800; color: var(--olive-green); margin-bottom: 0.4rem; }
+.pay-success p  { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.5rem; }
+.pay-success-amount {
+  font-size: 2.2rem; font-weight: 900;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 0.25rem;
+}
+.pay-success-method {
+  font-size: 0.78rem; color: var(--text-secondary); text-transform: uppercase;
+  letter-spacing: 1px; margin-bottom: 2rem;
+}
+.pay-receipt-box {
+  background: rgba(78,122,93,0.08);
+  border: 1px solid rgba(78,122,93,0.2);
+  border-radius: 12px; padding: 1rem 1.25rem;
+  margin: 0 auto 1.75rem; max-width: 340px;
+  text-align: left;
+}
+.pay-receipt-row {
+  display: flex; justify-content: space-between;
+  font-size: 0.8rem; color: var(--text-secondary); padding: 0.3rem 0;
+}
+.pay-receipt-row span:last-child { color: var(--text-primary); font-weight: 500; }
+
+.pay-back-btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: rgba(80, 53, 44, 0.1);
+  border: 1px solid rgba(80, 53, 44, 0.2);
+  border-radius: 10px; color: var(--primary-red);
+  font-size: 0.88rem; font-weight: 600;
+  padding: 0.65rem 1.25rem;
+  text-decoration: none; transition: all 0.2s;
+}
+.pay-back-btn:hover { background: rgba(80, 53, 44, 0.18); }
+
+/* ── Loading skeleton ────────────────────────────── */
+.pay-skeleton {
+  height: 20px; border-radius: 6px;
+  background: linear-gradient(90deg, rgba(42,29,22,0.04) 0%, rgba(42,29,22,0.08) 50%, rgba(42,29,22,0.04) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  margin-bottom: 0.5rem;
+}
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+/* ── Responsive ─────────────────────────────────── */
+@media (max-width: 480px) {
+  .payment-body { padding: 1.25rem 1rem 4rem; }
+  .payment-hero { flex-direction: column; text-align: center; }
+}

@@ -1,0 +1,1007 @@
+/* src/pages/admin/Admin.css
+   Phase 4 — Shared styles for all Admin pages
+   Dark glass theme, consistent with Phase 1-3 design system
+*/
+
+/* ── Page Shell ───────────────────────────────────────────── */
+.admin-page {
+  min-height: 100vh;
+  background: #0a0a18;
+  color: #f0f0ff;
+  font-family: 'Inter', sans-serif;
+  padding-top: 64px;
+}
+
+.admin-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ── Loading States ───────────────────────────────────────── */
+.admin-loading {
+  min-height: 100vh;
+  background: #0a0a18;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  color: #6666a0;
+  font-family: 'Inter', sans-serif;
+  padding-top: 64px;
+}
+
+.admin-loading-inline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem;
+  color: #6666a0;
+  font-size: 0.9rem;
+}
+
+.admin-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(167, 139, 250, 0.15);
+  border-top-color: #a78bfa;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Header ───────────────────────────────────────────────── */
+.admin-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.admin-title {
+  font-size: 1.9rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.admin-subtitle {
+  color: #555580;
+  margin-top: 0.3rem;
+  font-size: 0.9rem;
+}
+
+.admin-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.refreshing-badge {
+  font-size: 0.8rem;
+  color: #06b6d4;
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px solid rgba(6, 182, 212, 0.2);
+  border-radius: 20px;
+  padding: 0.25rem 0.7rem;
+}
+
+.admin-refresh-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #a0a0cc;
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+
+.admin-refresh-btn:hover {
+  background: rgba(255, 255, 255, 0.09);
+  color: #d0d0f0;
+  transform: translateY(-1px);
+}
+
+/* ── Generic Card ─────────────────────────────────────────── */
+.admin-card {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 18px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  animation: fadeUp 0.4s ease;
+}
+
+.admin-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.admin-card-header h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #d0d0f0;
+  margin: 0;
+}
+
+.admin-card-badge {
+  font-size: 0.72rem;
+  background: rgba(6, 182, 212, 0.1);
+  color: #06b6d4;
+  border: 1px solid rgba(6, 182, 212, 0.2);
+  border-radius: 20px;
+  padding: 0.18rem 0.6rem;
+}
+
+.admin-view-all {
+  font-size: 0.82rem;
+  color: #a78bfa;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.admin-view-all:hover { color: #c4b5fd; }
+
+.admin-empty {
+  text-align: center;
+  color: #6666a0;
+  padding: 2.5rem;
+  font-size: 0.9rem;
+}
+
+/* ── Stat Cards Grid ──────────────────────────────────────── */
+.admin-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.admin-stat-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 16px;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  animation: fadeUp 0.5s ease both;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.admin-stat-card:hover { transform: translateY(-3px); }
+
+.admin-stat-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.admin-stat-value {
+  font-size: 1.7rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.admin-stat-label {
+  font-size: 0.78rem;
+  color: #6666a0;
+  margin-top: 0.2rem;
+}
+
+.admin-stat-sub {
+  font-size: 0.72rem;
+  color: #4a4a6a;
+  margin-top: 0.15rem;
+}
+
+/* ── Charts Row ───────────────────────────────────────────── */
+.admin-charts-row {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 860px) {
+  .admin-charts-row { grid-template-columns: 1fr; }
+}
+
+/* ── Mini Bar Chart ───────────────────────────────────────── */
+.mini-bar-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 6px;
+  height: 120px;
+  padding: 0 0.25rem;
+}
+
+.mini-bar-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.mini-bar {
+  width: 100%;
+  max-width: 28px;
+  border-radius: 6px 6px 2px 2px;
+  opacity: 0.85;
+  animation: barGrow 0.6s ease both;
+  transition: opacity 0.2s;
+}
+
+.mini-bar:hover { opacity: 1; }
+
+.mini-bar-label {
+  font-size: 0.65rem;
+  color: #5555808a;
+  text-align: center;
+}
+
+/* ── Donut Chart ──────────────────────────────────────────── */
+.donut-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.donut-svg {
+  width: 120px;
+  height: 120px;
+}
+
+.donut-legend {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.donut-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.donut-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.donut-legend-label {
+  color: #8888aa;
+  flex: 1;
+}
+
+.donut-legend-value {
+  font-weight: 700;
+  font-size: 0.78rem;
+}
+
+/* ── Quick Actions ────────────────────────────────────────── */
+.admin-actions-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.admin-action-card {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 16px;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-decoration: none;
+  transition: transform 0.2s, background 0.2s;
+  animation: fadeUp 0.5s ease both;
+}
+
+.admin-action-card:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.admin-action-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  flex-shrink: 0;
+}
+
+.admin-action-label {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.admin-action-sub {
+  font-size: 0.78rem;
+  color: #555580;
+  margin-top: 0.1rem;
+}
+
+.admin-action-arrow {
+  margin-left: auto;
+  font-size: 1.1rem;
+  font-weight: 700;
+  opacity: 0.7;
+}
+
+/* ── Recent Rides List ────────────────────────────────────── */
+.admin-rides-list { display: flex; flex-direction: column; }
+
+.admin-ride-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.85rem 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  animation: fadeUp 0.35s ease both;
+}
+
+.admin-ride-row.even { background: rgba(255, 255, 255, 0.018); border-radius: 8px; }
+
+.ride-row-info { flex: 1; min-width: 180px; }
+
+.ride-row-route {
+  font-size: 0.88rem;
+  color: #d0d0f0;
+  font-weight: 500;
+  margin-bottom: 0.2rem;
+}
+
+.ride-row-meta { font-size: 0.75rem; color: #6666a0; }
+
+.ride-row-right {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.ride-row-fare {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #22c55e;
+  min-width: 48px;
+  text-align: right;
+}
+
+/* ── Phase Banner ─────────────────────────────────────────── */
+.admin-phase-banner {
+  background: rgba(167, 139, 250, 0.07);
+  border: 1px solid rgba(167, 139, 250, 0.18);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.banner-title { color: #c4b5fd; font-weight: 700; }
+.banner-sub   { color: #555580; font-size: 0.85rem; margin-top: 0.2rem; }
+
+/* ── Controls (Search + Filters) ─────────────────────────── */
+.admin-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.admin-search {
+  width: 100%;
+  padding: 0.75rem 1.1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 12px;
+  color: #f0f0ff;
+  font-size: 0.9rem;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+  box-sizing: border-box;
+}
+
+.admin-search::placeholder { color: #5555808a; }
+
+.admin-search:focus {
+  border-color: rgba(167, 139, 250, 0.4);
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.admin-filter-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.filter-tab {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  color: #6666a0;
+  border-radius: 20px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.filter-tab:hover { background: rgba(255, 255, 255, 0.06); color: #d0d0f0; }
+
+.filter-tab.active {
+  background: rgba(167, 139, 250, 0.12);
+  border-color: rgba(167, 139, 250, 0.35);
+  color: #c4b5fd;
+}
+
+.filter-count {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 0.08rem 0.45rem;
+  font-size: 0.72rem;
+  color: #8888aa;
+}
+
+/* ── User Card ────────────────────────────────────────────── */
+.users-list { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.user-card {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 16px;
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  animation: fadeUp 0.4s ease both;
+  transition: transform 0.2s;
+}
+
+.user-card:hover { transform: translateX(3px); }
+
+.user-card-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.user-card-info { flex: 1; min-width: 180px; }
+
+.user-card-name  { font-size: 0.95rem; font-weight: 700; color: #e0e0ff; }
+.user-card-email { font-size: 0.8rem; color: #7777aa; margin-top: 0.15rem; }
+.user-card-phone { font-size: 0.78rem; color: #6666a0; margin-top: 0.1rem; }
+.user-card-vehicle { font-size: 0.78rem; color: #6666a0; margin-top: 0.1rem; }
+
+.user-card-meta {
+  font-size: 0.72rem;
+  color: #4a4a6a;
+  margin-top: 0.3rem;
+}
+
+.user-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.user-action-btn {
+  font-size: 0.8rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+
+.role-btn {
+  background: rgba(167, 139, 250, 0.08);
+  color: #a78bfa;
+  border-color: rgba(167, 139, 250, 0.2);
+}
+
+.role-btn:hover {
+  background: rgba(167, 139, 250, 0.16);
+  transform: translateY(-1px);
+}
+
+.delete-btn {
+  background: rgba(239, 68, 68, 0.08);
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+.delete-btn:hover {
+  background: rgba(239, 68, 68, 0.16);
+  transform: translateY(-1px);
+}
+
+/* ── Modal ────────────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  animation: fadeUp 0.2s ease;
+}
+
+.modal-box {
+  background: #131325;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  animation: fadeUp 0.3s ease;
+}
+
+.modal-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #f0f0ff;
+  margin-bottom: 0.6rem;
+}
+
+.modal-desc {
+  font-size: 0.88rem;
+  color: #7777aa;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+.modal-desc strong { color: #d0d0f0; }
+
+.modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.modal-cancel-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #8888aa;
+  padding: 0.6rem 1.4rem;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+
+.modal-cancel-btn:hover { background: rgba(255, 255, 255, 0.09); color: #d0d0f0; }
+
+.modal-confirm-btn {
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  border: none;
+  color: #fff;
+  padding: 0.6rem 1.4rem;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+
+.modal-confirm-btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+.modal-confirm-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── Role Picker ──────────────────────────────────────────── */
+.role-picker {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.role-pick-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #7777aa;
+  padding: 0.5rem 1.1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+
+.role-pick-btn:hover { background: rgba(255, 255, 255, 0.08); color: #d0d0f0; }
+.role-pick-btn.selected { font-weight: 700; }
+
+/* ── Ride Status Pill ─────────────────────────────────────── */
+.ride-status-pill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 20px;
+  padding: 0.2rem 0.65rem;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  text-transform: capitalize;
+}
+
+/* ── Ride Card (AdminRides) ───────────────────────────────── */
+.rides-list-wrap { display: flex; flex-direction: column; gap: 0.6rem; }
+
+.ride-card {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  overflow: hidden;
+  animation: fadeUp 0.35s ease both;
+  transition: transform 0.2s;
+}
+
+.ride-card:hover { transform: translateY(-1px); }
+
+.ride-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+}
+
+.ride-card-left  { display: flex; align-items: center; gap: 0.85rem; flex: 1; min-width: 200px; }
+.ride-card-right { display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap; }
+
+.ride-status-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.ride-card-route {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #d0d0f0;
+}
+
+.ride-card-sub  { font-size: 0.75rem; color: #6666a0; margin-top: 0.15rem; }
+.ride-card-fare { font-size: 1rem; font-weight: 800; color: #22c55e; }
+
+.ride-card-toggle {
+  font-size: 0.75rem;
+  color: #5555808a;
+  padding: 0 0.25rem;
+}
+
+/* Expanded details */
+.ride-card-details {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 1rem 1.25rem;
+  background: rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  animation: fadeUp 0.25s ease;
+}
+
+.ride-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.75rem;
+}
+
+.ride-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.detail-label { font-size: 0.7rem; color: #5555808a; text-transform: uppercase; letter-spacing: 0.5px; }
+.detail-value { font-size: 0.85rem; color: #c0c0e0; font-weight: 600; }
+
+.ride-coords {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  font-size: 0.75rem;
+  color: #5a5a8a;
+}
+
+/* ── Stats Bar (AdminRides) ───────────────────────────────── */
+.rides-stats-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.75rem;
+}
+
+.rides-stats-item {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  text-align: center;
+}
+
+.rides-stats-value { font-size: 1.4rem; font-weight: 800; }
+.rides-stats-label { font-size: 0.72rem; color: #5555808a; margin-top: 0.15rem; }
+
+/* ── Pagination ───────────────────────────────────────────── */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0.5rem 0;
+}
+
+.page-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  color: #a0a0cc;
+  border-radius: 10px;
+  padding: 0.45rem 1rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+
+.page-btn:hover:not(:disabled) { background: rgba(255, 255, 255, 0.08); color: #d0d0f0; }
+.page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.page-info { font-size: 0.82rem; color: #5555808a; }
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .admin-stats-grid { grid-template-columns: 1fr 1fr; }
+  .admin-title      { font-size: 1.5rem; }
+  .admin-container  { padding: 1.5rem 1rem 3rem; }
+  .user-card        { flex-direction: column; align-items: flex-start; }
+  .ride-card-header { flex-direction: column; align-items: flex-start; }
+}
+
+/* ── Thapar University Color Palette Overrides ── */
+.admin-page,
+.admin-loading,
+.admin-loading-inline {
+  background: var(--bg-page) !important;
+  color: var(--text-primary) !important;
+}
+
+.admin-title {
+  color: var(--text-primary) !important;
+}
+
+.admin-subtitle,
+.admin-empty,
+.page-info,
+.rides-stats-label {
+  color: var(--text-secondary) !important;
+}
+
+.refreshing-badge {
+  color: var(--secondary-red) !important;
+  background: rgba(184, 100, 80, 0.1) !important;
+  border: 1px solid rgba(184, 100, 80, 0.2) !important;
+}
+
+.admin-refresh-btn,
+.page-btn {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-secondary) !important;
+}
+
+.admin-refresh-btn:hover,
+.page-btn:hover:not(:disabled) {
+  background: var(--bg-card-hover) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--primary-red) !important;
+}
+
+.admin-card,
+.admin-stat-card,
+.rides-stats-item,
+.user-card,
+.ride-card,
+.setting-card,
+.notification-card,
+.analytics-card {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: var(--shadow-sm) !important;
+  color: var(--text-primary) !important;
+}
+
+.admin-card-header h3,
+.ride-card-title,
+.user-card-name,
+.setting-card-title,
+.notification-title {
+  color: var(--text-primary) !important;
+}
+
+.admin-card-badge {
+  background: rgba(80, 53, 44, 0.1) !important;
+  border: 1px solid rgba(80, 53, 44, 0.2) !important;
+  color: var(--primary-red) !important;
+}
+
+.admin-view-all {
+  color: var(--primary-red) !important;
+}
+
+.admin-view-all:hover {
+  color: var(--secondary-red) !important;
+}
+
+.admin-stat-value,
+.rides-stats-value {
+  color: var(--text-primary) !important;
+}
+
+.admin-stat-label {
+  color: var(--text-secondary) !important;
+}
+
+/* Form Fields */
+.admin-form-group label,
+.form-group label {
+  color: var(--text-secondary) !important;
+}
+
+.admin-input,
+.admin-select,
+.admin-textarea,
+.form-input,
+.search-input {
+  background: rgba(42, 29, 22, 0.03) !important;
+  border: 1px solid var(--border-light) !important;
+  color: var(--text-primary) !important;
+}
+
+.admin-input:focus,
+.admin-select:focus,
+.admin-textarea:focus,
+.form-input:focus {
+  border-color: var(--primary-red) !important;
+  background: rgba(80, 53, 44, 0.05) !important;
+  box-shadow: 0 0 0 3px rgba(80, 53, 44, 0.12) !important;
+}
+
+.btn-admin-submit,
+.admin-submit-btn,
+.admin-btn-primary {
+  background: var(--gradient-primary) !important;
+  box-shadow: 0 4px 12px rgba(80, 53, 44, 0.25) !important;
+  color: white !important;
+}
+
+.btn-admin-submit:hover:not(:disabled),
+.admin-submit-btn:hover:not(:disabled) {
+  box-shadow: 0 6px 20px rgba(80, 53, 44, 0.35) !important;
+}
+
+/* Tables in Admin */
+.admin-table th,
+.rides-table th,
+.users-table th {
+  border-bottom: 1.5px solid var(--border-color) !important;
+  color: var(--text-secondary) !important;
+  background: var(--bg-card) !important;
+}
+
+.admin-table td,
+.rides-table td,
+.users-table td {
+  border-bottom: 1px solid var(--border-light) !important;
+  color: var(--text-primary) !important;
+}
+
+.admin-table tr:hover,
+.rides-table tr:hover,
+.users-table tr:hover {
+  background: var(--bg-card-hover) !important;
+}
+
+.admin-table tr.even,
+.rides-table tr.even,
+.users-table tr.even {
+  background: rgba(42, 29, 22, 0.01) !important;
+}
+
+/* User & Ride cards details */
+.user-card:hover,
+.ride-card:hover {
+  border-color: var(--primary-red) !important;
+}
+
+.ride-status-badge.completed,
+.status-badge.completed,
+.status-badge.verified,
+.status-badge.active {
+  background: rgba(78, 122, 93, 0.1) !important;
+  color: var(--olive-green) !important;
+  border: 1px solid rgba(78, 122, 93, 0.3) !important;
+}
+
+.ride-status-badge.cancelled,
+.status-badge.cancelled,
+.status-badge.rejected {
+  background: rgba(184, 100, 80, 0.1) !important;
+  color: var(--secondary-red) !important;
+  border: 1px solid rgba(184, 100, 80, 0.3) !important;
+}
+
+.ride-status-badge.active,
+.status-badge.pending,
+.status-badge.ongoing {
+  background: rgba(201, 168, 106, 0.1) !important;
+  color: var(--accent-gold) !important;
+  border: 1px solid rgba(201, 168, 106, 0.3) !important;
+}
+
+.detail-label {
+  color: var(--text-muted) !important;
+}
+
+.detail-value {
+  color: var(--text-primary) !important;
+}
+
+.ride-coords {
+  color: var(--text-muted) !important;
+}
+

@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartRideTIET – Phase 5 Complete Notes</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap');
+
+    :root {
+      --bg: #0d0d1a;
+      --bg2: #111128;
+      --bg3: #16162a;
+      --border: #2a2a4a;
+      --purple: #7c3aed;
+      --blue: #3b82f6;
+      --green: #22c55e;
+      --orange: #f97316;
+      --red: #ef4444;
+      --yellow: #eab308;
+      --cyan: #06b6d4;
+      --text: #f0f0ff;
+      --text2: #a0a0c0;
+      --text3: #6060a0;
+      --grad: linear-gradient(135deg, #7c3aed, #06b6d4);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    /* ── Print PDF button ── */
+    .pdf-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: rgba(13,13,26,0.97);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 999;
+      backdrop-filter: blur(10px);
+    }
+    .pdf-bar-title { font-weight: 700; font-size: 1rem; }
+    .pdf-bar-title span { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .btn-pdf {
+      background: var(--grad);
+      color: white;
+      border: none;
+      padding: 0.55rem 1.4rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+      box-shadow: 0 4px 15px rgba(124,58,237,0.4);
+    }
+    .btn-pdf:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,58,237,0.5); }
+
+    /* ── Main Layout ── */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 6rem 2rem 4rem;
+    }
+
+    /* ── Cover ── */
+    .cover {
+      text-align: center;
+      padding: 3rem 0 4rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 3rem;
+    }
+    .cover-badge {
+      display: inline-block;
+      background: rgba(6,182,212,0.15);
+      border: 1px solid rgba(6,182,212,0.4);
+      border-radius: 50px;
+      padding: 0.35rem 1rem;
+      font-size: 0.85rem;
+      color: #22d3ee;
+      margin-bottom: 1.5rem;
+    }
+    .cover h1 { font-size: 3rem; font-weight: 900; line-height: 1.1; margin-bottom: 1rem; }
+    .cover h1 span { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .cover p { color: var(--text2); max-width: 600px; margin: 0 auto 2rem; }
+    .cover-meta {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .meta-item { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 0.75rem 1.25rem; text-align: center; }
+    .meta-label { font-size: 0.75rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; }
+    .meta-value { font-weight: 700; font-size: 1rem; color: var(--text); }
+
+    /* ── TOC ── */
+    .toc { background: var(--bg3); border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem 2rem; margin-bottom: 3rem; }
+    .toc h2 { font-size: 1.1rem; margin-bottom: 1rem; color: #a78bfa; }
+    .toc ol { padding-left: 1.25rem; }
+    .toc li { margin-bottom: 0.35rem; }
+    .toc a { color: var(--text2); text-decoration: none; font-size: 0.92rem; transition: color 0.2s; }
+    .toc a:hover { color: #a78bfa; }
+
+    /* ── Sections ── */
+    .section { margin-bottom: 4rem; }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border);
+    }
+    .section-num {
+      width: 40px; height: 40px;
+      background: var(--grad);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .section h2 { font-size: 1.6rem; font-weight: 800; }
+
+    /* ── Sub sections ── */
+    h3 { font-size: 1.15rem; font-weight: 700; margin: 2rem 0 0.75rem; color: #c4b5fd; }
+    h4 { font-size: 1rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: #93c5fd; }
+    p { color: var(--text2); margin-bottom: 0.75rem; }
+
+    /* ── Code blocks ── */
+    pre {
+      background: #0a0a18;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      overflow-x: auto;
+      margin: 1rem 0 1.5rem;
+      position: relative;
+    }
+    code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      line-height: 1.7;
+    }
+    pre code { color: #e2e8f0; }
+    .inline-code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.82rem;
+      background: rgba(124,58,237,0.15);
+      color: #c4b5fd;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      border: 1px solid rgba(124,58,237,0.2);
+    }
+    .lang-tag {
+      position: absolute;
+      top: 0.5rem; right: 0.75rem;
+      font-size: 0.72rem;
+      color: var(--text3);
+      font-family: 'Fira Code', monospace;
+      background: var(--bg);
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+    }
+
+    /* Syntax colors */
+    .kw { color: #c084fc; }   /* keywords */
+    .fn { color: #60a5fa; }   /* functions */
+    .str { color: #86efac; }  /* strings */
+    .cm { color: #4a4a7a; font-style: italic; }  /* comments */
+    .num { color: #fb923c; }  /* numbers */
+    .var { color: #f0f0ff; }  /* variables */
+    .prop { color: #93c5fd; } /* properties */
+
+    /* ── Cards ── */
+    .card { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
+    .card-title { font-weight: 700; margin-bottom: 0.4rem; font-size: 0.95rem; }
+    .card p { margin-bottom: 0; font-size: 0.9rem; }
+
+    /* ── Alert boxes ── */
+    .alert { border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; display: flex; gap: 0.75rem; }
+    .alert-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 0.1rem; }
+    .alert-body { font-size: 0.9rem; }
+    .alert-note  { background: rgba(59,130,246,0.1);  border: 1px solid rgba(59,130,246,0.3);  }
+    .alert-warn  { background: rgba(234,179,8,0.1);   border: 1px solid rgba(234,179,8,0.3);   }
+    .alert-error { background: rgba(239,68,68,0.1);   border: 1px solid rgba(239,68,68,0.3);   }
+    .alert-success { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3);   }
+    .alert-title { font-weight: 700; margin-bottom: 0.2rem; }
+
+    /* ── Step list ── */
+    .steps { list-style: none; counter-reset: step; }
+    .steps li {
+      counter-increment: step;
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      align-items: flex-start;
+    }
+    .steps li::before {
+      content: counter(step);
+      background: var(--grad);
+      color: white;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.78rem; font-weight: 800;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+    .steps li p { margin-bottom: 0; font-size: 0.92rem; }
+
+    /* ── Table ── */
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; }
+    th { background: rgba(124,58,237,0.2); color: #c4b5fd; font-size: 0.85rem; padding: 0.65rem 1rem; text-align: left; border: 1px solid var(--border); }
+    td { padding: 0.6rem 1rem; border: 1px solid var(--border); font-size: 0.87rem; color: var(--text2); vertical-align: top; }
+    tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+    /* ── Terminal ── */
+    .terminal {
+      background: #050510;
+      border: 1px solid #1a1a3a;
+      border-radius: 10px;
+      padding: 0;
+      margin: 1rem 0 1.5rem;
+      overflow: hidden;
+    }
+    .terminal-header {
+      background: #111128;
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-r { background: #ef4444; }
+    .dot-y { background: #eab308; }
+    .dot-g { background: #22c55e; }
+    .terminal-label { margin-left: 0.5rem; font-size: 0.75rem; color: var(--text3); font-family: 'Fira Code', monospace; }
+    .terminal-body { padding: 1rem 1.25rem; }
+    .terminal-body code { color: #e2e8f0; font-size: 0.85rem; line-height: 1.8; }
+    .t-prompt { color: #22c55e; }
+    .t-cmd { color: #f0f0ff; }
+    .t-out { color: #6060a0; }
+    .t-success { color: #22c55e; }
+    .t-error { color: #ef4444; }
+
+    /* ── Error card ── */
+    .error-card { background: rgba(239,68,68,0.05); border: 1px solid rgba(239,68,68,0.2); border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; }
+    .error-title { color: #f87171; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+    .error-msg { background: #0a0a18; border-radius: 6px; padding: 0.75rem 1rem; font-family: 'Fira Code', monospace; font-size: 0.8rem; color: #f87171; margin: 0.5rem 0; overflow-x: auto; }
+    .fix-title { color: #4ade80; font-weight: 700; font-size: 0.9rem; margin-top: 1rem; margin-bottom: 0.4rem; }
+
+    /* ── Concept box ── */
+    .concept { background: rgba(124,58,237,0.07); border-left: 3px solid var(--purple); border-radius: 0 10px 10px 0; padding: 1rem 1.25rem; margin: 1rem 0; }
+    .concept-term { font-weight: 700; color: #c4b5fd; margin-bottom: 0.3rem; }
+    .concept p { margin-bottom: 0; font-size: 0.9rem; }
+
+    /* ── File tree ── */
+    .filetree { background: #050510; border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem 1.5rem; font-family: 'Fira Code', monospace; font-size: 0.83rem; line-height: 2; margin: 1rem 0 1.5rem; }
+    .ft-dir { color: #60a5fa; }
+    .ft-file { color: #e2e8f0; }
+    .ft-comment { color: #4a4a7a; }
+
+    /* ── Checklist ── */
+    .checklist { list-style: none; }
+    .checklist li { display: flex; align-items: flex-start; gap: 0.6rem; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text2); }
+    .check-done { color: var(--green); font-size: 1rem; flex-shrink: 0; }
+
+    /* ── Print styles ── */
+    @media print {
+      .pdf-bar { display: none !important; }
+      body { background: white; color: #111; font-size: 12px; }
+      :root {
+        --bg: white; --bg2: #f8f8f8; --bg3: #f0f0f8;
+        --border: #ddd; --text: #111; --text2: #444; --text3: #888;
+        --purple: #5b21b6; --blue: #1d4ed8;
+      }
+      .container { padding-top: 1rem; max-width: 100%; }
+      pre, .terminal-body { background: #f5f5f5 !important; border-color: #ddd; }
+      pre code, .terminal-body code { color: #222; }
+      .alert-note { background: #eff6ff !important; }
+      .alert-warn { background: #fffbeb !important; }
+      .alert-error { background: #fef2f2 !important; }
+      .alert-success { background: #f0fdf4 !important; }
+      .concept { background: #f5f0ff !important; }
+      .error-msg { background: #fff5f5 !important; color: #c00 !important; }
+      pre { page-break-inside: avoid; }
+      .section { page-break-inside: avoid; }
+      h2, h3 { page-break-after: avoid; }
+      a { color: inherit; text-decoration: none; }
+    }
+
+    .divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+    .tag { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-right: 0.3rem; }
+    .tag-purple { background: rgba(124,58,237,0.15); color: #c4b5fd; border: 1px solid rgba(124,58,237,0.3); }
+    .tag-blue   { background: rgba(59,130,246,0.15);  color: #93c5fd; border: 1px solid rgba(59,130,246,0.3); }
+    .tag-green  { background: rgba(34,197,94,0.15);   color: #86efac; border: 1px solid rgba(34,197,94,0.3); }
+    .tag-orange { background: rgba(249,115,22,0.15);  color: #fdba74; border: 1px solid rgba(249,115,22,0.3); }
+  </style>
+</head>
+<body>
+
+<!-- PDF Download Bar -->
+<div class="pdf-bar">
+  <div class="pdf-bar-title">🚌 SmartRide<span>TIET</span> — Phase 5 Notes</div>
+  <button class="btn-pdf" onclick="window.print()">
+    📥 Download as PDF
+  </button>
+</div>
+
+<div class="container">
+
+  <!-- ── COVER ── -->
+  <div class="cover">
+    <div class="cover-badge">⚡ Completed Phase 5</div>
+    <h1>SmartRideTIET<br /><span>Phase 5 Notes</span></h1>
+    <p>Complete documentation for Phase 5 — Razorpay Payments Integration & SmartRide Wallet System. Includes code guides, secure signature verification, API specifications, and troubleshooting steps.</p>
+    <div class="cover-meta">
+      <div class="meta-item"><div class="meta-label">Phase</div><div class="meta-value">Phase 5 — Payments</div></div>
+      <div class="meta-item"><div class="meta-label">Stack</div><div class="meta-value">Node.js + Razorpay SDK + React</div></div>
+      <div class="meta-item"><div class="meta-label">Status</div><div class="meta-value" style="color:#22c55e">✅ Complete</div></div>
+      <div class="meta-item"><div class="meta-label">Project</div><div class="meta-value">SmartRideTIET</div></div>
+    </div>
+  </div>
+
+  <!-- ── TABLE OF CONTENTS ── -->
+  <div class="toc">
+    <h2>📋 Table of Contents</h2>
+    <ol>
+      <li><a href="#s1">Project Overview & Tech Stack</a></li>
+      <li><a href="#s2">Key Concepts Explained</a></li>
+      <li><a href="#s3">Complete File Structure</a></li>
+      <li><a href="#s4">Backend Files — Code Explained</a></li>
+      <li><a href="#s5">Frontend Files — Code Explained</a></li>
+      <li><a href="#s6">Razorpay Integration Setup — Step by Step</a></li>
+      <li><a href="#s7">Terminal Commands — When & Why</a></li>
+      <li><a href="#s8">Errors & Fixes</a></li>
+      <li><a href="#s9">Phase 5 Final Checklist</a></li>
+    </ol>
+  </div>
+
+  <!-- ── SECTION 1 ── -->
+  <div class="section" id="s1">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <h2>Project Overview & Tech Stack</h2>
+    </div>
+    <p>Phase 5 builds the financial infrastructure of the SmartRideTIET platform. It implements secure ride-sharing payments via Razorpay (supporting UPI, Credit/Debit cards, Net Banking, and Wallets) and a customizable local prepaid wallet system stored directly in Firebase Firestore. This enables rapid checkouts, especially for campus-internal flat fare (₹10) rides.</p>
+    
+    <div class="alert alert-note">
+      <div class="alert-icon">💡</div>
+      <div class="alert-body">
+        <div class="alert-title">Core Objective</div>
+        Provide a fluid, secure, and instant checkout flow for students. Campus internal rides are flat priced at ₹10 and can be paid immediately using the student's wallet balance, eliminating third-party redirection latency.
+      </div>
+    </div>
+
+    <h3>Technology Stack Additions</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Component</th>
+          <th>Library / Service</th>
+          <th>Purpose</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Backend Payment SDK</td>
+          <td><code>razorpay</code> NPM Package</td>
+          <td>Creates secure orders via API, interacts with merchant server, fetches transaction statuses.</td>
+        </tr>
+        <tr>
+          <td>Security Verification</td>
+          <td>Node.js <code>crypto</code> Module</td>
+          <td>Calculates HMAC-SHA256 digests to ensure payment details haven't been tampered with.</td>
+        </tr>
+        <tr>
+          <td>Database Storage</td>
+          <td>Firebase Admin SDK (Firestore)</td>
+          <td>Stores payment records, tracks orders, manages balance logs, and transaction ledgers.</td>
+        </tr>
+        <tr>
+          <td>Frontend Checkout</td>
+          <td>Razorpay Checkout.js script</td>
+          <td>Dynamically loaded iframe modal providing payment method interface to the customer.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── SECTION 2 ── -->
+  <div class="section" id="s2">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <h2>Key Concepts Explained</h2>
+    </div>
+    
+    <div class="concept">
+      <div class="concept-term">Paise Conversion (Amount Format)</div>
+      <p>Razorpay processes all currency transactions in the smallest currency unit. For Indian Rupees (INR), the values must be passed in <strong>paise</strong>. For example, a flat campus fare of ₹10 is passed as <code>1000</code> paise. Re-conversion is done by dividing by 100 on retrieval.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">HMAC-SHA256 Signature Verification</div>
+      <p>To prevent malicious students from spoofing success callbacks, the backend validates the signature returned by Razorpay Checkout. We concatenate the order ID and payment ID with a pipe character (<code>order_id|payment_id</code>) and hash it using the merchant Key Secret. If the resulting digest matches the returned signature, the transaction is marked as valid.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">Firestore Atomicity via Batches</div>
+      <p>When a payment is completed, multiple documents must update simultaneously (debiting wallet balance, logging transaction audit trail, changing ride status to <code>paid</code>). We use Firestore <code>db.batch()</code> write batches to ensure all operations succeed or fail together, protecting database consistency.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">Dynamic Script Loading</div>
+      <p>Loading large external checkout SDKs eagerly degrades web performance. We load the Razorpay checkout script (<code>https://checkout.razorpay.com/v1/checkout.js</code>) dynamically in React using a Promise wrapper only when the user clicks the "Pay" button.</p>
+    </div>
+  </div>
+
+  <!-- ── SECTION 3 ── -->
+  <div class="section" id="s3">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <h2>Complete File Structure</h2>
+    </div>
+    <p>Below is the file tree representing newly added and modified files for Phase 5. Modified files are annotated with comments describing their changes.</p>
+
+    <div class="filetree">
+      <span class="ft-dir">SmartRideTIET/</span><br />
+      ├── <span class="ft-dir">backend/</span><br />
+      │   ├── <span class="ft-dir">config/</span><br />
+      │   │   └── <span class="ft-file">firebase.js</span> <span class="ft-comment">// Exports modular db and auth instances</span><br />
+      │   ├── <span class="ft-dir">services/</span><br />
+      │   │   └── <span class="ft-file new">razorpay.service.js</span> <span class="ft-comment">// [NEW] Order creation, signature verify, payment fetch</span><br />
+      │   ├── <span class="ft-dir">controllers/</span><br />
+      │   │   └── <span class="ft-file new">payment.controller.js</span> <span class="ft-comment">// [NEW] API logic for orders, verify, wallet pay & topups</span><br />
+      │   ├── <span class="ft-dir">routes/</span><br />
+      │   │   └── <span class="ft-file new">payment.routes.js</span> <span class="ft-comment">// [NEW] API routing definition for payments</span><br />
+      │   ├── <span class="ft-file">server.js</span> <span class="ft-comment">// Registered payment routes endpoint middleware</span><br />
+      │   └── <span class="ft-file">.env</span> <span class="ft-comment">// Stored backend RAZORPAY_KEY_ID & RAZORPAY_KEY_SECRET</span><br />
+      └── <span class="ft-dir">frontend/</span><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;└── <span class="ft-dir">src/</span><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="ft-dir">services/</span><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│   ├── <span class="ft-file">api.js</span> <span class="ft-comment">// Linked payment API hooks</span><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│   └── <span class="ft-file new">paymentService.js</span> <span class="ft-comment">// [NEW] Dynamic checkout loader + Axios wraps</span><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="ft-dir">components/</span><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│   └── <span class="ft-dir">common/</span><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="ft-file new">PaymentModal.jsx</span> <span class="ft-comment">// [NEW] Reusable overlay checkout component</span><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="ft-dir">pages/</span><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│   └── <span class="ft-dir">student/</span><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="ft-file new">PaymentPage.jsx</span> <span class="ft-comment">// [NEW] Full screen checkout, receipt UI</span><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="ft-file new">PaymentPage.css</span> <span class="ft-comment">// [NEW] UI styling with modern dark theme</span><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="ft-file new">WalletPage.jsx</span> <span class="ft-comment">// [NEW] Wallet status, preset top-ups, history</span><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="ft-file new">WalletPage.css</span> <span class="ft-comment">// [NEW] Balance card and history listing layout</span><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="ft-file">App.jsx</span> <span class="ft-comment">// Added payment page and wallet page router paths</span>
+    </div>
+  </div>
+
+  <!-- ── SECTION 4 ── -->
+  <div class="section" id="s4">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <h2>Backend Files — Code Explained</h2>
+    </div>
+
+    <h3>1. Razorpay Service</h3>
+    <p>File path: <a href="file:///C:/Users/kkart/.gemini/antigravity/scratch/SmartRideTIET/backend/services/razorpay.service.js" style="color: #93c5fd;"><code>backend/services/razorpay.service.js</code></a></p>
+    <p>Wraps the official Razorpay SDK inside clean, asynchronous helper functions. It retrieves API keys directly from environment configurations.</p>
+    
+    <pre><span class="lang-tag">javascript</span><code><span class="kw">const</span> Razorpay = <span class="fn">require</span>(<span class="str">'razorpay'</span>);
+<span class="kw">const</span> crypto  = <span class="fn">require</span>(<span class="str">'crypto'</span>);
+
+<span class="kw">const</span> razorpay = <span class="kw">new</span> <span class="fn">Razorpay</span>({
+  key_id:     process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
+
+<span class="kw">const</span> createRazorpayOrder = <span class="kw">async</span> (amountInPaise, receipt, notes = {}) => {
+  <span class="kw">const</span> options = {
+    amount:   amountInPaise,
+    currency: <span class="str">'INR'</span>,
+    receipt,
+    notes,
+  };
+  <span class="kw">return</span> <span class="kw">await</span> razorpay.orders.<span class="fn">create</span>(options);
+};
+
+<span class="kw">const</span> verifySignature = (orderId, paymentId, signature) => {
+  <span class="kw">const</span> body = <span class="str">`</span><span class="var">${orderId}</span><span class="str">|</span><span class="var">${paymentId}</span><span class="str">`</span>;
+  <span class="kw">const</span> expected = crypto
+    .<span class="fn">createHmac</span>(<span class="str">'sha256'</span>, process.env.RAZORPAY_KEY_SECRET)
+    .<span class="fn">update</span>(body)
+    .<span class="fn">digest</span>(<span class="str">'hex'</span>);
+  <span class="kw">return</span> expected === signature;
+};</code></pre>
+
+    <h3>2. Payment Controller</h3>
+    <p>File path: <a href="file:///C:/Users/kkart/.gemini/antigravity/scratch/SmartRideTIET/backend/controllers/payment.controller.js" style="color: #93c5fd;"><code>backend/controllers/payment.controller.js</code></a></p>
+    <p>Provides endpoint controllers for payments. It leverages modular Firestore imports (<code>db</code> and <code>FieldValue</code>) to record payments and perform atomic wallet credits/debits.</p>
+    
+    <pre><span class="lang-tag">javascript</span><code><span class="kw">const</span> { db } = <span class="fn">require</span>(<span class="str">'../config/firebase'</span>);
+<span class="kw">const</span> { FieldValue } = <span class="fn">require</span>(<span class="str">'firebase-admin/firestore'</span>);
+<span class="kw">const</span> { createRazorpayOrder, verifySignature, fetchPayment } = <span class="fn">require</span>(<span class="str">'../services/razorpay.service'</span>);
+
+exports.createOrder = <span class="kw">async</span> (req, res) => {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> { rideId, type = <span class="str">'ride'</span> } = req.body;
+    <span class="kw">const</span> userId = req.user.uid;
+    <span class="kw">let</span> amountInPaise, receipt;
+
+    <span class="kw">if</span> (type === <span class="str">'wallet'</span>) {
+      <span class="kw">const</span> { amount } = req.body;
+      amountInPaise = Math.<span class="fn">round</span>(amount * <span class="num">100</span>);
+      receipt = <span class="str">`wallet_</span><span class="var">${userId}</span><span class="str">_</span><span class="var">${Date.now()}</span><span class="str">`</span>;
+    } <span class="kw">else</span> {
+      <span class="kw">const</span> rideDoc = <span class="kw">await</span> db.<span class="fn">collection</span>(<span class="str">'rides'</span>).<span class="fn">doc</span>(rideId).<span class="fn">get</span>();
+      <span class="kw">const</span> ride = rideDoc.<span class="fn">data</span>();
+      amountInPaise = Math.<span class="fn">round</span>(ride.fare * <span class="num">100</span>);
+      receipt = <span class="str">`ride_</span><span class="var">${rideId}</span><span class="str">`</span>;
+    }
+
+    <span class="kw">const</span> order = <span class="kw">await</span> <span class="fn">createRazorpayOrder</span>(amountInPaise, receipt);
+    res.<span class="fn">json</span>({ orderId: order.id, amount: order.amount, keyId: process.env.RAZORPAY_KEY_ID });
+  } <span class="kw">catch</span> (err) {
+    res.<span class="fn">status</span>(<span class="num">500</span>).<span class="fn">json</span>({ error: err.message });
+  }
+};</code></pre>
+  </div>
+
+  <!-- ── SECTION 5 ── -->
+  <div class="section" id="s5">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <h2>Frontend Files — Code Explained</h2>
+    </div>
+
+    <h3>1. Payment Script & Checkout Service</h3>
+    <p>File path: <a href="file:///C:/Users/kkart/.gemini/antigravity/scratch/SmartRideTIET/frontend/src/services/paymentService.js" style="color: #93c5fd;"><code>frontend/src/services/paymentService.js</code></a></p>
+    <p>Responsible for dynamically creating a script tag pointing to Razorpay. This keeps index loads clean and prevents errors if external checkout resources are temporarily blocked.</p>
+    
+    <pre><span class="lang-tag">javascript</span><code><span class="kw">export const</span> loadRazorpayScript = () =>
+  <span class="kw">new</span> <span class="fn">Promise</span>((resolve) => {
+    <span class="kw">if</span> (document.<span class="fn">getElementById</span>(<span class="str">'razorpay-script'</span>)) {
+      <span class="fn">resolve</span>(<span class="kw">true</span>);
+      <span class="kw">return</span>;
+    }
+    <span class="kw">const</span> script = document.<span class="fn">createElement</span>(<span class="str">'script'</span>);
+    script.id = <span class="str">'razorpay-script'</span>;
+    script.src = <span class="str">'https://checkout.razorpay.com/v1/checkout.js'</span>;
+    script.onload = () => <span class="fn">resolve</span>(<span class="kw">true</span>);
+    script.onerror = () => <span class="fn">resolve</span>(<span class="kw">false</span>);
+    document.body.<span class="fn">appendChild</span>(script);
+  });</code></pre>
+
+    <h3>2. Student Wallet Panel (Preset Actions & Transactions)</h3>
+    <p>File path: <a href="file:///C:/Users/kkart/.gemini/antigravity/scratch/SmartRideTIET/frontend/src/pages/student/WalletPage.jsx" style="color: #93c5fd;"><code>frontend/src/pages/student/WalletPage.jsx</code></a></p>
+    <p>A styled view that queries the student's balance, displays past credit and debit transactions, and opens the checkout modal for preset buttons.</p>
+    
+    <pre><span class="lang-tag">javascript</span><code><span class="kw">const</span> PRESET_AMOUNTS = [<span class="num">50</span>, <span class="num">100</span>, <span class="num">200</span>, <span class="num">500</span>];
+
+<span class="kw">const</span> handleTopup = <span class="kw">async</span> () => {
+  <span class="kw">const</span> numAmount = <span class="fn">parseFloat</span>(amount);
+  setTopping(<span class="kw">true</span>);
+  <span class="kw">try</span> {
+    <span class="kw">const</span> loaded = <span class="kw">await</span> <span class="fn">loadRazorpayScript</span>();
+    <span class="kw">if</span> (!loaded) <span class="kw">return</span> toast.<span class="fn">error</span>(<span class="str">'Script failed to load.'</span>);
+
+    <span class="kw">const</span> orderData = <span class="kw">await</span> <span class="fn">createTopupOrder</span>(numAmount);
+    <span class="fn">openRazorpayCheckout</span>(orderData, { name: user.displayName, email: user.email }, <span class="kw">async</span> (res) => {
+      <span class="kw">await</span> <span class="fn">verifyPayment</span>({
+        razorpay_order_id: res.razorpay_order_id,
+        razorpay_payment_id: res.razorpay_payment_id,
+        razorpay_signature: res.razorpay_signature,
+        type: <span class="str">'wallet'</span>
+      });
+      toast.<span class="fn">success</span>(<span class="str">'Wallet loaded!'</span>);
+      <span class="fn">loadWallet</span>();
+    });
+  } <span class="kw">catch</span> (err) {
+    toast.<span class="fn">error</span>(<span class="str">'Topup failed.'</span>);
+  } <span class="kw">finally</span> {
+    <span class="fn">setTopping</span>(<span class="kw">false</span>);
+  }
+};</code></pre>
+  </div>
+
+  <!-- ── SECTION 6 ── -->
+  <div class="section" id="s6">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <h2>Razorpay Integration Setup — Step by Step</h2>
+    </div>
+    <p>Setup a standard test merchant profile using these steps to test checkout transactions locally without real currency.</p>
+    
+    <ol class="steps">
+      <li>
+        <p><strong>Create Account:</strong> Go to the <a href="https://dashboard.razorpay.com/signup" target="_blank" style="color: #93c5fd;">Razorpay Dashboard</a> and complete the sign-up. Keep the account in **Test Mode** (indicated by an orange badge at the top menu).</p>
+      </li>
+      <li>
+        <p><strong>Generate Credentials:</strong> Navigate to <code>Settings &gt; API Keys</code> and click <code>Generate Key</code>. Immediately copy both the <strong>Key ID</strong> and <strong>Key Secret</strong> to a text document.</p>
+      </li>
+      <li>
+        <p><strong>Edit Server Environment:</strong> Paste the credentials directly into <code>backend/.env</code> under the Razorpay config lines.</p>
+      </li>
+      <li>
+        <p><strong>Edit Client Environment:</strong> Paste the <strong>Key ID Only</strong> as <code>VITE_RAZORPAY_KEY_ID</code> in <code>frontend/.env</code>. Do not expose your Secret key to the client folder.</p>
+      </li>
+      <li>
+        <p><strong>Test Credentials:</strong> Initiate a transaction. When checkout opens, input <code>success@razorpay</code> as the UPI handle or use card number <code>4111 1111 1111 1111</code> with expiry <code>12/28</code> and CVV <code>123</code>.</p>
+      </li>
+    </ol>
+
+    <div class="alert alert-warn">
+      <div class="alert-icon">⚠️</div>
+      <div class="alert-body">
+        <div class="alert-title">Strict API Hygiene</div>
+        The Key Secret acts as your private signing certificate. If you accidentally publish it to GitHub or client bundles, anyone can compromise payment confirmations.
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 7 ── -->
+  <div class="section" id="s7">
+    <div class="section-header">
+      <div class="section-num">7</div>
+      <h2>Terminal Commands — When & Why</h2>
+    </div>
+    <p>Run these terminal utilities inside the corresponding project folders to manage dependencies and boot the application stacks.</p>
+
+    <div class="terminal">
+      <div class="terminal-header">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+        <div class="terminal-label">backend-terminal</div>
+      </div>
+      <div class="terminal-body">
+        <code>
+          <span class="t-prompt">backend&gt;</span> <span class="t-cmd">npm install express cors dotenv firebase-admin razorpay nodemon</span><br />
+          <span class="t-out"># Installs the complete backend web-server core alongside the merchant payment SDK.</span><br /><br />
+          <span class="t-prompt">backend&gt;</span> <span class="t-cmd">npm run dev</span><br />
+          <span class="t-success"># Launches nodemon monitoring node to reload server.js instantly on file modifications.</span>
+        </code>
+      </div>
+    </div>
+
+    <div class="terminal">
+      <div class="terminal-header">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+        <div class="terminal-label">frontend-terminal</div>
+      </div>
+      <div class="terminal-body">
+        <code>
+          <span class="t-prompt">frontend&gt;</span> <span class="t-cmd">npm run dev</span><br />
+          <span class="t-success"># Launches Vite bundler on port 5173 (or 5174 if occupied) with local HMR client.</span>
+        </code>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 8 ── -->
+  <div class="section" id="s8">
+    <div class="section-header">
+      <div class="section-num">8</div>
+      <h2>Errors & Fixes</h2>
+    </div>
+    <p>During the initialization of Phase 5, these specific blockers arose and were resolved. Review them to prevent runtime crashes.</p>
+
+    <div class="error-card">
+      <div class="error-title">❌ Error: 'nodemon' is not recognized as an internal or external command</div>
+      <div class="error-msg">nodemon server.js - command not found</div>
+      <div class="fix-title">🔧 Fix Applied:</div>
+      <p>Nodemon was missing from node modules. We executed <code>npm install express cors dotenv firebase-admin razorpay nodemon</code> to install nodemon and the missing backend core files concurrently.</p>
+    </div>
+
+    <div class="error-card">
+      <div class="error-title">❌ TypeError: admin.firestore is not a function</div>
+      <div class="error-msg">TypeError: admin.firestore is not a function at Object.&lt;anonymous&gt; (payment.controller.js)</div>
+      <div class="fix-title">🔧 Fix Applied:</div>
+      <p>The code was written in legacy Firestore syntax (v9). We replaced the legacy imports with the modular patterns used in <code>config/firebase.js</code>, modifying references to use <code>{ db }</code> and <code>{ FieldValue }</code> directly.</p>
+      <pre style="margin: 0.5rem 0 0;"><span class="lang-tag">javascript</span><code><span class="kw">const</span> { db } = <span class="fn">require</span>(<span class="str">'../config/firebase'</span>);
+<span class="kw">const</span> { FieldValue } = <span class="fn">require</span>(<span class="str">'firebase-admin/firestore'</span>);</code></pre>
+    </div>
+
+    <div class="alert alert-success">
+      <div class="alert-icon">✓</div>
+      <div class="alert-body">
+        <div class="alert-title">Environment Variables Load Order</div>
+        Remember to stop and restart the terminal tasks (<code>npm run dev</code>) after adding API keys to <code>.env</code> files. Dev tools do not hot-reload system variables dynamically.
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 9 ── -->
+  <div class="section" id="s9">
+    <div class="section-header">
+      <div class="section-num">9</div>
+      <h2>Phase 5 Final Checklist</h2>
+    </div>
+    <p>Verify that all functional flows of the payment system operate correctly according to this list:</p>
+
+    <ul class="checklist">
+      <li>
+        <span class="check-done">✓</span>
+        <div><strong>Razorpay Order Generation:</strong> Checkout creates order records in Firebase with <code>status: "created"</code>.</div>
+      </li>
+      <li>
+        <span class="check-done">✓</span>
+        <div><strong>Signature Authenticator:</strong> Node backend verifies checksums using secure HMAC digest checks.</div>
+      </li>
+      <li>
+        <span class="check-done">✓</span>
+        <div><strong>Atomic Balance Deductor:</strong> Wallet charges deduct atomically using transactional batches in Firestore.</div>
+      </li>
+      <li>
+        <span class="check-done">✓</span>
+        <div><strong>Audit Ledgers:</strong> Both credits and debits log transaction receipts in sub-collections.</div>
+      </li>
+      <li>
+        <span class="check-done">✓</span>
+        <div><strong>Dynamic Overlay Modal:</strong> Payment Page redirects seamlessly to payment screens upon ride booking.</div>
+      </li>
+    </ul>
+
+    <div class="divider"></div>
+    <p style="text-align: center; color: var(--text3); font-size: 0.85rem;">SmartRideTIET Notes • Handcrafted for Thapar Campus Ride Sharing Platform</p>
+  </div>
+
+</div>
+</body>
+</html>

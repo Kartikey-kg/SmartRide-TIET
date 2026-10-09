@@ -1,0 +1,372 @@
+/* src/pages/student/BookRide.css — Phase 3 Ride Booking */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* ── Layout ──────────────────────────────────────────────── */
+.book-ride-page {
+  min-height: 100vh;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  padding-top: 64px;
+}
+
+.book-ride-container {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+}
+
+/* ── Page Header ─────────────────────────────────────────── */
+.book-ride-header {
+  margin-bottom: 2rem;
+}
+
+.book-ride-header h1 {
+  font-size: 1.9rem;
+  font-weight: 800;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.35rem;
+}
+
+.book-ride-header p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+/* ── Card ─────────────────────────────────────────────────── */
+.book-ride-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 2rem;
+  margin-bottom: 1.25rem;
+  position: relative;
+  box-shadow: var(--shadow-md);
+}
+
+/* ── Location Inputs ─────────────────────────────────────── */
+.location-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.location-input-wrapper {
+  position: relative;
+}
+
+.location-input-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 0.45rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.location-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.dot-pickup { background: var(--primary-red); box-shadow: 0 0 8px rgba(80, 53, 44, 0.5); }
+.dot-drop   { background: var(--accent-gold); box-shadow: 0 0 8px rgba(201, 168, 106, 0.5); }
+
+.location-connector {
+  position: absolute;
+  left: 13px;
+  top: calc(100% - 1rem);
+  width: 2px;
+  height: 1rem;
+  background: linear-gradient(to bottom, var(--primary-red), var(--accent-gold));
+  z-index: 1;
+}
+
+.location-input {
+  width: 100%;
+  background: rgba(42, 29, 22, 0.03);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 0.85rem 1rem 0.85rem 2.8rem;
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+  box-sizing: border-box;
+}
+
+.location-input::placeholder { color: var(--text-muted); }
+
+.location-input:focus {
+  border-color: var(--primary-red);
+  background: rgba(80, 53, 44, 0.05);
+}
+
+.location-input-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  pointer-events: none;
+}
+
+.suggestions-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+  z-index: 100;
+  box-shadow: var(--shadow-lg);
+}
+
+.suggestion-item {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-light);
+  transition: background 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.suggestion-item:last-child { border-bottom: none; }
+.suggestion-item:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+.suggestion-item .suggestion-icon { font-size: 0.95rem; opacity: 0.7; }
+
+/* ── Fare Card ───────────────────────────────────────────── */
+.fare-card {
+  background: linear-gradient(135deg, rgba(80, 53, 44, 0.08), rgba(201, 168, 106, 0.05));
+  border: 1px solid rgba(80, 53, 44, 0.25);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-top: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  transition: border-color 0.3s;
+}
+
+.fare-item {
+  text-align: center;
+}
+
+.fare-item-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.fare-item-value {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--primary-red);
+}
+
+.fare-item-value.fare-amount { color: var(--olive-green); }
+.fare-item-value.fare-dist   { color: var(--secondary-red); }
+.fare-item-value.fare-time   { color: var(--accent-gold); }
+
+.fare-divider {
+  width: 1px;
+  height: 40px;
+  background: var(--border-light);
+}
+
+/* ── Popular Locations ───────────────────────────────────── */
+.quick-locations {
+  margin-bottom: 1.25rem;
+}
+
+.quick-locations-title {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+}
+
+.quick-locations-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  overflow-y: auto;
+  padding-bottom: 0.25rem;
+}
+.quick-locations-grid::-webkit-scrollbar { height: 4px; width: 4px; }
+.quick-locations-grid::-webkit-scrollbar-track { background: transparent; }
+.quick-locations-grid::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 4px; }
+
+.quick-loc-chip {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.78rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.18s;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: 'Inter', sans-serif;
+}
+
+.quick-loc-chip:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--primary-red);
+  transform: translateY(-1px);
+}
+
+/* ── Book Button ─────────────────────────────────────────── */
+.book-btn {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: var(--gradient-primary);
+  border: none;
+  border-radius: 14px;
+  color: white;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s;
+  margin-top: 1.5rem;
+  letter-spacing: 0.02em;
+  position: relative;
+  overflow: hidden;
+}
+
+.book-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-primary);
+  filter: brightness(1.15);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.book-btn:hover:not(:disabled)::before { opacity: 1; }
+.book-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(80, 53, 44, 0.35); }
+.book-btn:active:not(:disabled) { transform: translateY(0); }
+.book-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.book-btn span { position: relative; z-index: 1; }
+
+/* ── Booking Status ──────────────────────────────────────── */
+.booking-status-banner {
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+  animation: fadeSlideIn 0.4s ease;
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.booking-status-top {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.booking-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(1.3); }
+}
+
+.booking-status-label {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.booking-status-id {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-family: monospace;
+  margin-top: 0.2rem;
+}
+
+.booking-cancel-btn {
+  background: rgba(184, 100, 80, 0.12);
+  border: 1px solid rgba(184, 100, 80, 0.3);
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  color: var(--secondary-red);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 0.75rem;
+}
+
+.booking-cancel-btn:hover { background: rgba(184, 100, 80, 0.2); }
+
+/* ── Driver Info ─────────────────────────────────────────── */
+.driver-info-card {
+  background: rgba(184, 100, 80, 0.07);
+  border: 1px solid rgba(184, 100, 80, 0.2);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.driver-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.driver-info-name {
+  font-weight: 700;
+  color: var(--primary-red);
+}
+
+.driver-info-sub {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-top: 0.1rem;
+}

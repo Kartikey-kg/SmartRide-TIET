@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartRideTIET – Phase 4 Complete Notes</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap');
+
+    :root {
+      --bg: #0d0d1a;
+      --bg2: #111128;
+      --bg3: #16162a;
+      --border: #2a2a4a;
+      --purple: #7c3aed;
+      --blue: #3b82f6;
+      --green: #22c55e;
+      --orange: #f97316;
+      --red: #ef4444;
+      --yellow: #eab308;
+      --cyan: #06b6d4;
+      --text: #f0f0ff;
+      --text2: #a0a0c0;
+      --text3: #6060a0;
+      --grad: linear-gradient(135deg, #7c3aed, #06b6d4);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    /* ── Print PDF button ── */
+    .pdf-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: rgba(13,13,26,0.97);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 999;
+      backdrop-filter: blur(10px);
+    }
+    .pdf-bar-title { font-weight: 700; font-size: 1rem; }
+    .pdf-bar-title span { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .btn-pdf {
+      background: var(--grad);
+      color: white;
+      border: none;
+      padding: 0.55rem 1.4rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+      box-shadow: 0 4px 15px rgba(124,58,237,0.4);
+    }
+    .btn-pdf:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,58,237,0.5); }
+
+    /* ── Main Layout ── */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 6rem 2rem 4rem;
+    }
+
+    /* ── Cover ── */
+    .cover {
+      text-align: center;
+      padding: 3rem 0 4rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 3rem;
+    }
+    .cover-badge {
+      display: inline-block;
+      background: rgba(6,182,212,0.15);
+      border: 1px solid rgba(6,182,212,0.4);
+      border-radius: 50px;
+      padding: 0.35rem 1rem;
+      font-size: 0.85rem;
+      color: #67e8f9;
+      margin-bottom: 1.5rem;
+    }
+    .cover h1 { font-size: 3rem; font-weight: 900; line-height: 1.1; margin-bottom: 1rem; }
+    .cover h1 span { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .cover p { color: var(--text2); max-width: 600px; margin: 0 auto 2rem; }
+    .cover-meta {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .meta-item { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 0.75rem 1.25rem; text-align: center; }
+    .meta-label { font-size: 0.75rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; }
+    .meta-value { font-weight: 700; font-size: 1rem; color: var(--text); }
+
+    /* ── TOC ── */
+    .toc { background: var(--bg3); border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem 2rem; margin-bottom: 3rem; }
+    .toc h2 { font-size: 1.1rem; margin-bottom: 1rem; color: #67e8f9; }
+    .toc ol { padding-left: 1.25rem; }
+    .toc li { margin-bottom: 0.35rem; }
+    .toc a { color: var(--text2); text-decoration: none; font-size: 0.92rem; transition: color 0.2s; }
+    .toc a:hover { color: #67e8f9; }
+
+    /* ── Sections ── */
+    .section { margin-bottom: 4rem; }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border);
+    }
+    .section-num {
+      width: 40px; height: 40px;
+      background: var(--grad);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .section h2 { font-size: 1.6rem; font-weight: 800; }
+
+    /* ── Sub sections ── */
+    h3 { font-size: 1.15rem; font-weight: 700; margin: 2rem 0 0.75rem; color: #67e8f9; }
+    h4 { font-size: 1rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: #93c5fd; }
+    p { color: var(--text2); margin-bottom: 0.75rem; }
+
+    /* ── Code blocks ── */
+    pre {
+      background: #0a0a18;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      overflow-x: auto;
+      margin: 1rem 0 1.5rem;
+      position: relative;
+    }
+    code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      line-height: 1.7;
+    }
+    pre code { color: #e2e8f0; }
+    .inline-code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.82rem;
+      background: rgba(6,182,212,0.12);
+      color: #67e8f9;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      border: 1px solid rgba(6,182,212,0.2);
+    }
+    .lang-tag {
+      position: absolute;
+      top: 0.5rem; right: 0.75rem;
+      font-size: 0.72rem;
+      color: var(--text3);
+      font-family: 'Fira Code', monospace;
+      background: var(--bg);
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+    }
+
+    /* Syntax colors */
+    .kw { color: #c084fc; }
+    .fn { color: #60a5fa; }
+    .str { color: #86efac; }
+    .cm { color: #4a4a7a; font-style: italic; }
+    .num { color: #fb923c; }
+    .var { color: #f0f0ff; }
+    .prop { color: #93c5fd; }
+
+    /* ── Cards ── */
+    .card { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
+    .card-title { font-weight: 700; margin-bottom: 0.4rem; font-size: 0.95rem; }
+    .card p { margin-bottom: 0; font-size: 0.9rem; }
+    .card ul { padding-left: 1.2rem; margin-top: 0.4rem; }
+    .card li { font-size: 0.88rem; color: var(--text2); margin-bottom: 0.25rem; }
+
+    /* ── Alert boxes ── */
+    .alert { border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; display: flex; gap: 0.75rem; }
+    .alert-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 0.1rem; }
+    .alert-body { font-size: 0.9rem; }
+    .alert-note  { background: rgba(59,130,246,0.1);  border: 1px solid rgba(59,130,246,0.3);  }
+    .alert-warn  { background: rgba(234,179,8,0.1);   border: 1px solid rgba(234,179,8,0.3);   }
+    .alert-error { background: rgba(239,68,68,0.1);   border: 1px solid rgba(239,68,68,0.3);   }
+    .alert-success { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3);   }
+    .alert-title { font-weight: 700; margin-bottom: 0.2rem; }
+
+    /* ── Step list ── */
+    .steps { list-style: none; counter-reset: step; }
+    .steps li {
+      counter-increment: step;
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      align-items: flex-start;
+    }
+    .steps li::before {
+      content: counter(step);
+      background: var(--grad);
+      color: white;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.78rem; font-weight: 800;
+      flex-shrink: 0;
+    }
+    .steps li p { margin-bottom: 0; font-size: 0.92rem; }
+
+    /* ── Table ── */
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; }
+    th { background: rgba(6,182,212,0.15); color: #67e8f9; font-size: 0.85rem; padding: 0.65rem 1rem; text-align: left; border: 1px solid var(--border); }
+    td { padding: 0.6rem 1rem; border: 1px solid var(--border); font-size: 0.87rem; color: var(--text2); vertical-align: top; }
+    tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+    /* ── Terminal ── */
+    .terminal {
+      background: #050510;
+      border: 1px solid #1a1a3a;
+      border-radius: 10px;
+      padding: 0;
+      margin: 1rem 0 1.5rem;
+      overflow: hidden;
+    }
+    .terminal-header {
+      background: #111128;
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-r { background: #ef4444; }
+    .dot-y { background: #eab308; }
+    .dot-g { background: #22c55e; }
+    .terminal-label { margin-left: 0.5rem; font-size: 0.75rem; color: var(--text3); font-family: 'Fira Code', monospace; }
+    .terminal-body { padding: 1rem 1.25rem; }
+    .terminal-body code { color: #e2e8f0; font-size: 0.85rem; line-height: 1.8; }
+    .t-prompt { color: #22c55e; }
+    .t-cmd { color: #f0f0ff; }
+    .t-out { color: #6060a0; }
+
+    /* ── Error card ── */
+    .error-card { background: rgba(239,68,68,0.05); border: 1px solid rgba(239,68,68,0.2); border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; }
+    .error-title { color: #f87171; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+    .error-msg { background: #0a0a18; border-radius: 6px; padding: 0.75rem 1rem; font-family: 'Fira Code', monospace; font-size: 0.8rem; color: #f87171; margin: 0.5rem 0; overflow-x: auto; }
+    .fix-title { color: #4ade80; font-weight: 700; font-size: 0.9rem; margin-top: 1rem; margin-bottom: 0.4rem; }
+
+    /* ── Concept box ── */
+    .concept { background: rgba(124,58,237,0.07); border-left: 3px solid var(--purple); border-radius: 0 10px 10px 0; padding: 1rem 1.25rem; margin: 1rem 0; }
+    .concept-term { font-weight: 700; color: #c4b5fd; margin-bottom: 0.3rem; }
+    .concept p { margin-bottom: 0; font-size: 0.9rem; }
+
+    /* ── Checklist ── */
+    .checklist { list-style: none; }
+    .checklist li { display: flex; align-items: flex-start; gap: 0.6rem; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text2); }
+    .check-done { color: var(--green); font-size: 1rem; flex-shrink: 0; }
+
+    /* ── Print styles ── */
+    @media print {
+      .pdf-bar { display: none !important; }
+      body { background: white; color: #111; font-size: 12px; }
+      :root {
+        --bg: white; --bg2: #f8f8f8; --bg3: #f0f0f8;
+        --border: #ddd; --text: #111; --text2: #444; --text3: #888;
+        --purple: #5b21b6; --blue: #1d4ed8;
+      }
+      .container { padding-top: 1rem; max-width: 100%; }
+      pre, .terminal-body { background: #f5f5f5 !important; border-color: #ddd; }
+      pre code, .terminal-body code { color: #222; }
+      .alert-note { background: #eff6ff !important; }
+      .alert-warn { background: #fffbeb !important; }
+      .alert-error { background: #fef2f2 !important; }
+      .alert-success { background: #f0fdf4 !important; }
+      .concept { background: #f5f0ff !important; }
+      .error-msg { background: #fff5f5 !important; color: #c00 !important; }
+      pre { page-break-inside: avoid; }
+      .section { page-break-inside: avoid; }
+      h2, h3 { page-break-after: avoid; }
+      a { color: inherit; text-decoration: none; }
+    }
+
+    .divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+  </style>
+</head>
+<body>
+
+<!-- PDF Download Bar -->
+<div class="pdf-bar">
+  <div class="pdf-bar-title">🚌 SmartRide<span>TIET</span> — Phase 4 Notes</div>
+  <button class="btn-pdf" onclick="window.print()">
+    📥 Download as PDF
+  </button>
+</div>
+
+<div class="container">
+
+  <!-- ── COVER ── -->
+  <div class="cover">
+    <div class="cover-badge">📗 Complete Study Notes</div>
+    <h1>SmartRideTIET<br /><span>Phase 4 Notes</span></h1>
+    <p>Every file, every concept, every command, every error — all explained in simple language. Premium Admin Dashboard, platform analytics, real-time user role modifications, search/filter operations, and expandable rides manager with pagination.</p>
+    <div class="cover-meta">
+      <div class="meta-item"><div class="meta-label">Phase</div><div class="meta-value">Phase 4 — Admin</div></div>
+      <div class="meta-item"><div class="meta-label">Stack</div><div class="meta-value">React + CSS + Node.js + Firestore</div></div>
+      <div class="meta-item"><div class="meta-label">Status</div><div class="meta-value" style="color:#22c55e">✅ Complete</div></div>
+      <div class="meta-item"><div class="meta-label">Build</div><div class="meta-value">1887 modules ✅</div></div>
+    </div>
+  </div>
+
+  <!-- ── TABLE OF CONTENTS ── -->
+  <div class="toc">
+    <h2>📋 Table of Contents</h2>
+    <ol>
+      <li><a href="#s1">What Phase 4 Builds — Overview</a></li>
+      <li><a href="#s2">Key Concepts Explained</a></li>
+      <li><a href="#s3">New &amp; Updated Files in Phase 4</a></li>
+      <li><a href="#s4">Frontend Files — Code Explained</a></li>
+      <li><a href="#s5">Backend Files — Code Explained</a></li>
+      <li><a href="#s6">Admin Analytics — How It Works</a></li>
+      <li><a href="#s7">Terminal Commands — When &amp; Why</a></li>
+      <li><a href="#s8">Admin Flows — How Everything Connects</a></li>
+      <li><a href="#s9">Errors Faced &amp; How We Fixed Them</a></li>
+      <li><a href="#s10">Phase 4 Final Checklist</a></li>
+    </ol>
+  </div>
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 1: OVERVIEW -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s1">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <h2>What Phase 4 Builds — Overview</h2>
+    </div>
+
+    <p>Phase 4 introduces the <strong>Admin Dashboard &amp; Control Plane</strong> of SmartRideTIET. Now that students can book rides (Phase 3) and drivers can accept them, the platform owners need a premium dashboard to manage the campus-wide platform. This phase replaces the previous stubs with fully functional pages for global analytics, user role updates, account deletion, and ride details tracking.</p>
+
+    <h3>🎯 What Gets Built in Phase 4</h3>
+    <table>
+      <tr><th>Feature</th><th>What it does</th><th>Files involved</th></tr>
+      <tr><td>Admin Dashboard</td><td>Live platform stats (Revenue, Rides, Users), Pure CSS/SVG analytics charts, 10 recent rides feed. Auto-polls database every 30 seconds.</td><td>AdminDashboard.jsx, Admin.css</td></tr>
+      <tr><td>User Management</td><td>List all users, filter by role (Students/Drivers/Admins), text-search by name/email/phone, modify roles via a modal interface, delete accounts from Auth &amp; DB.</td><td>AdminUsers.jsx, Admin.css</td></tr>
+      <tr><td>All Rides Explorer</td><td>Scrollable and searchable ride logs, filter tabs for 6 ride states, summary stats header, expandable cards showing GPS coordinates/timestamps, client pagination.</td><td>AdminRides.jsx, Admin.css</td></tr>
+      <tr><td>Analytics Endpoint</td><td>Backend API to group historical rides into 7 daily buckets for tracking platform performance over the last week.</td><td>admin.controller.js, admin.routes.js</td></tr>
+      <tr><td>Admin Cancel Endpoint</td><td>Enables admins to forcefully cancel any pending or ongoing ride document directly.</td><td>admin.controller.js, admin.routes.js</td></tr>
+    </table>
+
+    <div class="alert alert-note">
+      <div class="alert-icon">💡</div>
+      <div class="alert-body">
+        <div class="alert-title">Performance Optimization: Pure SVG Charts</div>
+        Instead of loading heavy, third-party charting libraries like Chart.js or Recharts (which expand the React bundle size by megabytes), Phase 4 features customized, lightweight, pure SVG charts that render instantly and fit seamlessly into our dark glassmorphism design system.
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 2: KEY CONCEPTS -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s2">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <h2>Key Concepts Explained</h2>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 Admin Role Protection</div>
+      <p>Custom backend security middleware that executes on the server. First, <span class="inline-code">verifyToken</span> decodes the Firebase ID token in the request headers to extract the user's UID. Second, <span class="inline-code">requireRole('admin')</span> fetches their record from the Firestore "users" collection to ensure their role attribute is exactly set to "admin". Any non-admin attempts yield a <span class="inline-code">403 Forbidden</span> error.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 SVG Donut Charts (`strokeDasharray` &amp; `strokeDashoffset`)</div>
+      <p>A circle in SVG has a circumference computed as \(2 \pi R\). By setting the circle's <span class="inline-code">strokeDasharray</span> to the size of a segment and using <span class="inline-code">strokeDashoffset</span> to rotate it, we can align multiple circles on top of each other to draw complex donut charts natively in the DOM with no external modules.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 Client-Side Pagination &amp; Filtering</div>
+      <p>Instead of hitting the Firestore database for every search keypress (which would incur huge API costs), the admin pages download the list once, then combine search input matches and filter tab clicks client-side using JavaScript array operations. Results are paginated by slicing the filtered array: <span class="inline-code">filtered.slice(page * 15, (page + 1) * 15)</span>.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 Firebase Auth User Deletion</div>
+      <p>When an admin deletes a user, the system must clean up both Firestore database documents (using `db.collection().doc().delete()`) and the primary credentials database in Firebase Authentication (using `auth.deleteUser(uid)` from the `firebase-admin` SDK) so the deleted user cannot log in again.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 Background Polling (setInterval)</div>
+      <p>The dashboard runs a background timer using React's <span class="inline-code">useEffect</span> hook. Every 30 seconds, it triggers a silent fetch to reload metrics from the server. An active ref stores the timer index so that it can be cleared cleanly when the user exits the admin section, protecting against memory leaks.</p>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 3: NEW & UPDATED FILES -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s3">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <h2>New &amp; Updated Files in Phase 4</h2>
+    </div>
+
+    <p>Below is the file tree highlighting the modifications introduced in Phase 4:</p>
+
+    <div class="card">
+      <div class="card-title">📁 Project Structure Overview</div>
+      <ul style="list-style-type: none; padding-left: 0.5rem; font-family: 'Fira Code', monospace; font-size: 0.85rem;">
+        <li>SmartRideTIET/</li>
+        <li>├── backend/</li>
+        <li>│   ├── controllers/</li>
+        <li>│   │   └── <span style="color:#86efac">admin.controller.js</span> (Added getAnalytics &amp; cancelRideAdmin)</li>
+        <li>│   └── routes/</li>
+        <li>│       └── <span style="color:#86efac">admin.routes.js</span> (Added analytics &amp; cancel routes)</li>
+        <li>└── frontend/</li>
+        <li>    └── src/</li>
+        <li>        ├── pages/</li>
+        <li>        │   └── admin/</li>
+        <li>        │       ├── <span style="color:#67e8f9">AdminDashboard.jsx</span> [NEW]</li>
+        <li>        │       ├── <span style="color:#67e8f9">AdminUsers.jsx</span> [NEW]</li>
+        <li>        │       ├── <span style="color:#67e8f9">AdminRides.jsx</span> [NEW]</li>
+        <li>        │       └── <span style="color:#ec4899">Admin.css</span> [NEW]</li>
+        <li>        └── services/</li>
+        <li>            └── <span style="color:#86efac">api.js</span> (Added analytics &amp; cancel exports)</li>
+      </ul>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 4: FRONTEND FILES CODES -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s4">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <h2>Frontend Files — Code Explained</h2>
+    </div>
+
+    <h3>1. AdminDashboard.jsx (Stats &amp; Dynamic Charts)</h3>
+    <p>Displays stat summaries and translates Firestore ride logs into SVG visuals and weekly trends.</p>
+    <pre><code class="javascript"><span class="kw">const</span> DonutChart = ({ segments }) => {
+  <span class="kw">const</span> total = segments.reduce((s, x) => s + x.value, 0) || 1;
+  <span class="kw">let</span> cumulative = 0;
+  <span class="kw">const</span> R = 44, CX = 50, CY = 50;
+  <span class="kw">const</span> circumference = 2 * Math.PI * R;
+
+  <span class="kw">return</span> (
+    &lt;svg viewBox="0 0 100 100" className="donut-svg"&gt;
+      &lt;circle cx={CX} cy={CY} r={R} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="12" /&gt;
+      {segments.map((seg, i) => {
+        <span class="kw">const</span> pct = seg.value / total;
+        <span class="kw">const</span> offset = circumference * (1 - cumulative);
+        cumulative += pct;
+        <span class="kw">return</span> (
+          &lt;circle
+            key={i} cx={CX} cy={CY} r={R} fill="none"
+            stroke={seg.color} strokeWidth="12"
+            strokeDasharray={`${circumference * pct} ${circumference * (1 - pct)}`}
+            strokeDashoffset={offset}
+            style={{ transform: 'rotate(-90deg)', transformOrigin: '50% 50%' }}
+          /&gt;
+        );
+      })}
+    &lt;/svg&gt;
+  );
+};</code><div class="lang-tag">DonutChart Component</div></pre>
+
+    <h3>2. AdminUsers.jsx (Search, Modals &amp; Operations)</h3>
+    <p>Implements user lookup, role updates, and safety-guarded account deletion.</p>
+    <pre><code class="javascript"><span class="kw">const</span> UserCard = ({ user, onRoleChange, onDelete, currentAdminId }) => {
+  <span class="kw">return</span> (
+    &lt;div className="user-card"&gt;
+      &lt;div className="user-card-name"&gt;{user.name}&lt;/div&gt;
+      &lt;div className="user-card-email"&gt;{user.email}&lt;/div&gt;
+      &lt;button className="role-btn" onClick={() => onRoleChange(user)}&gt;
+        🔄 Change Role
+      &lt;/button&gt;
+      {user.id !== currentAdminId && (
+        &lt;button className="delete-btn" onClick={() => onDelete(user)}&gt;
+          🗑 Delete
+        &lt;/button&gt;
+      )}
+    &lt;/div&gt;
+  );
+};</code><div class="lang-tag">UserCard Security Guard</div></pre>
+
+    <h3>3. AdminRides.jsx (Expandable Cards &amp; Pagination)</h3>
+    <p>Provides detail expansion and pagination to navigate platform logs smoothly.</p>
+    <pre><code class="javascript"><span class="kw">const</span> paginated = searchFiltered.slice(page * 15, (page + 1) * 15);
+<span class="kw">const</span> totalPages = Math.ceil(searchFiltered.length / 15);
+
+<span class="kw">return</span> (
+  &lt;div className="pagination"&gt;
+    &lt;button onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0}&gt;
+      ← Prev
+    &lt;/button&gt;
+    &lt;span&gt;Page {page + 1} of {totalPages}&lt;/span&gt;
+    &lt;button onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} disabled={page >= totalPages - 1}&gt;
+      Next →
+    &lt;/button&gt;
+  &lt;/div&gt;
+);</code><div class="lang-tag">Pagination Slicing</div></pre>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 5: BACKEND FILES CODES -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s5">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <h2>Backend Files — Code Explained</h2>
+    </div>
+
+    <h3>1. admin.routes.js</h3>
+    <p>Configures access control and exposes endpoints for platform oversight.</p>
+    <pre><code class="javascript"><span class="kw">const</span> express = require(<span class="str">'express'</span>);
+<span class="kw">const</span> router = express.Router();
+<span class="kw">const</span> { verifyToken, requireRole } = require(<span class="str">'../middleware/auth.middleware'</span>);
+<span class="kw">const</span> adminController = require(<span class="str">'../controllers/admin.controller'</span>);
+
+<span class="cm">// Require admin privileges for all endpoints below</span>
+router.use(verifyToken, requireRole(<span class="str">'admin'</span>));
+
+router.get(<span class="str">'/stats'</span>, adminController.getDashboardStats);
+router.get(<span class="str">'/rides'</span>, adminController.getAllRides);
+router.get(<span class="str">'/users'</span>, adminController.getAllUsers);
+router.put(<span class="str">'/users/:id/role'</span>, adminController.changeUserRole);
+router.delete(<span class="str">'/users/:id'</span>, adminController.deleteUser);
+router.get(<span class="str">'/analytics'</span>, adminController.getAnalytics);
+router.put(<span class="str">'/rides/:id/cancel'</span>, adminController.cancelRideAdmin);
+
+module.exports = router;</code><div class="lang-tag">admin.routes.js</div></pre>
+
+    <h3>2. admin.controller.js</h3>
+    <p>Exposes functions to execute administrative modifications safely.</p>
+    <pre><code class="javascript"><span class="kw">const</span> deleteUser = <span class="kw">async</span> (req, res) => {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> uid = req.params.id;
+    <span class="cm">// Remove user profile from Firestore database</span>
+    <span class="kw">await</span> db.collection(<span class="str">'users'</span>).doc(uid).delete();
+    <span class="cm">// Erase user identity from Firebase Auth server core</span>
+    <span class="kw">await</span> auth.deleteUser(uid);
+    res.json({ message: <span class="str">'User deleted successfully.'</span> });
+  } <span class="kw">catch</span> (error) {
+    res.status(500).json({ error: error.message });
+  }
+};</code><div class="lang-tag">deleteUser Controller</div></pre>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 6: ADMIN ANALYTICS -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s6">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <h2>Admin Analytics — How It Works</h2>
+    </div>
+
+    <p>The system aggregates ride logs over the last 7 days. Here is the daily bucket calculation algorithm implemented in the controller:</p>
+
+    <pre><code class="javascript"><span class="kw">const</span> getAnalytics = <span class="kw">async</span> (req, res) => {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> snapshot = <span class="kw">await</span> db.collection(<span class="str">'rides'</span>).get();
+    <span class="kw">const</span> now = <span class="kw">new</span> Date();
+    
+    <span class="cm">// 1. Generate empty buckets for the last 7 days</span>
+    <span class="kw">const</span> buckets = Array.from({ length: 7 }, (_, i) => {
+      <span class="kw">const</span> d = <span class="kw">new</span> Date(now);
+      d.setDate(d.getDate() - (6 - i));
+      <span class="kw">return</span> { date: d.toISOString().slice(0, 10), rides: 0, revenue: 0 };
+    });
+
+    <span class="cm">// 2. Map rides to their corresponding date bucket</span>
+    snapshot.forEach(doc => {
+      <span class="kw">const</span> data = doc.data();
+      <span class="kw">if</span> (!data.createdAt) <span class="kw">return</span>;
+      <span class="kw">const</span> dayStr = data.createdAt.slice(0, 10);
+      <span class="kw">const</span> bucket = buckets.find(b => b.date === dayStr);
+      <span class="kw">if</span> (bucket) {
+        bucket.rides++;
+        <span class="kw">if</span> (data.status === <span class="str">'completed'</span>) {
+          bucket.revenue += (data.fare || 0);
+        }
+      }
+    });
+
+    res.json({ analytics: buckets });
+  } <span class="kw">catch</span> (error) {
+    res.status(500).json({ error: error.message });
+  }
+};</code><div class="lang-tag">getAnalytics Backend Calculation</div></pre>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 7: TERMINAL COMMANDS -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s7">
+    <div class="section-header">
+      <div class="section-num">7</div>
+      <h2>Terminal Commands — When &amp; Why</h2>
+    </div>
+
+    <p>Commands used to launch, test, and package Phase 4 components:</p>
+
+    <div class="terminal">
+      <div class="terminal-header">
+        <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+        <span class="terminal-label">Powershell Terminal</span>
+      </div>
+      <div class="terminal-body">
+        <code>
+          <span class="t-prompt">PS C:\SmartRideTIET\frontend&gt;</span> <span class="t-cmd">npx vite build</span><br />
+          <span class="t-out">vite v8.1.3 building client environment for production...</span><br />
+          <span class="t-out">transforming...✓ 1887 modules transformed.</span><br />
+          <span class="t-out">dist/assets/index-BV6MI0pd.css     41.05 kB</span><br />
+          <span class="t-out">dist/assets/index-ck9U0Qej.js   1,585.60 kB</span><br />
+          <span class="t-success">✓ built in 1.56s (0 errors)</span>
+        </code>
+      </div>
+    </div>
+
+    <h3>Vite Production Preview</h3>
+    <p>To test the production build locally before deployment, run:</p>
+    <div class="terminal">
+      <div class="terminal-header">
+        <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+        <span class="terminal-label">Powershell Terminal</span>
+      </div>
+      <div class="terminal-body">
+        <code>
+          <span class="t-prompt">PS C:\SmartRideTIET\frontend&gt;</span> <span class="t-cmd">npx vite preview</span><br />
+          <span class="t-out">  ➜  Local:   http://localhost:4173/</span>
+        </code>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 8: ADMIN FLOWS -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s8">
+    <div class="section-header">
+      <div class="section-num">8</div>
+      <h2>Admin Flows — How Everything Connects</h2>
+    </div>
+
+    <div class="flow"><span class="hl">User Administration Sequence:</span>
+Admin loads Page (/admin/users)
+  ├── Frontend invokes GET /api/admin/users
+  ├── Users render in grid list cards
+  ├── Search text matches user email/phone
+  ├── Click "Change Role" → Opens popup modal
+  │     └── Choose target role → PUT /api/admin/users/:id/role
+  └── Click "Delete User" → Confirmation box pops up
+        └── Click Delete → DELETE /api/admin/users/:id
+              ├── Firebase auth uid is deleted
+              └── Firestore document is deleted
+              └── Parent page triggers fetchUsers() to refresh list</div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 9: ERRORS & FIXES -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s9">
+    <div class="section-header">
+      <div class="section-num">9</div>
+      <h2>Errors Faced &amp; How We Fixed Them</h2>
+    </div>
+
+    <div class="error-card">
+      <div class="error-title">❌ Error 1 — Admin User Self-Deletion Loophole</div>
+      <div class="error-msg">Admin clicks "Delete" on their own profile list card, causing self-deletion and blocking platform access.</div>
+      <p style="color:#a0a0c0;font-size:0.88rem;margin-top:0.5rem"><strong>Why it happened:</strong> The delete button was visible on every user card without checking if the target user ID matched the logged-in administrator's UID.</p>
+      <div class="fix-title">✅ Fix — Add a conditional check utilizing currentAdminId:</div>
+      <div class="error-msg" style="color:#86efac">/* Hide delete button on current administrator's card */
+{user.id !== currentAdminId && (
+  &lt;button className="delete-btn" onClick={() => onDelete(user)}&gt;
+    🗑 Delete
+  &lt;/button&gt;
+)}</div>
+    </div>
+
+    <div class="error-card">
+      <div class="error-title">❌ Error 2 — Chart Zero Division (Infinity Height render error)</div>
+      <div class="error-msg">TypeError: Cannot divide by zero in calculations (Rendering bar heights)</div>
+      <p style="color:#a0a0c0;font-size:0.88rem;margin-top:0.5rem"><strong>Why it happened:</strong> If the database has zero ride records, the max value evaluates to 0. Slicing with <span class="inline-code">value / max * 100</span> causes a division-by-zero math error rendering height as Infinity.</p>
+      <div class="fix-title">✅ Fix — Use Math.max fallback:</div>
+      <div class="error-msg" style="color:#86efac">// Ensure max is at least 1
+const max = Math.max(...data.map(d => d.value), 1);</div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 10: CHECKLIST -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s10">
+    <div class="section-header">
+      <div class="section-num">10</div>
+      <h2>Phase 4 — Final Checklist</h2>
+    </div>
+
+    <h3>✅ Admin Frontend Pages</h3>
+    <ul class="checklist">
+      <li><span class="check-done">✅</span> <span class="inline-code">AdminDashboard.jsx</span> created with 4 stat tiles</li>
+      <li><span class="check-done">✅</span> Pure CSS SVG bar chart and double donut charts implemented</li>
+      <li><span class="check-done">✅</span> Silent auto-polling updates metrics every 30 seconds</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">AdminUsers.jsx</span> handles search and filters</li>
+      <li><span class="check-done">✅</span> Modals for role modification and account deletion built</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">AdminRides.jsx</span> includes status tabs, search, detail expansion, and pagination</li>
+    </ul>
+
+    <h3>✅ Backend &amp; Integration</h3>
+    <ul class="checklist">
+      <li><span class="check-done">✅</span> Express routes protected by token validation &amp; role check</li>
+      <li><span class="check-done">✅</span> Analytics daily-bucketing service built</li>
+      <li><span class="check-done">✅</span> Admin cancel route operational</li>
+      <li><span class="check-done">✅</span> API service connections integrated</li>
+    </ul>
+
+    <div class="alert alert-success" style="margin-top:2rem">
+      <div class="alert-icon">🎉</div>
+      <div class="alert-body">
+        <div class="alert-title">Phase 4 Complete!</div>
+        The admin control plane is live. Admin dashboard, user management, and rides log viewer are operational under role-based security. Next: <strong>Phase 5 — Notifications &amp; Polish</strong>.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  document.querySelectorAll('.toc a').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(link.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+
+</body>
+</html>

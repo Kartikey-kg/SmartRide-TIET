@@ -1,0 +1,1567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartRideTIET – Phase 2 Complete Notes</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap');
+
+    :root {
+      --bg: #0d0d1a;
+      --bg2: #111128;
+      --bg3: #16162a;
+      --border: #2a2a4a;
+      --purple: #7c3aed;
+      --blue: #3b82f6;
+      --green: #22c55e;
+      --orange: #f97316;
+      --red: #ef4444;
+      --yellow: #eab308;
+      --text: #f0f0ff;
+      --text2: #a0a0c0;
+      --text3: #6060a0;
+      --grad: linear-gradient(135deg, #7c3aed, #3b82f6);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    /* ── Print PDF button ── */
+    .pdf-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: rgba(13,13,26,0.97);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 999;
+      backdrop-filter: blur(10px);
+    }
+    .pdf-bar-title { font-weight: 700; font-size: 1rem; }
+    .pdf-bar-title span { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .btn-pdf {
+      background: var(--grad);
+      color: white;
+      border: none;
+      padding: 0.55rem 1.4rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+      box-shadow: 0 4px 15px rgba(124,58,237,0.4);
+    }
+    .btn-pdf:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,58,237,0.5); }
+
+    /* ── Main Layout ── */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 6rem 2rem 4rem;
+    }
+
+    /* ── Cover ── */
+    .cover {
+      text-align: center;
+      padding: 3rem 0 4rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 3rem;
+    }
+    .cover-badge {
+      display: inline-block;
+      background: rgba(124,58,237,0.15);
+      border: 1px solid rgba(124,58,237,0.4);
+      border-radius: 50px;
+      padding: 0.35rem 1rem;
+      font-size: 0.85rem;
+      color: #a78bfa;
+      margin-bottom: 1.5rem;
+    }
+    .cover h1 { font-size: 3rem; font-weight: 900; line-height: 1.1; margin-bottom: 1rem; }
+    .cover h1 span { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .cover p { color: var(--text2); max-width: 600px; margin: 0 auto 2rem; }
+    .cover-meta {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .meta-item { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 0.75rem 1.25rem; text-align: center; }
+    .meta-label { font-size: 0.75rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; }
+    .meta-value { font-weight: 700; font-size: 1rem; color: var(--text); }
+
+    /* ── TOC ── */
+    .toc { background: var(--bg3); border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem 2rem; margin-bottom: 3rem; }
+    .toc h2 { font-size: 1.1rem; margin-bottom: 1rem; color: #a78bfa; }
+    .toc ol { padding-left: 1.25rem; }
+    .toc li { margin-bottom: 0.35rem; }
+    .toc a { color: var(--text2); text-decoration: none; font-size: 0.92rem; transition: color 0.2s; }
+    .toc a:hover { color: #a78bfa; }
+
+    /* ── Sections ── */
+    .section { margin-bottom: 4rem; }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border);
+    }
+    .section-num {
+      width: 40px; height: 40px;
+      background: var(--grad);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .section h2 { font-size: 1.6rem; font-weight: 800; }
+
+    /* ── Sub sections ── */
+    h3 { font-size: 1.15rem; font-weight: 700; margin: 2rem 0 0.75rem; color: #c4b5fd; }
+    h4 { font-size: 1rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: #93c5fd; }
+    p { color: var(--text2); margin-bottom: 0.75rem; }
+
+    /* ── Code blocks ── */
+    pre {
+      background: #0a0a18;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      overflow-x: auto;
+      margin: 1rem 0 1.5rem;
+      position: relative;
+    }
+    code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      line-height: 1.7;
+    }
+    pre code { color: #e2e8f0; }
+    .inline-code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.82rem;
+      background: rgba(124,58,237,0.15);
+      color: #c4b5fd;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      border: 1px solid rgba(124,58,237,0.2);
+    }
+    .lang-tag {
+      position: absolute;
+      top: 0.5rem; right: 0.75rem;
+      font-size: 0.72rem;
+      color: var(--text3);
+      font-family: 'Fira Code', monospace;
+      background: var(--bg);
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+    }
+
+    /* Syntax colors */
+    .kw { color: #c084fc; }
+    .fn { color: #60a5fa; }
+    .str { color: #86efac; }
+    .cm { color: #4a4a7a; font-style: italic; }
+    .num { color: #fb923c; }
+    .var { color: #f0f0ff; }
+    .prop { color: #93c5fd; }
+
+    /* ── Cards ── */
+    .card { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
+    .card-title { font-weight: 700; margin-bottom: 0.4rem; font-size: 0.95rem; }
+    .card p { margin-bottom: 0; font-size: 0.9rem; }
+
+    /* ── Alert boxes ── */
+    .alert { border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; display: flex; gap: 0.75rem; }
+    .alert-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 0.1rem; }
+    .alert-body { font-size: 0.9rem; }
+    .alert-note  { background: rgba(59,130,246,0.1);  border: 1px solid rgba(59,130,246,0.3);  }
+    .alert-warn  { background: rgba(234,179,8,0.1);   border: 1px solid rgba(234,179,8,0.3);   }
+    .alert-error { background: rgba(239,68,68,0.1);   border: 1px solid rgba(239,68,68,0.3);   }
+    .alert-success { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3);   }
+    .alert-title { font-weight: 700; margin-bottom: 0.2rem; }
+
+    /* ── Step list ── */
+    .steps { list-style: none; counter-reset: step; }
+    .steps li {
+      counter-increment: step;
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      align-items: flex-start;
+    }
+    .steps li::before {
+      content: counter(step);
+      background: var(--grad);
+      color: white;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.78rem; font-weight: 800;
+      flex-shrink: 0;
+    }
+    .steps li p { margin-bottom: 0; font-size: 0.92rem; }
+
+    /* ── Table ── */
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; }
+    th { background: rgba(124,58,237,0.2); color: #c4b5fd; font-size: 0.85rem; padding: 0.65rem 1rem; text-align: left; border: 1px solid var(--border); }
+    td { padding: 0.6rem 1rem; border: 1px solid var(--border); font-size: 0.87rem; color: var(--text2); vertical-align: top; }
+    tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+    /* ── Terminal ── */
+    .terminal {
+      background: #050510;
+      border: 1px solid #1a1a3a;
+      border-radius: 10px;
+      padding: 0;
+      margin: 1rem 0 1.5rem;
+      overflow: hidden;
+    }
+    .terminal-header {
+      background: #111128;
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-r { background: #ef4444; }
+    .dot-y { background: #eab308; }
+    .dot-g { background: #22c55e; }
+    .terminal-label { margin-left: 0.5rem; font-size: 0.75rem; color: var(--text3); font-family: 'Fira Code', monospace; }
+    .terminal-body { padding: 1rem 1.25rem; }
+    .terminal-body code { color: #e2e8f0; font-size: 0.85rem; line-height: 1.8; }
+    .t-prompt { color: #22c55e; }
+    .t-cmd { color: #f0f0ff; }
+    .t-out { color: #6060a0; }
+    .t-success { color: #22c55e; }
+    .t-error { color: #ef4444; }
+
+    /* ── Error card ── */
+    .error-card { background: rgba(239,68,68,0.05); border: 1px solid rgba(239,68,68,0.2); border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; }
+    .error-title { color: #f87171; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+    .error-msg { background: #0a0a18; border-radius: 6px; padding: 0.75rem 1rem; font-family: 'Fira Code', monospace; font-size: 0.8rem; color: #f87171; margin: 0.5rem 0; overflow-x: auto; }
+    .fix-title { color: #4ade80; font-weight: 700; font-size: 0.9rem; margin-top: 1rem; margin-bottom: 0.4rem; }
+
+    /* ── Concept box ── */
+    .concept { background: rgba(124,58,237,0.07); border-left: 3px solid var(--purple); border-radius: 0 10px 10px 0; padding: 1rem 1.25rem; margin: 1rem 0; }
+    .concept-term { font-weight: 700; color: #c4b5fd; margin-bottom: 0.3rem; }
+    .concept p { margin-bottom: 0; font-size: 0.9rem; }
+
+    /* ── File tree ── */
+    .filetree { background: #050510; border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem 1.5rem; font-family: 'Fira Code', monospace; font-size: 0.83rem; line-height: 2; margin: 1rem 0 1.5rem; }
+    .ft-dir { color: #60a5fa; }
+    .ft-file { color: #e2e8f0; }
+    .ft-new { color: #86efac; }
+    .ft-comment { color: #4a4a7a; }
+
+    /* ── Checklist ── */
+    .checklist { list-style: none; }
+    .checklist li { display: flex; align-items: flex-start; gap: 0.6rem; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text2); }
+    .check-done { color: var(--green); font-size: 1rem; flex-shrink: 0; }
+
+    /* ── Flow diagram ── */
+    .flow-diagram { background: #050510; border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem 1.5rem; font-family: 'Fira Code', monospace; font-size: 0.83rem; line-height: 2.2; margin: 1rem 0 1.5rem; color: var(--text2); }
+    .flow-diagram .flow-purple { color: #c084fc; }
+    .flow-diagram .flow-cyan   { color: #67e8f9; }
+    .flow-diagram .flow-green  { color: #86efac; }
+    .flow-diagram .flow-arrow  { color: #4a4a7a; }
+
+    /* ── Print styles ── */
+    @media print {
+      .pdf-bar { display: none !important; }
+      body { background: white; color: #111; font-size: 12px; }
+      :root {
+        --bg: white; --bg2: #f8f8f8; --bg3: #f0f0f8;
+        --border: #ddd; --text: #111; --text2: #444; --text3: #888;
+        --purple: #5b21b6; --blue: #1d4ed8;
+      }
+      .container { padding-top: 1rem; max-width: 100%; }
+      pre, .terminal-body { background: #f5f5f5 !important; border-color: #ddd; }
+      pre code, .terminal-body code { color: #222; }
+      .alert-note { background: #eff6ff !important; }
+      .alert-warn { background: #fffbeb !important; }
+      .alert-error { background: #fef2f2 !important; }
+      .alert-success { background: #f0fdf4 !important; }
+      .concept { background: #f5f0ff !important; }
+      .error-msg { background: #fff5f5 !important; color: #c00 !important; }
+      .filetree, .flow-diagram { background: #f5f5f5 !important; }
+      pre { page-break-inside: avoid; }
+      .section { page-break-inside: avoid; }
+      h2, h3 { page-break-after: avoid; }
+      a { color: inherit; text-decoration: none; }
+    }
+
+    .divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+    .tag { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-right: 0.3rem; }
+    .tag-purple { background: rgba(124,58,237,0.15); color: #c4b5fd; border: 1px solid rgba(124,58,237,0.3); }
+    .tag-blue   { background: rgba(59,130,246,0.15);  color: #93c5fd; border: 1px solid rgba(59,130,246,0.3); }
+    .tag-green  { background: rgba(34,197,94,0.15);   color: #86efac; border: 1px solid rgba(34,197,94,0.3); }
+    .tag-orange { background: rgba(249,115,22,0.15);  color: #fdba74; border: 1px solid rgba(249,115,22,0.3); }
+  </style>
+</head>
+<body>
+
+<!-- PDF Download Bar -->
+<div class="pdf-bar">
+  <div class="pdf-bar-title">🚌 SmartRide<span>TIET</span> — Phase 2 Notes</div>
+  <button class="btn-pdf" onclick="window.print()">
+    📥 Download as PDF
+  </button>
+</div>
+
+<div class="container">
+
+  <!-- ── COVER ── -->
+  <div class="cover">
+    <div class="cover-badge">📘 Complete Study Notes</div>
+    <h1>SmartRideTIET<br /><span>Phase 2 Notes</span></h1>
+    <p>Every file, every concept, every command, every error — all explained in simple language. Authentication system built with Firebase Auth, React Context, JWT tokens, and role-based access control.</p>
+    <div class="cover-meta">
+      <div class="meta-item"><div class="meta-label">Phase</div><div class="meta-value">Phase 2 — Auth</div></div>
+      <div class="meta-item"><div class="meta-label">Stack</div><div class="meta-value">React + Node.js + Firebase</div></div>
+      <div class="meta-item"><div class="meta-label">Status</div><div class="meta-value" style="color:#22c55e">✅ Complete</div></div>
+      <div class="meta-item"><div class="meta-label">Build</div><div class="meta-value">1873 modules ✅</div></div>
+    </div>
+  </div>
+
+  <!-- ── TABLE OF CONTENTS ── -->
+  <div class="toc">
+    <h2>📋 Table of Contents</h2>
+    <ol>
+      <li><a href="#s1">What Phase 2 Builds — Overview</a></li>
+      <li><a href="#s2">Key Concepts Explained</a></li>
+      <li><a href="#s3">New Files Added in Phase 2</a></li>
+      <li><a href="#s4">Frontend Files — Code Explained</a></li>
+      <li><a href="#s5">Backend Files — Code Explained</a></li>
+      <li><a href="#s6">Firebase Setup — Step by Step</a></li>
+      <li><a href="#s7">Google Maps API — Step by Step</a></li>
+      <li><a href="#s8">Terminal Commands — When &amp; Why</a></li>
+      <li><a href="#s9">Auth Flow — How Everything Connects</a></li>
+      <li><a href="#s10">Errors Faced &amp; How We Fixed Them</a></li>
+      <li><a href="#s11">Phase 2 Final Checklist</a></li>
+    </ol>
+  </div>
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 1: OVERVIEW -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s1">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <h2>What Phase 2 Builds — Overview</h2>
+    </div>
+
+    <p>Phase 2 is the <strong>Authentication System</strong> of SmartRideTIET. Before a student can book a ride or a driver can accept one, we need to know <em>who they are</em>. Phase 2 answers that question completely.</p>
+
+    <h3>🎯 What Gets Built in Phase 2</h3>
+    <table>
+      <tr><th>Feature</th><th>What it does</th><th>Files involved</th></tr>
+      <tr><td>Login Page</td><td>Email + Google OAuth sign-in with error handling</td><td>LoginPage.jsx, auth.css</td></tr>
+      <tr><td>Register Page</td><td>Role selection (Student/Driver), vehicle fields for drivers</td><td>RegisterPage.jsx, auth.css</td></tr>
+      <tr><td>Auth Context</td><td>Global login state accessible from every component</td><td>AuthContext.jsx</td></tr>
+      <tr><td>Protected Routes</td><td>Blocks unauthenticated users from accessing app pages</td><td>ProtectedRoute.jsx</td></tr>
+      <tr><td>Navbar</td><td>Fixed top nav with role-specific links, user dropdown, logout</td><td>Navbar.jsx, Navbar.css</td></tr>
+      <tr><td>Profile Page</td><td>View/edit user info, driver vehicle settings</td><td>ProfilePage.jsx, ProfilePage.css</td></tr>
+      <tr><td>API Client</td><td>Axios with auto JWT token injection on every request</td><td>api.js</td></tr>
+      <tr><td>Backend Auth API</td><td>Register, get profile, update profile endpoints</td><td>auth.controller.js, auth.routes.js</td></tr>
+      <tr><td>Auth Middleware</td><td>Verifies JWT tokens + enforces role access on backend</td><td>auth.middleware.js</td></tr>
+    </table>
+
+    <h3>🔑 The Three Roles</h3>
+    <table>
+      <tr><th>Role</th><th>Dashboard URL</th><th>Special Features</th></tr>
+      <tr><td>🎓 Student</td><td>/student/dashboard</td><td>Book rides, view history</td></tr>
+      <tr><td>🚗 Driver</td><td>/driver/dashboard</td><td>Accept rides, vehicle info, earnings</td></tr>
+      <tr><td>⚙️ Admin</td><td>/admin/dashboard</td><td>See all users, all rides, stats</td></tr>
+    </table>
+
+    <div class="alert alert-note">
+      <div class="alert-icon">💡</div>
+      <div class="alert-body">
+        <div class="alert-title">Two-step Registration Process</div>
+        Firebase handles the actual account creation (email + password). Our backend saves the <em>extended profile</em> (name, phone, role, vehicle) in Firestore. That's why registration makes two requests: one to Firebase, one to our backend.
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 2: KEY CONCEPTS -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s2">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <h2>Key Concepts Explained</h2>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 Firebase Authentication</div>
+      <p>Google's ready-made login system. Instead of writing code to hash passwords, manage sessions, and handle token expiry yourself, Firebase does it all. You just call <span class="inline-code">signInWithEmailAndPassword()</span> and Firebase handles everything.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 JWT (JSON Web Token)</div>
+      <p>A secure, signed string that proves your identity. After login, Firebase gives you a JWT (called an "ID Token"). Every API call sends this token in the header. The backend uses Firebase Admin SDK to verify the token is real and not tampered with.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 React Context API</div>
+      <p>A built-in React feature for sharing data globally. Without Context, you'd have to pass <span class="inline-code">user</span> as a prop through every component. With Context, any component anywhere in the app can call <span class="inline-code">useAuth()</span> and get user data instantly.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 onAuthStateChanged</div>
+      <p>A Firebase listener that fires every time the user's auth status changes — on login, logout, or page refresh. This is how the app "remembers" you're logged in even after refreshing the page. It reads your session from localStorage automatically.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 Protected Route</div>
+      <p>A React wrapper component that checks if the user is logged in before showing a page. If not logged in → redirect to /login. If wrong role → redirect to their own dashboard. If all checks pass → show the page. It's the security gatekeeper of the frontend.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 Axios Interceptor</div>
+      <p>A function that runs automatically before every HTTP request or after every response. The request interceptor gets the Firebase JWT token and attaches it to every API call — so you never have to manually add the token. The response interceptor catches 401 errors and logs the user out.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 Firebase Admin SDK (Backend)</div>
+      <p>The server-side Firebase library. The client SDK (frontend) has limited permissions. The Admin SDK (backend) has full admin access — it can verify any user's token, read any document, delete any account. It uses a service account key (a JSON file with private key) for authentication.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 Role-Based Access Control (RBAC)</div>
+      <p>A system where what you can do depends on your role. In SmartRideTIET: students can book rides, drivers can accept rides, admins can see everything. The role is stored in Firestore and checked on both frontend (ProtectedRoute) and backend (requireRole middleware).</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 Google OAuth (Sign In with Google)</div>
+      <p>An industry-standard login method. Instead of entering email + password, you click "Sign in with Google" and a popup opens. Google verifies you're really you and sends a token to the app. Firebase wraps this process with <span class="inline-code">signInWithPopup(auth, googleProvider)</span>.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 Optional Chaining (?.) in JavaScript</div>
+      <p>A safe way to access nested properties. <span class="inline-code">profile?.role</span> returns <span class="inline-code">undefined</span> if <span class="inline-code">profile</span> is null, instead of crashing with "Cannot read property 'role' of null". Used everywhere in Phase 2 because profile data loads asynchronously.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 NavLink (React Router)</div>
+      <p>Like <span class="inline-code">&lt;Link&gt;</span> but smarter — it automatically adds an <span class="inline-code">active</span> class to the link when the current URL matches. Used in the Navbar to visually highlight which page you're on.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-term">🔷 useRef (React Hook)</div>
+      <p>Creates a reference to a DOM element. In the Navbar dropdown, we use <span class="inline-code">useRef</span> to detect when you click outside the dropdown menu, so it closes automatically. <span class="inline-code">dropdownRef.current.contains(e.target)</span> checks if the click was inside the dropdown.</p>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 3: NEW FILES IN PHASE 2 -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s3">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <h2>New Files Added in Phase 2</h2>
+    </div>
+
+    <p>These are all the files created or significantly changed in Phase 2. <span style="color:#86efac">Green</span> = new file, <span style="color:#93c5fd">Blue</span> = existing file updated.</p>
+
+    <div class="filetree">
+<span class="ft-dir">SmartRideTIET/</span>
+│
+├── <span class="ft-dir">frontend/</span>
+│   ├── <span class="ft-new">vite.config.js</span>                    <span class="ft-comment">← NEW: Vite + React plugin config (was missing!)</span>
+│   ├── <span class="ft-dir">src/</span>
+│   │   ├── <span class="ft-file">App.jsx</span>                       <span class="ft-comment">← UPDATED: Added /*/profile routes</span>
+│   │   ├── <span class="ft-file">index.css</span>                     <span class="ft-comment">← UPDATED: Added Inter font import</span>
+│   │   │
+│   │   ├── <span class="ft-dir">pages/</span>
+│   │   │   ├── <span class="ft-new">LoginPage.jsx</span>             <span class="ft-comment">← NEW: Email + Google sign-in form</span>
+│   │   │   ├── <span class="ft-new">RegisterPage.jsx</span>          <span class="ft-comment">← NEW: Role select + registration form</span>
+│   │   │   ├── <span class="ft-new">auth.css</span>                  <span class="ft-comment">← NEW: Shared auth page styles</span>
+│   │   │   ├── <span class="ft-new">ProfilePage.jsx</span>           <span class="ft-comment">← NEW: View/edit user profile</span>
+│   │   │   ├── <span class="ft-new">ProfilePage.css</span>           <span class="ft-comment">← NEW: Profile page styles</span>
+│   │   │   ├── <span class="ft-dir">student/</span>
+│   │   │   │   ├── <span class="ft-file">StudentDashboard.jsx</span>  <span class="ft-comment">← UPDATED: Added Navbar + quick-action cards</span>
+│   │   │   │   ├── <span class="ft-new">BookRide.jsx</span>          <span class="ft-comment">← NEW: Placeholder (Phase 3)</span>
+│   │   │   │   └── <span class="ft-new">RideHistory.jsx</span>       <span class="ft-comment">← NEW: Placeholder (Phase 3)</span>
+│   │   │   ├── <span class="ft-dir">driver/</span>
+│   │   │   │   ├── <span class="ft-file">DriverDashboard.jsx</span>   <span class="ft-comment">← UPDATED: Added Navbar + vehicle info</span>
+│   │   │   │   ├── <span class="ft-new">AvailableRides.jsx</span>    <span class="ft-comment">← NEW: Placeholder (Phase 3)</span>
+│   │   │   │   └── <span class="ft-new">DriverEarnings.jsx</span>    <span class="ft-comment">← NEW: Placeholder (Phase 3)</span>
+│   │   │   └── <span class="ft-dir">admin/</span>
+│   │   │       ├── <span class="ft-new">AdminDashboard.jsx</span>    <span class="ft-comment">← NEW: Placeholder (Phase 6)</span>
+│   │   │       ├── <span class="ft-new">AdminRides.jsx</span>        <span class="ft-comment">← NEW: Placeholder (Phase 6)</span>
+│   │   │       └── <span class="ft-new">AdminUsers.jsx</span>        <span class="ft-comment">← NEW: Placeholder (Phase 6)</span>
+│   │   │
+│   │   ├── <span class="ft-dir">components/common/</span>
+│   │   │   ├── <span class="ft-file">ProtectedRoute.jsx</span>        <span class="ft-comment">← UPDATED: Fixed loading + role redirect</span>
+│   │   │   ├── <span class="ft-new">Navbar.jsx</span>                <span class="ft-comment">← NEW: Authenticated app navbar</span>
+│   │   │   └── <span class="ft-new">Navbar.css</span>                <span class="ft-comment">← NEW: Navbar styles</span>
+│   │   │
+│   │   ├── <span class="ft-dir">context/</span>
+│   │   │   └── <span class="ft-file">AuthContext.jsx</span>           <span class="ft-comment">← UPDATED: Returns {user, profile} from sign-in</span>
+│   │   │
+│   │   └── <span class="ft-dir">hooks/</span>
+│   │       └── <span class="ft-new">useAuth.js</span>                <span class="ft-comment">← NEW: Convenience re-export hook</span>
+│   │
+│   └── <span class="ft-file">.env</span>                          <span class="ft-comment">← UPDATED: Has all Firebase + Maps keys</span>
+│
+└── <span class="ft-dir">backend/</span>
+    ├── <span class="ft-file">controllers/auth.controller.js</span>  <span class="ft-comment">← registerUser, getMe, updateMe, deleteMe</span>
+    ├── <span class="ft-file">routes/auth.routes.js</span>           <span class="ft-comment">← POST /register, GET /me, PUT /me</span>
+    ├── <span class="ft-file">middleware/auth.middleware.js</span>    <span class="ft-comment">← verifyToken + requireRole</span>
+    └── <span class="ft-file">config/firebase.js</span>              <span class="ft-comment">← Firebase Admin SDK init</span>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 4: FRONTEND FILES EXPLAINED -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s4">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <h2>Frontend Files — Code Explained</h2>
+    </div>
+
+    <!-- vite.config.js -->
+    <h3>📄 frontend/vite.config.js — Build Tool Config</h3>
+    <p><strong>What:</strong> Tells Vite how to build the project. Adds the React plugin so Vite can handle JSX syntax and Fast Refresh (live reload without losing state).</p>
+    <p><strong>Why:</strong> Without this file, Vite doesn't know React exists. JSX (the HTML-like syntax in .jsx files) would cause build errors because browsers don't understand JSX natively.</p>
+    <p><strong>How it works:</strong> The <span class="inline-code">react()</span> plugin uses Babel under the hood to transform JSX into plain JavaScript that browsers can run.</p>
+    <pre><code><span class="kw">import</span> { <span class="fn">defineConfig</span> } <span class="kw">from</span> <span class="str">'vite'</span>;
+<span class="kw">import</span> <span class="var">react</span> <span class="kw">from</span> <span class="str">'@vitejs/plugin-react'</span>;
+
+<span class="kw">export default</span> <span class="fn">defineConfig</span>({
+  plugins: [<span class="fn">react</span>()],   <span class="cm">// ← This is what enables JSX in your .jsx files</span>
+  server: {
+    port: <span class="num">5173</span>,          <span class="cm">// dev server port</span>
+    open: <span class="kw">true</span>,          <span class="cm">// auto-opens browser tab on npm run dev</span>
+  },
+  resolve: {
+    alias: { <span class="str">'@'</span>: <span class="str">'/src'</span> }, <span class="cm">// lets you write @/context/AuthContext instead of ../../context/AuthContext</span>
+  },
+});</code><span class="lang-tag">vite.config.js</span></pre>
+
+    <!-- firebase.js -->
+    <h3>📄 frontend/src/services/firebase.js — Firebase Client SDK</h3>
+    <p><strong>What:</strong> Initializes Firebase for the browser. Exports three things: <span class="inline-code">auth</span> (for login/logout), <span class="inline-code">db</span> (for Firestore database), and <span class="inline-code">googleProvider</span> (for Google OAuth popup).</p>
+    <p><strong>Why:</strong> You need one single initialized Firebase app shared across all files. If each file calls <span class="inline-code">initializeApp()</span> separately, Firebase throws a "duplicate app" error.</p>
+    <p><strong>How it works:</strong> Reads all keys from the <span class="inline-code">.env</span> file using <span class="inline-code">import.meta.env.VITE_*</span>. Vite only exposes variables that start with <span class="inline-code">VITE_</span> for security.</p>
+
+    <pre><code><span class="kw">import</span> { <span class="fn">initializeApp</span> }              <span class="kw">from</span> <span class="str">'firebase/app'</span>;
+<span class="kw">import</span> { <span class="fn">getAuth</span>, <span class="fn">GoogleAuthProvider</span> } <span class="kw">from</span> <span class="str">'firebase/auth'</span>;
+<span class="kw">import</span> { <span class="fn">getFirestore</span> }               <span class="kw">from</span> <span class="str">'firebase/firestore'</span>;
+
+<span class="cm">// All values come from frontend/.env file</span>
+<span class="kw">const</span> <span class="var">firebaseConfig</span> = {
+  <span class="prop">apiKey</span>:            import.meta.env.<span class="prop">VITE_FIREBASE_API_KEY</span>,
+  <span class="prop">authDomain</span>:        import.meta.env.<span class="prop">VITE_FIREBASE_AUTH_DOMAIN</span>,
+  <span class="prop">projectId</span>:         import.meta.env.<span class="prop">VITE_FIREBASE_PROJECT_ID</span>,
+  <span class="prop">storageBucket</span>:     import.meta.env.<span class="prop">VITE_FIREBASE_STORAGE_BUCKET</span>,
+  <span class="prop">messagingSenderId</span>: import.meta.env.<span class="prop">VITE_FIREBASE_MESSAGING_SENDER_ID</span>,
+  <span class="prop">appId</span>:             import.meta.env.<span class="prop">VITE_FIREBASE_APP_ID</span>,
+};
+
+<span class="kw">const</span> <span class="var">app</span> = <span class="fn">initializeApp</span>(<span class="var">firebaseConfig</span>);  <span class="cm">// Initialize once</span>
+
+<span class="kw">export const</span> <span class="var">auth</span>           = <span class="fn">getAuth</span>(<span class="var">app</span>);           <span class="cm">// login / logout / session</span>
+<span class="kw">export const</span> <span class="var">db</span>             = <span class="fn">getFirestore</span>(<span class="var">app</span>);      <span class="cm">// database (used in Phase 3+)</span>
+<span class="kw">export const</span> <span class="var">googleProvider</span> = <span class="kw">new</span> <span class="fn">GoogleAuthProvider</span>(); <span class="cm">// Google sign-in popup</span></code><span class="lang-tag">firebase.js</span></pre>
+
+    <!-- AuthContext -->
+    <h3>📄 frontend/src/context/AuthContext.jsx — The Brain of Auth</h3>
+    <p><strong>What:</strong> The most important file in Phase 2. Creates a global "broadcast channel" for auth state. Holds the logged-in user data and provides login/logout functions to the whole app.</p>
+    <p><strong>Why:</strong> Every page needs to know "who is logged in". Without Context, you'd pass <span class="inline-code">user</span> as props through 10+ layers of components. With AuthContext, any component anywhere calls <span class="inline-code">const {profile} = useAuth()</span> and gets the data.</p>
+    <p><strong>How it works:</strong> Listens to <span class="inline-code">onAuthStateChanged</span> which fires when the user logs in, logs out, or the page refreshes. On login, fetches the extended profile from our backend (Firestore data).</p>
+
+    <pre><code><span class="cm">// Step 1: Create a Context (like creating a radio channel)</span>
+<span class="kw">const</span> <span class="var">AuthContext</span> = <span class="fn">createContext</span>(<span class="kw">null</span>);
+
+<span class="cm">// Step 2: Custom hook — any component uses this to "tune in"</span>
+<span class="kw">export const</span> <span class="fn">useAuth</span> = () => <span class="fn">useContext</span>(<span class="var">AuthContext</span>);
+
+<span class="cm">// Step 3: Provider component — wraps the entire app in App.jsx</span>
+<span class="kw">export const</span> <span class="fn">AuthProvider</span> = ({ children }) => {
+  <span class="kw">const</span> [user, setUser]       = <span class="fn">useState</span>(<span class="kw">null</span>);  <span class="cm">// Firebase auth user object</span>
+  <span class="kw">const</span> [profile, setProfile] = <span class="fn">useState</span>(<span class="kw">null</span>);  <span class="cm">// Firestore user document</span>
+  <span class="kw">const</span> [loading, setLoading] = <span class="fn">useState</span>(<span class="kw">true</span>);  <span class="cm">// true while Firebase resolves auth</span>
+
+  <span class="cm">// Step 4: Listen for auth state changes (fires on every login/logout/refresh)</span>
+  <span class="fn">useEffect</span>(() => {
+    <span class="kw">const</span> <span class="var">unsubscribe</span> = <span class="fn">onAuthStateChanged</span>(auth, <span class="kw">async</span> (firebaseUser) => {
+      <span class="kw">if</span> (firebaseUser) {
+        <span class="fn">setUser</span>(firebaseUser);
+        <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">getMe</span>();   <span class="cm">// GET /api/auth/me → fetch Firestore profile</span>
+        <span class="fn">setProfile</span>(res.user);
+      } <span class="kw">else</span> {
+        <span class="fn">setUser</span>(<span class="kw">null</span>); <span class="fn">setProfile</span>(<span class="kw">null</span>);
+      }
+      <span class="fn">setLoading</span>(<span class="kw">false</span>);  <span class="cm">// auth is now resolved — app can render</span>
+    });
+    <span class="kw">return</span> () => <span class="fn">unsubscribe</span>();  <span class="cm">// cleanup when app unmounts</span>
+  }, []);
+
+  <span class="cm">// Step 5: Auth functions used in LoginPage and RegisterPage</span>
+  <span class="kw">const</span> <span class="fn">signInWithEmail</span> = <span class="kw">async</span> (email, password) => {
+    <span class="kw">const</span> { user: fbUser } = <span class="kw">await</span> <span class="fn">signInWithEmailAndPassword</span>(auth, email, password);
+    <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">getMe</span>();       <span class="cm">// fetch existing Firestore profile</span>
+    <span class="fn">setProfile</span>(res.user);
+    <span class="kw">return</span> { user: fbUser, profile: res.user };  <span class="cm">// ← returned so LoginPage can redirect by role</span>
+  };
+
+  <span class="cm">// Step 6: Provide all auth data and functions to all child components</span>
+  <span class="kw">return</span> (
+    &lt;<span class="fn">AuthContext.Provider</span> value={{ user, profile, loading, signInWithEmail, logout, ... }}&gt;
+      {!loading &amp;&amp; children}  <span class="cm">// Don't render anything until Firebase resolves auth state</span>
+    &lt;/<span class="fn">AuthContext.Provider</span>&gt;
+  );
+};</code><span class="lang-tag">AuthContext.jsx</span></pre>
+
+    <div class="alert alert-note">
+      <div class="alert-icon">💡</div>
+      <div class="alert-body">
+        <div class="alert-title">Why {!loading && children}?</div>
+        When the page first loads, Firebase takes ~0.5 seconds to check if a user is already logged in from a previous session. During that time, <span class="inline-code">loading = true</span>. If we rendered children during loading, ProtectedRoute would see <span class="inline-code">user = null</span> (not yet loaded) and wrongly redirect a logged-in user to /login.
+      </div>
+    </div>
+
+    <!-- api.js -->
+    <h3>📄 frontend/src/services/api.js — Axios API Client</h3>
+    <p><strong>What:</strong> A configured Axios instance that automatically attaches the Firebase JWT token to every API request, and handles 401 errors globally.</p>
+    <p><strong>Why:</strong> Every API call needs the auth token. Instead of writing token-fetching code in every component, we write it once in an interceptor and it runs automatically for all requests.</p>
+
+    <pre><code><span class="kw">import</span> <span class="var">axios</span> <span class="kw">from</span> <span class="str">'axios'</span>;
+<span class="kw">import</span> { <span class="var">auth</span> } <span class="kw">from</span> <span class="str">'./firebase'</span>;
+
+<span class="kw">const</span> <span class="var">api</span> = axios.<span class="fn">create</span>({
+  baseURL: import.meta.env.<span class="prop">VITE_API_BASE_URL</span> || <span class="str">'http://localhost:5000/api'</span>,
+  headers: { <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span> },
+});
+
+<span class="cm">// REQUEST INTERCEPTOR — runs before EVERY API call</span>
+api.interceptors.request.<span class="fn">use</span>(<span class="kw">async</span> (config) => {
+  <span class="kw">const</span> <span class="var">user</span> = auth.currentUser;
+  <span class="kw">if</span> (user) {
+    <span class="kw">const</span> <span class="var">token</span> = <span class="kw">await</span> user.<span class="fn">getIdToken</span>();          <span class="cm">// get fresh JWT from Firebase</span>
+    config.headers.<span class="prop">Authorization</span> = <span class="str">`Bearer ${token}`</span>; <span class="cm">// attach to request header</span>
+  }
+  <span class="kw">return</span> config;
+});
+
+<span class="cm">// RESPONSE INTERCEPTOR — runs after EVERY API response</span>
+api.interceptors.response.<span class="fn">use</span>(
+  (response) => response.data,  <span class="cm">// unwrap so you get {user} not {data:{user}}</span>
+  (error) => {
+    <span class="kw">if</span> (error.response?.status === <span class="num">401</span>) {
+      auth.<span class="fn">signOut</span>();                    <span class="cm">// token expired → force logout</span>
+      window.location.href = <span class="str">'/login'</span>;
+    }
+    <span class="kw">return</span> Promise.<span class="fn">reject</span>(error.response?.data || error);
+  }
+);
+
+<span class="cm">// Named exports — one function per API endpoint</span>
+<span class="kw">export const</span> registerUser     = (data) => api.<span class="fn">post</span>(<span class="str">'/auth/register'</span>, data);
+<span class="kw">export const</span> getMe            = ()     => api.<span class="fn">get</span>(<span class="str">'/auth/me'</span>);
+<span class="kw">export const</span> updateMe         = (data) => api.<span class="fn">put</span>(<span class="str">'/auth/me'</span>, data);
+<span class="kw">export const</span> bookRide         = (data) => api.<span class="fn">post</span>(<span class="str">'/rides/book'</span>, data);
+<span class="kw">export const</span> getAvailableRides = ()    => api.<span class="fn">get</span>(<span class="str">'/rides/driver/available'</span>);
+<span class="kw">export const</span> acceptRide       = (id)   => api.<span class="fn">put</span>(<span class="str">`/rides/${id}/accept`</span>);</code><span class="lang-tag">api.js</span></pre>
+
+    <!-- LoginPage -->
+    <h3>📄 frontend/src/pages/LoginPage.jsx — Sign In Screen</h3>
+    <p><strong>What:</strong> The login page. Two-panel layout — left has branding + features, right has the email form and Google sign-in button.</p>
+    <p><strong>Why:</strong> Users need an attractive, intuitive entry point. The two-panel design follows modern SaaS app patterns (like Notion, Linear, Vercel login pages).</p>
+    <p><strong>How it works:</strong> Uses <span class="inline-code">useAuth()</span> for the <span class="inline-code">signInWithEmail</span> and <span class="inline-code">signInWithGoogle</span> functions. On success, reads the returned <span class="inline-code">profile.role</span> and redirects to the correct dashboard.</p>
+
+    <pre><code><span class="cm">// Key pattern: redirect by role after login</span>
+<span class="kw">const</span> { <span class="var">signInWithEmail</span>, <span class="var">signInWithGoogle</span> } = <span class="fn">useAuth</span>();
+
+<span class="kw">const</span> <span class="fn">redirectByRole</span> = (role) => {
+  <span class="kw">if</span> (role === <span class="str">'student'</span>) navigate(<span class="str">'/student/dashboard'</span>);
+  <span class="kw">else if</span> (role === <span class="str">'driver'</span>)  navigate(<span class="str">'/driver/dashboard'</span>);
+  <span class="kw">else if</span> (role === <span class="str">'admin'</span>)   navigate(<span class="str">'/admin/dashboard'</span>);
+};
+
+<span class="kw">const</span> <span class="fn">handleSubmit</span> = <span class="kw">async</span> (e) => {
+  e.<span class="fn">preventDefault</span>();
+  <span class="fn">setLoading</span>(<span class="kw">true</span>);
+  <span class="kw">try</span> {
+    <span class="kw">const</span> { profile } = <span class="kw">await</span> <span class="fn">signInWithEmail</span>(formData.email, formData.password);
+    <span class="fn">redirectByRole</span>(profile?.role);
+  } <span class="kw">catch</span> (err) {
+    <span class="fn">setError</span>(<span class="fn">getFriendlyError</span>(err.code));  <span class="cm">// Firebase error codes → readable messages</span>
+  }
+};
+
+<span class="cm">// Firebase error code → human-readable message mapping</span>
+<span class="kw">function</span> <span class="fn">getFriendlyError</span>(code) {
+  <span class="kw">const</span> map = {
+    <span class="str">'auth/wrong-password'</span>:     <span class="str">'Incorrect password.'</span>,
+    <span class="str">'auth/user-not-found'</span>:     <span class="str">'No account found with this email.'</span>,
+    <span class="str">'auth/too-many-requests'</span>:  <span class="str">'Too many attempts. Try again later.'</span>,
+    <span class="str">'auth/invalid-credential'</span>: <span class="str">'Invalid email or password.'</span>,
+    <span class="str">'auth/popup-closed-by-user'</span>: <span class="str">''</span>,  <span class="cm">// user closed Google popup — not an error</span>
+  };
+  <span class="kw">return</span> map[code] || <span class="str">'Something went wrong. Please try again.'</span>;
+}</code><span class="lang-tag">LoginPage.jsx</span></pre>
+
+    <!-- RegisterPage -->
+    <h3>📄 frontend/src/pages/RegisterPage.jsx — Sign Up Screen</h3>
+    <p><strong>What:</strong> Registration form with a role selector (Student or Driver). When "Driver" is selected, extra fields appear for vehicle number and vehicle type.</p>
+    <p><strong>Why:</strong> Students and drivers have different data needs. One form that adapts based on role keeps the UI clean. The role is stored in Firestore and controls everything the user can do.</p>
+
+    <pre><code><span class="cm">// Conditional rendering — driver fields only show when role = 'driver'</span>
+<span class="kw">const</span> [role, setRole] = <span class="fn">useState</span>(<span class="str">'student'</span>);
+
+{role === <span class="str">'driver'</span> &amp;&amp; (
+  &lt;<span class="fn">div</span> className=<span class="str">"driver-section"</span>&gt;
+    &lt;<span class="fn">input</span> name=<span class="str">"vehicleNumber"</span> placeholder=<span class="str">"PB10AB1234"</span> /&gt;
+    &lt;<span class="fn">select</span> name=<span class="str">"vehicleType"</span>&gt;Car | Bike | Auto | Van&lt;/<span class="fn">select</span>&gt;
+  &lt;/<span class="fn">div</span>&gt;
+)}
+
+<span class="cm">// Two-step registration:</span>
+<span class="cm">// Step 1 — Firebase creates auth account (email + password stored securely)</span>
+<span class="cm">// Step 2 — Our backend saves extended profile to Firestore</span>
+<span class="kw">const</span> <span class="fn">handleSubmit</span> = <span class="kw">async</span> (e) => {
+  <span class="cm">// Client-side validation first — no wasted API calls</span>
+  <span class="kw">if</span> (formData.password !== formData.confirmPassword) {
+    <span class="fn">setError</span>(<span class="str">'Passwords do not match.'</span>); <span class="kw">return</span>;
+  }
+  <span class="cm">// signUpWithEmail calls Firebase then POST /api/auth/register automatically</span>
+  <span class="kw">const</span> { profile } = <span class="kw">await</span> <span class="fn">signUpWithEmail</span>(formData.email, formData.password, {
+    name: formData.name, phone: formData.phone, role,
+    vehicleNumber: formData.vehicleNumber,  <span class="cm">// only used for driver role</span>
+    vehicleType:   formData.vehicleType,
+  });
+  <span class="fn">redirectByRole</span>(profile?.role);
+};</code><span class="lang-tag">RegisterPage.jsx</span></pre>
+
+    <!-- ProtectedRoute -->
+    <h3>📄 frontend/src/components/common/ProtectedRoute.jsx — Route Guard</h3>
+    <p><strong>What:</strong> A wrapper component placed around every protected page in App.jsx. Checks three conditions before allowing access.</p>
+    <p><strong>Why:</strong> Anyone could type <span class="inline-code">/admin/dashboard</span> in the URL bar. Without ProtectedRoute, they'd see it. This component prevents that.</p>
+
+    <pre><code><span class="kw">const</span> <span class="fn">ProtectedRoute</span> = ({ children, allowedRoles = [] }) => {
+  <span class="kw">const</span> { user, profile, loading } = <span class="fn">useAuth</span>();
+  <span class="kw">const</span> location = <span class="fn">useLocation</span>();
+
+  <span class="cm">// Case 1: Auth state still loading → show spinner (never redirect prematurely)</span>
+  <span class="kw">if</span> (loading) <span class="kw">return</span> &lt;<span class="fn">LoadingSpinner</span> /&gt;;
+
+  <span class="cm">// Case 2: Not logged in → go to login (save current URL for return redirect)</span>
+  <span class="kw">if</span> (!user) <span class="kw">return</span> &lt;<span class="fn">Navigate</span> to=<span class="str">"/login"</span> state={{ from: location }} replace /&gt;;
+
+  <span class="cm">// Case 3: Logged in but wrong role → redirect to own dashboard</span>
+  <span class="kw">if</span> (allowedRoles.length &gt; <span class="num">0</span> &amp;&amp; !allowedRoles.<span class="fn">includes</span>(profile?.role)) {
+    <span class="kw">const</span> redirects = {
+      student: <span class="str">'/student/dashboard'</span>,
+      driver:  <span class="str">'/driver/dashboard'</span>,
+      admin:   <span class="str">'/admin/dashboard'</span>,
+    };
+    <span class="kw">return</span> &lt;<span class="fn">Navigate</span> to={redirects[profile?.role] || <span class="str">'/'</span>} replace /&gt;;
+  }
+
+  <span class="cm">// Case 4: All checks pass → show the page!</span>
+  <span class="kw">return</span> children;
+};</code><span class="lang-tag">ProtectedRoute.jsx</span></pre>
+
+    <!-- Navbar -->
+    <h3>📄 frontend/src/components/common/Navbar.jsx — App Navigation</h3>
+    <p><strong>What:</strong> Fixed top navigation bar on every authenticated page. Shows the SmartRideTIET logo, role-specific navigation links (different links for student/driver/admin), a user avatar with a dropdown menu, and a hamburger menu for mobile.</p>
+    <p><strong>Why:</strong> Instead of copy-pasting the same navigation into every page component, we extract it into one reusable Navbar component and import it once per page.</p>
+
+    <pre><code><span class="cm">// Each role sees different nav links</span>
+<span class="kw">const</span> <span class="var">NAV_LINKS</span> = {
+  student: [
+    { to: <span class="str">'/student/dashboard'</span>, label: <span class="str">'Dashboard'</span> },
+    { to: <span class="str">'/student/book'</span>,      label: <span class="str">'Book Ride'</span> },
+    { to: <span class="str">'/student/history'</span>,   label: <span class="str">'My Rides'</span>  },
+  ],
+  driver: [
+    { to: <span class="str">'/driver/dashboard'</span>,  label: <span class="str">'Dashboard'</span>       },
+    { to: <span class="str">'/driver/available'</span>,  label: <span class="str">'Available Rides'</span>  },
+    { to: <span class="str">'/driver/earnings'</span>,   label: <span class="str">'Earnings'</span>         },
+  ],
+};
+<span class="kw">const</span> role  = profile?.role || <span class="str">'student'</span>;
+<span class="kw">const</span> links = <span class="var">NAV_LINKS</span>[role] || [];
+
+<span class="cm">// Detect outside click to close dropdown</span>
+<span class="kw">const</span> dropdownRef = <span class="fn">useRef</span>(<span class="kw">null</span>);
+<span class="fn">useEffect</span>(() => {
+  <span class="kw">const</span> close = (e) => {
+    <span class="kw">if</span> (dropdownRef.current &amp;&amp; !dropdownRef.current.<span class="fn">contains</span>(e.target))
+      <span class="fn">setDropdownOpen</span>(<span class="kw">false</span>);
+  };
+  document.<span class="fn">addEventListener</span>(<span class="str">'mousedown'</span>, close);
+  <span class="kw">return</span> () => document.<span class="fn">removeEventListener</span>(<span class="str">'mousedown'</span>, close);
+}, []);
+
+<span class="cm">// NavLink automatically adds 'active' class when URL matches</span>
+&lt;<span class="fn">NavLink</span>
+  to={link.to}
+  className={({ isActive }) => <span class="str">`nav-link${isActive ? ' active' : ''}`</span>}
+&gt;</code><span class="lang-tag">Navbar.jsx</span></pre>
+
+    <!-- ProfilePage -->
+    <h3>📄 frontend/src/pages/ProfilePage.jsx — User Profile</h3>
+    <p><strong>What:</strong> A two-panel page. Left panel: avatar, name, role badge, stats. Right panel: three tabs — View Profile, Edit Profile, Vehicle (drivers only).</p>
+    <p><strong>Why:</strong> Users need to see and update their info. Drivers also need to manage their vehicle. The tabbed interface keeps all this in one clean page.</p>
+    <p><strong>How it works:</strong> Edit form calls <span class="inline-code">PUT /api/auth/me</span> via <span class="inline-code">updateMe()</span>. On success, calls <span class="inline-code">refreshProfile()</span> from AuthContext to update the global user state so the Navbar also reflects the new name.</p>
+
+    <pre><code><span class="kw">const</span> [activeTab, setActiveTab] = <span class="fn">useState</span>(<span class="str">'view'</span>);
+<span class="cm">// Tab options: 'view' | 'edit' | 'vehicle'</span>
+
+<span class="kw">const</span> <span class="fn">handleSave</span> = <span class="kw">async</span> (e) => {
+  e.<span class="fn">preventDefault</span>();
+  <span class="kw">await</span> <span class="fn">updateMe</span>(form);     <span class="cm">// PUT /api/auth/me → updates name/phone/vehicle in Firestore</span>
+  <span class="kw">await</span> <span class="fn">refreshProfile</span>();   <span class="cm">// re-fetches profile → updates AuthContext → Navbar updates too</span>
+  toast.<span class="fn">success</span>(<span class="str">'Profile updated! ✅'</span>);
+};
+
+<span class="cm">// Only render Vehicle tab for drivers</span>
+{role === <span class="str">'driver'</span> &amp;&amp; (
+  &lt;<span class="fn">button</span> onClick={() => setActiveTab(<span class="str">'vehicle'</span>)}&gt;🚗 Vehicle&lt;/<span class="fn">button</span>&gt;
+)}</code><span class="lang-tag">ProfilePage.jsx</span></pre>
+
+    <!-- App.jsx -->
+    <h3>📄 frontend/src/App.jsx — All Routes</h3>
+    <p><strong>What:</strong> Defines every URL route and which component it renders. Wraps all routes in <span class="inline-code">&lt;AuthProvider&gt;</span> and protected routes in <span class="inline-code">&lt;ProtectedRoute&gt;</span>.</p>
+
+    <pre><code><span class="cm">// Pattern: every protected page is wrapped in ProtectedRoute with allowed roles</span>
+&lt;<span class="fn">Route</span> path=<span class="str">"/student/dashboard"</span> element={
+  &lt;<span class="fn">ProtectedRoute</span> allowedRoles={[<span class="str">'student'</span>]}&gt;
+    &lt;<span class="fn">StudentDashboard</span> /&gt;
+  &lt;/<span class="fn">ProtectedRoute</span>&gt;
+} /&gt;
+
+&lt;<span class="fn">Route</span> path=<span class="str">"/student/profile"</span> element={
+  &lt;<span class="fn">ProtectedRoute</span> allowedRoles={[<span class="str">'student'</span>]}&gt;
+    &lt;<span class="fn">ProfilePage</span> /&gt;   <span class="cm">// same ProfilePage used by all roles!</span>
+  &lt;/<span class="fn">ProtectedRoute</span>&gt;
+} /&gt;
+
+<span class="cm">// Public routes — no ProtectedRoute wrapper</span>
+&lt;<span class="fn">Route</span> path=<span class="str">"/"</span>         element={&lt;<span class="fn">LandingPage</span> /&gt;} /&gt;
+&lt;<span class="fn">Route</span> path=<span class="str">"/login"</span>    element={&lt;<span class="fn">LoginPage</span> /&gt;}   /&gt;
+&lt;<span class="fn">Route</span> path=<span class="str">"/register"</span> element={&lt;<span class="fn">RegisterPage</span> /&gt;} /&gt;
+
+<span class="cm">// 404 fallback</span>
+&lt;<span class="fn">Route</span> path=<span class="str">"*"</span> element={&lt;<span class="fn">Navigate</span> to=<span class="str">"/"</span> replace /&gt;} /&gt;</code><span class="lang-tag">App.jsx</span></pre>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 5: BACKEND FILES EXPLAINED -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s5">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <h2>Backend Files — Code Explained</h2>
+    </div>
+
+    <!-- backend/config/firebase.js -->
+    <h3>📄 backend/config/firebase.js — Firebase Admin SDK</h3>
+    <p><strong>What:</strong> Initializes Firebase on the server side using Admin SDK. Exports <span class="inline-code">db</span> and <span class="inline-code">auth</span> for use in controllers and middleware.</p>
+    <p><strong>Why:</strong> The frontend Firebase SDK has limited permissions (only reads what the logged-in user can read). The Admin SDK has full access — it can verify any user's token, read any document, and delete any account. It uses a service account key (secret JSON file).</p>
+
+    <pre><code><span class="kw">const</span> { <span class="fn">initializeApp</span>, <span class="fn">getApps</span>, <span class="fn">cert</span> } = <span class="fn">require</span>(<span class="str">'firebase-admin/app'</span>);
+<span class="kw">const</span> { <span class="fn">getFirestore</span> } = <span class="fn">require</span>(<span class="str">'firebase-admin/firestore'</span>);
+<span class="kw">const</span> { <span class="fn">getAuth</span> }      = <span class="fn">require</span>(<span class="str">'firebase-admin/auth'</span>);
+
+<span class="cm">// getApps().length prevents initializing twice if this file is imported multiple times</span>
+<span class="kw">if</span> (<span class="fn">getApps</span>().<span class="prop">length</span> === <span class="num">0</span>) {
+  <span class="kw">let</span> credential;
+  <span class="kw">try</span> {
+    <span class="kw">const</span> sa = <span class="fn">require</span>(<span class="str">'./serviceAccountKey.json'</span>);  <span class="cm">// use JSON file if available</span>
+    credential = <span class="fn">cert</span>(sa);
+  } <span class="kw">catch</span> {
+    credential = <span class="fn">cert</span>({                   <span class="cm">// fallback: use .env variables</span>
+      <span class="prop">projectId</span>:   process.env.<span class="prop">FIREBASE_PROJECT_ID</span>,
+      <span class="prop">clientEmail</span>: process.env.<span class="prop">FIREBASE_CLIENT_EMAIL</span>,
+      <span class="prop">privateKey</span>:  process.env.<span class="prop">FIREBASE_PRIVATE_KEY</span>?.<span class="fn">replace</span>(<span class="str">/\\n/g</span>, <span class="str">'\n'</span>),
+      <span class="cm">// ↑ .env stores \n as literal text, .replace() converts back to real newlines</span>
+    });
+  }
+  <span class="fn">initializeApp</span>({ credential });
+}
+
+<span class="kw">const</span> db   = <span class="fn">getFirestore</span>();
+<span class="kw">const</span> auth = <span class="fn">getAuth</span>();
+module.exports = { db, auth };</code><span class="lang-tag">config/firebase.js</span></pre>
+
+    <!-- auth.middleware.js -->
+    <h3>📄 backend/middleware/auth.middleware.js — Security Guard</h3>
+    <p><strong>What:</strong> Two middleware functions: <span class="inline-code">verifyToken</span> checks if the JWT is valid, and <span class="inline-code">requireRole</span> checks if the user has the right role for that endpoint.</p>
+    <p><strong>Why:</strong> The backend cannot trust anything the frontend says. Even if the frontend hides the "Admin" button from a student, a student could still call <span class="inline-code">POST /api/admin/delete-user</span> directly using Postman or curl. The middleware blocks this on the server.</p>
+
+    <pre><code><span class="cm">// Middleware 1: verifyToken</span>
+<span class="kw">const</span> <span class="fn">verifyToken</span> = <span class="kw">async</span> (req, res, next) => {
+  <span class="kw">const</span> authHeader = req.headers.<span class="prop">authorization</span>;  <span class="cm">// "Bearer eyJhb..."</span>
+  <span class="kw">if</span> (!authHeader?.startsWith(<span class="str">'Bearer '</span>))
+    <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">401</span>).<span class="fn">json</span>({ error: <span class="str">'No token provided'</span> });
+
+  <span class="kw">const</span> token   = authHeader.<span class="fn">split</span>(<span class="str">' '</span>)[<span class="num">1</span>];             <span class="cm">// extract just the token</span>
+  <span class="kw">const</span> decoded = <span class="kw">await</span> auth.<span class="fn">verifyIdToken</span>(token); <span class="cm">// Firebase cryptographically verifies</span>
+  req.user = decoded;  <span class="cm">// { uid, email, ... } — now available in all controllers</span>
+  <span class="fn">next</span>();              <span class="cm">// proceed to next middleware or controller</span>
+};
+
+<span class="cm">// Middleware 2: requireRole (used like: requireRole('student') or requireRole('admin'))</span>
+<span class="kw">const</span> <span class="fn">requireRole</span> = (...roles) => <span class="kw">async</span> (req, res, next) => {
+  <span class="kw">const</span> userDoc  = <span class="kw">await</span> db.<span class="fn">collection</span>(<span class="str">'users'</span>).<span class="fn">doc</span>(req.user.uid).<span class="fn">get</span>();
+  <span class="kw">const</span> userRole = userDoc.<span class="fn">data</span>().<span class="prop">role</span>;
+  <span class="kw">if</span> (!roles.<span class="fn">includes</span>(userRole))
+    <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">403</span>).<span class="fn">json</span>({ error: <span class="str">`Forbidden. Needs: ${roles.join('/')}`</span> });
+  <span class="fn">next</span>();
+};
+
+<span class="cm">// How they chain together in routes:</span>
+router.<span class="fn">post</span>(<span class="str">'/book'</span>, verifyToken, <span class="fn">requireRole</span>(<span class="str">'student'</span>), rideController.bookRide);
+<span class="cm">//              ↑            ↑                    ↑                  ↑</span>
+<span class="cm">//           URL       1. check JWT     2. check role=student   3. run logic</span></code><span class="lang-tag">auth.middleware.js</span></pre>
+
+    <!-- auth.controller.js -->
+    <h3>📄 backend/controllers/auth.controller.js — User Profile Logic</h3>
+    <p><strong>What:</strong> Four functions for user profile CRUD: create profile after signup, read profile, update profile, delete account.</p>
+    <p><strong>Why:</strong> Firebase Auth only stores email + password. All other user data (name, phone, role, vehicle number) lives in Firestore. This controller manages that data.</p>
+
+    <pre><code><span class="cm">// registerUser — POST /api/auth/register</span>
+<span class="cm">// Called ONCE right after Firebase creates the auth account</span>
+<span class="kw">const</span> <span class="fn">registerUser</span> = <span class="kw">async</span> (req, res) => {
+  <span class="kw">const</span> { name, phone, role, vehicleNumber, vehicleType } = req.body;
+  <span class="kw">const</span> uid   = req.user.uid;    <span class="cm">// from Firebase JWT (set by verifyToken)</span>
+  <span class="kw">const</span> email = req.user.email;
+
+  <span class="cm">// Check if already registered (prevents duplicate Firestore documents)</span>
+  <span class="kw">const</span> existing = <span class="kw">await</span> db.<span class="fn">collection</span>(<span class="str">'users'</span>).<span class="fn">doc</span>(uid).<span class="fn">get</span>();
+  <span class="kw">if</span> (existing.exists) <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">409</span>).<span class="fn">json</span>({ error: <span class="str">'Already registered'</span> });
+
+  <span class="kw">const</span> userData = {
+    uid, name, email, phone, role,
+    isActive: <span class="kw">true</span>, totalRides: <span class="num">0</span>, rating: <span class="num">0</span>,
+    createdAt: <span class="kw">new</span> Date().<span class="fn">toISOString</span>(),
+  };
+
+  <span class="cm">// Driver gets extra fields</span>
+  <span class="kw">if</span> (role === <span class="str">'driver'</span>) {
+    userData.vehicleNumber = vehicleNumber || <span class="str">''</span>;
+    userData.vehicleType   = vehicleType   || <span class="str">''</span>;
+    userData.isAvailable   = <span class="kw">false</span>;   <span class="cm">// offline by default</span>
+    userData.earnings      = <span class="num">0</span>;
+  }
+
+  <span class="cm">// Write to Firestore: users/{uid} document</span>
+  <span class="kw">await</span> db.<span class="fn">collection</span>(<span class="str">'users'</span>).<span class="fn">doc</span>(uid).<span class="fn">set</span>(userData);
+  res.<span class="fn">status</span>(<span class="num">201</span>).<span class="fn">json</span>({ message: <span class="str">'Registered!'</span>, user: userData });
+};
+
+<span class="cm">// updateMe — PUT /api/auth/me</span>
+<span class="kw">const</span> <span class="fn">updateMe</span> = <span class="kw">async</span> (req, res) => {
+  <span class="kw">const</span> { name, phone, vehicleNumber, vehicleType } = req.body;
+  <span class="kw">const</span> updates = { updatedAt: <span class="kw">new</span> Date().<span class="fn">toISOString</span>() };
+  <span class="cm">// Only update fields that were actually sent</span>
+  <span class="kw">if</span> (name)          updates.name          = name;
+  <span class="kw">if</span> (phone)         updates.phone         = phone;
+  <span class="kw">if</span> (vehicleNumber) updates.vehicleNumber = vehicleNumber;
+  <span class="kw">if</span> (vehicleType)   updates.vehicleType   = vehicleType;
+
+  <span class="kw">await</span> db.<span class="fn">collection</span>(<span class="str">'users'</span>).<span class="fn">doc</span>(req.user.uid).<span class="fn">update</span>(updates);
+  res.<span class="fn">json</span>({ message: <span class="str">'Profile updated!'</span>, updates });
+};</code><span class="lang-tag">auth.controller.js</span></pre>
+
+    <!-- auth.routes.js -->
+    <h3>📄 backend/routes/auth.routes.js — API Endpoints</h3>
+    <table>
+      <tr><th>Method</th><th>URL</th><th>What it does</th><th>Who calls it</th></tr>
+      <tr><td>POST</td><td>/api/auth/register</td><td>Save new user profile to Firestore</td><td>RegisterPage after Firebase signup</td></tr>
+      <tr><td>GET</td><td>/api/auth/me</td><td>Get current user's Firestore profile</td><td>AuthContext on every page load</td></tr>
+      <tr><td>PUT</td><td>/api/auth/me</td><td>Update name, phone, vehicle info</td><td>ProfilePage save button</td></tr>
+      <tr><td>DELETE</td><td>/api/auth/me</td><td>Delete account from Firestore + Firebase</td><td>Profile deactivate button</td></tr>
+    </table>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 6: FIREBASE SETUP -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s6">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <h2>Firebase Setup — Step by Step</h2>
+    </div>
+
+    <h3>🔥 Part A — Create Firebase Project</h3>
+    <ol class="steps">
+      <li><p>Go to <strong>https://console.firebase.google.com</strong> → Sign in with Google</p></li>
+      <li><p>Click <strong>"Add project"</strong> → Name it <strong>SmartRideTIET</strong> → Click Continue</p></li>
+      <li><p>On step 2: find "Enable Google Analytics" toggle → turn it <strong>OFF</strong> → Click "Create project"</p></li>
+      <li><p>Wait ~10 seconds → Click <strong>"Continue"</strong></p></li>
+    </ol>
+
+    <h3>🗄️ Part B — Enable Firestore Database</h3>
+    <ol class="steps">
+      <li><p>Left sidebar → <strong>Build → Firestore Database</strong></p></li>
+      <li><p>Click <strong>"Create database"</strong></p></li>
+      <li><p>Step 1 (Edition): Keep <strong>"Standard edition"</strong> → Click Next</p></li>
+      <li><p>Step 2 (Location): Change to <strong>asia-south1 (Mumbai)</strong> → Click Next</p></li>
+      <li><p>Step 3 (Configure): Select <strong>"Start in test mode"</strong> → Click <strong>Create</strong></p></li>
+    </ol>
+
+    <div class="alert alert-warn">
+      <div class="alert-icon">⚠️</div>
+      <div class="alert-body">
+        <div class="alert-title">Test Mode — 30 Day Expiry</div>
+        Test mode allows anyone to read/write your database for 30 days. Good for development. Before launching publicly, update Firestore Security Rules to restrict access.
+      </div>
+    </div>
+
+    <h3>🔐 Part C — Enable Authentication</h3>
+    <ol class="steps">
+      <li><p>Left sidebar → <strong>Build → Authentication</strong> → Click <strong>"Get started"</strong></p></li>
+      <li><p>Click <strong>"Email/Password"</strong> → Toggle the first switch ON → Click <strong>Save</strong></p></li>
+      <li><p>Go back → Click <strong>"Google"</strong> → Toggle ON</p></li>
+      <li><p><strong>Public-facing name:</strong> Enter <span class="inline-code">SmartRideTIET</span></p></li>
+      <li><p><strong>Support email:</strong> Select your Gmail from dropdown → Click <strong>Save</strong></p></li>
+    </ol>
+
+    <h3>🌐 Part D — Register Web App &amp; Get Config Keys</h3>
+    <ol class="steps">
+      <li><p>Click <strong>gear icon ⚙️ (Settings)</strong> → <strong>"Project settings"</strong></p></li>
+      <li><p>Scroll to <strong>"Your apps"</strong> → Click the <strong>&lt;/&gt; (Web)</strong> icon</p></li>
+      <li><p>App nickname: <span class="inline-code">SmartRideTIET-Web</span> → Click <strong>"Register app"</strong></p></li>
+      <li><p>You'll see a <span class="inline-code">firebaseConfig</span> object with all keys — <strong>copy each value</strong></p></li>
+      <li><p>Paste them into <span class="inline-code">frontend/.env</span> as <span class="inline-code">VITE_FIREBASE_API_KEY=...</span> etc.</p></li>
+    </ol>
+
+    <h3>🔑 Part E — Service Account Key (for Backend)</h3>
+    <ol class="steps">
+      <li><p>⚙️ Settings → <strong>"Service accounts"</strong> tab</p></li>
+      <li><p>Click <strong>"Generate new private key"</strong> → Click <strong>"Generate key"</strong></p></li>
+      <li><p>A file like <span class="inline-code">smartridetiet-firebase-adminsdk-xxx.json</span> downloads to your computer</p></li>
+      <li><p>Rename it to <span class="inline-code">serviceAccountKey.json</span></p></li>
+      <li><p>Move it to: <span class="inline-code">SmartRideTIET/backend/config/serviceAccountKey.json</span></p></li>
+    </ol>
+
+    <div class="alert alert-error">
+      <div class="alert-icon">🚨</div>
+      <div class="alert-body">
+        <div class="alert-title">NEVER push serviceAccountKey.json to GitHub!</div>
+        This key gives full admin access to your entire Firebase project. Make sure your <span class="inline-code">.gitignore</span> includes both <span class="inline-code">serviceAccountKey.json</span> and <span class="inline-code">.env</span>.
+      </div>
+    </div>
+
+    <h3>📝 Part F — Fill frontend/.env</h3>
+    <pre><code>VITE_FIREBASE_API_KEY=AIzaSy...             <span class="cm"># from firebaseConfig.apiKey</span>
+VITE_FIREBASE_AUTH_DOMAIN=smartridetiet.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=smartridetiet
+VITE_FIREBASE_STORAGE_BUCKET=smartridetiet.firebasestorage.app
+VITE_FIREBASE_MESSAGING_SENDER_ID=406514941585
+VITE_FIREBASE_APP_ID=1:406514941585:web:da2b...
+
+VITE_API_BASE_URL=http://localhost:5000/api
+VITE_GOOGLE_MAPS_API_KEY=AIzaSy...          <span class="cm"># from Google Cloud (Section 7)</span></code><span class="lang-tag">frontend/.env</span></pre>
+
+    <div class="alert alert-note">
+      <div class="alert-icon">💡</div>
+      <div class="alert-body">
+        <div class="alert-title">Quotes Rule for frontend/.env</div>
+        None of the VITE_ values need quotes. Just write <span class="inline-code">VITE_FIREBASE_API_KEY=AIzaSy...</span> without any quotes around the value.
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 7: GOOGLE MAPS API -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s7">
+    <div class="section-header">
+      <div class="section-num">7</div>
+      <h2>Google Maps API — Step by Step</h2>
+    </div>
+
+    <div class="alert alert-note">
+      <div class="alert-icon">💡</div>
+      <div class="alert-body">Google Maps is actively used in Phase 4 (Live GPS Tracking). You can skip it now and come back, but setting it up in Phase 2 means the key will already be in .env when you need it.</div>
+    </div>
+
+    <h3>☁️ Part A — Google Cloud Project</h3>
+    <ol class="steps">
+      <li><p>Go to <strong>https://console.cloud.google.com</strong> → sign in with same Google account</p></li>
+      <li><p>Click project selector at the top → <strong>"New Project"</strong> → Name: <span class="inline-code">SmartRideTIET</span> → <strong>Create</strong></p></li>
+    </ol>
+
+    <h3>🗺️ Part B — Enable APIs</h3>
+    <ol class="steps">
+      <li><p>Left sidebar → <strong>APIs &amp; Services → Library</strong></p></li>
+      <li><p>Search <strong>"Maps JavaScript API"</strong> → Click it → Click <strong>"Enable"</strong></p></li>
+      <li><p>Go back → Search <strong>"Places API"</strong> → Enable (for location search autocomplete in Phase 3)</p></li>
+      <li><p>Go back → Search <strong>"Directions API"</strong> → Enable (for showing route on map)</p></li>
+    </ol>
+
+    <h3>🔑 Part C — Create API Key</h3>
+    <ol class="steps">
+      <li><p>Left sidebar → <strong>APIs &amp; Services → Credentials</strong></p></li>
+      <li><p>Click <strong>"+ Create Credentials" → "API Key"</strong></p></li>
+      <li><p>Copy the generated key (looks like: <span class="inline-code">AIzaSyBxxxxxxxxxxxxxx</span>)</p></li>
+    </ol>
+
+    <h3>🛡️ Part D — Restrict the Key</h3>
+    <ol class="steps">
+      <li><p>Click on your newly created API key to open its settings</p></li>
+      <li><p>Under <strong>"Application restrictions"</strong> → select <strong>"HTTP referrers"</strong></p></li>
+      <li><p>Add: <span class="inline-code">http://localhost:5173/*</span> and <span class="inline-code">http://localhost:5173</span></p></li>
+      <li><p>Under <strong>"API restrictions"</strong> → select the three APIs you enabled → <strong>Save</strong></p></li>
+    </ol>
+
+    <h3>📝 Part E — Add to .env</h3>
+    <pre><code>VITE_GOOGLE_MAPS_API_KEY=AIzaSyBxxxxxxxxxxxxxx    <span class="cm"># no quotes needed</span></code><span class="lang-tag">frontend/.env</span></pre>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 8: TERMINAL COMMANDS -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s8">
+    <div class="section-header">
+      <div class="section-num">8</div>
+      <h2>Terminal Commands — When &amp; Why</h2>
+    </div>
+
+    <h3>📦 Install React + Vite Plugin (Phase 2 fix)</h3>
+    <p><strong>When:</strong> Run this if the project was missing <span class="inline-code">react</span>, <span class="inline-code">react-dom</span>, or <span class="inline-code">@vitejs/plugin-react</span>. <strong>Why:</strong> React needs to be installed for JSX to work. <span class="inline-code">@vitejs/plugin-react</span> is required by <span class="inline-code">vite.config.js</span>.</p>
+    <div class="terminal">
+      <div class="terminal-header"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="terminal-label">PowerShell — inside frontend/</span></div>
+      <div class="terminal-body"><code>
+<span class="t-prompt">PS></span> <span class="t-cmd">npm install react react-dom @vitejs/plugin-react</span>
+<span class="t-out">#  react          = the UI library</span>
+<span class="t-out">#  react-dom      = connects React to the browser DOM</span>
+<span class="t-out">#  plugin-react   = enables JSX + Fast Refresh in Vite</span>
+      </code></div>
+    </div>
+
+    <h3>📦 Install All Phase 2 Frontend Dependencies</h3>
+    <p><strong>When:</strong> Once, when starting Phase 2. <strong>Why:</strong> Adds all libraries needed for auth, routing, API calls, notifications, and icons.</p>
+    <div class="terminal">
+      <div class="terminal-header"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="terminal-label">PowerShell — inside frontend/</span></div>
+      <div class="terminal-body"><code>
+<span class="t-prompt">PS></span> <span class="t-cmd">npm install firebase axios react-router-dom react-hot-toast lucide-react</span>
+<span class="t-out">#  firebase         = Firebase Auth + Firestore SDK for browser</span>
+<span class="t-out">#  axios            = HTTP client for calling backend API</span>
+<span class="t-out">#  react-router-dom = /login /dashboard etc. routing</span>
+<span class="t-out">#  react-hot-toast  = toast notification pop-ups</span>
+<span class="t-out">#  lucide-react     = icons (Eye, Lock, Mail, etc.)</span>
+      </code></div>
+    </div>
+
+    <h3>📦 Install All Backend Dependencies</h3>
+    <p><strong>When:</strong> Once when starting the backend. <strong>Why:</strong> Gives the Node.js server all tools it needs to handle requests, verify tokens, and access Firestore.</p>
+    <div class="terminal">
+      <div class="terminal-header"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="terminal-label">PowerShell — inside backend/</span></div>
+      <div class="terminal-body"><code>
+<span class="t-prompt">PS></span> <span class="t-cmd">npm install express cors dotenv firebase-admin nodemon</span>
+<span class="t-out">#  express        = web server framework</span>
+<span class="t-out">#  cors           = allow frontend (port 5173) to call backend (port 5000)</span>
+<span class="t-out">#  dotenv         = read .env file into process.env</span>
+<span class="t-out">#  firebase-admin = server-side Firebase SDK to verify tokens</span>
+<span class="t-out">#  nodemon        = auto-restarts server when you save a file (dev only)</span>
+      </code></div>
+    </div>
+
+    <h3>▶️ Run Both Servers (Phase 2 dev workflow)</h3>
+    <p><strong>When:</strong> Every time you start working. <strong>Why:</strong> You need both servers running — backend for API calls, frontend for the React app. Open two terminal tabs.</p>
+    <div class="terminal">
+      <div class="terminal-header"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="terminal-label">Terminal 1 — inside backend/</span></div>
+      <div class="terminal-body"><code>
+<span class="t-prompt">PS></span> <span class="t-cmd">npm run dev</span>
+<span class="t-success">🔥 Firebase Admin SDK initialized!</span>
+<span class="t-success">🚌 SmartRideTIET API running on port 5000</span>
+      </code></div>
+    </div>
+    <div class="terminal">
+      <div class="terminal-header"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="terminal-label">Terminal 2 — inside frontend/</span></div>
+      <div class="terminal-body"><code>
+<span class="t-prompt">PS></span> <span class="t-cmd">npm run dev</span>
+<span class="t-success">  VITE v8.1.3  ready in 614 ms</span>
+<span class="t-success">  ➜  Local:   http://localhost:5173/</span>
+      </code></div>
+    </div>
+
+    <h3>🔍 Verify Build Has No Errors</h3>
+    <p><strong>When:</strong> After making changes, before committing to GitHub. <strong>Why:</strong> Builds catch import errors, missing files, and TypeScript errors that the dev server might miss.</p>
+    <div class="terminal">
+      <div class="terminal-header"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="terminal-label">PowerShell — inside frontend/</span></div>
+      <div class="terminal-body"><code>
+<span class="t-prompt">PS></span> <span class="t-cmd">npx vite build</span>
+<span class="t-success">✓ 1873 modules transformed.</span>
+<span class="t-success">✓ built in 1.39s         ← 0 errors means code is correct</span>
+<span class="t-error"># If you see "error TS..." → import error or missing file to fix</span>
+      </code></div>
+    </div>
+
+    <h3>📁 Create Phase 2 Folder Structure (if not already done)</h3>
+    <div class="terminal">
+      <div class="terminal-header"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="terminal-label">PowerShell — inside frontend/src/</span></div>
+      <div class="terminal-body"><code>
+<span class="t-prompt">PS></span> <span class="t-cmd">New-Item -ItemType Directory -Force -Path @(</span>
+<span class="t-cmd">  "pages/student", "pages/driver", "pages/admin",</span>
+<span class="t-cmd">  "components/common", "context", "hooks", "services"</span>
+<span class="t-cmd">)</span>
+<span class="t-out">#  Creates all required directories at once (PowerShell syntax for Windows)</span>
+<span class="t-out">#  -Force means: don't error if folder already exists</span>
+      </code></div>
+    </div>
+
+    <div class="alert alert-note">
+      <div class="alert-icon">💡</div>
+      <div class="alert-body">
+        <div class="alert-title">VS Code Split Terminal Tip</div>
+        Press <strong>Ctrl + Shift + 5</strong> to split the terminal into two panes side-by-side. Run backend in one, frontend in the other. Both run at the same time — no switching needed.
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 9: AUTH FLOW -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s9">
+    <div class="section-header">
+      <div class="section-num">9</div>
+      <h2>Auth Flow — How Everything Connects</h2>
+    </div>
+
+    <h3>🆕 New User Sign-Up Flow</h3>
+    <div class="flow-diagram">
+<span class="flow-purple">User fills RegisterPage</span> (name, email, role, password)
+  ↓
+<span class="flow-arrow">signUpWithEmail() in AuthContext is called</span>
+  ↓
+<span class="flow-cyan">Firebase creates auth account</span> (email + password stored securely by Google)
+  ↓
+<span class="flow-arrow">POST /api/auth/register is called</span> (with Firebase JWT token in header)
+  ↓
+<span class="flow-cyan">Backend verifyToken middleware</span> verifies the JWT
+  ↓
+<span class="flow-cyan">auth.controller registerUser</span> saves profile to Firestore users/{uid}
+  ↓
+<span class="flow-green">profile.role read → redirect to /student/dashboard or /driver/dashboard</span>
+    </div>
+
+    <h3>🔑 Returning User Sign-In Flow</h3>
+    <div class="flow-diagram">
+<span class="flow-purple">User fills LoginPage</span> (email + password)
+  ↓
+<span class="flow-arrow">signInWithEmailAndPassword(auth, email, password)</span>
+  ↓
+<span class="flow-cyan">Firebase validates password</span> → returns Firebase user + JWT token
+  ↓
+<span class="flow-arrow">GET /api/auth/me called</span> (with JWT in header)
+  ↓
+<span class="flow-cyan">auth.controller getMe</span> reads Firestore users/{uid} document
+  ↓
+<span class="flow-green">profile data returned → redirectByRole(profile.role)</span>
+    </div>
+
+    <h3>🛡️ ProtectedRoute Decision Tree</h3>
+    <div class="flow-diagram">
+User navigates to /student/dashboard
+  ↓
+ProtectedRoute checks auth state
+  │
+  ├─ <span class="flow-arrow">loading = true?</span>       → Show loading spinner (wait for Firebase)
+  │
+  ├─ <span class="flow-arrow">user = null?</span>          → Navigate to /login (save current URL)
+  │
+  ├─ <span class="flow-arrow">wrong role?</span>           → Navigate to correct dashboard
+  │                              (driver → /driver/dashboard)
+  │
+  └─ <span class="flow-green">✅ All checks pass</span>     → Render StudentDashboard
+    </div>
+
+    <h3>🔗 Every Authenticated API Call</h3>
+    <div class="flow-diagram">
+Component calls <span class="flow-purple">bookRide(data)</span> from api.js
+  ↓
+Axios request interceptor fires → <span class="flow-cyan">user.getIdToken()</span> gets fresh JWT
+  ↓
+Request sent with header: <span class="flow-cyan">Authorization: Bearer eyJhb...</span>
+  ↓
+Express backend receives request → <span class="flow-arrow">verifyToken middleware</span> runs
+  ↓
+<span class="flow-cyan">auth.verifyIdToken(token)</span> → Firebase Admin cryptographically validates token
+  ↓
+req.user = { uid, email } → <span class="flow-arrow">requireRole middleware</span> checks Firestore role
+  ↓
+<span class="flow-green">Controller runs → reads/writes Firestore → sends JSON response</span>
+    </div>
+
+    <h3>📊 Firestore Data Structure</h3>
+    <pre><code><span class="cm">// Collection: users</span>
+{
+  <span class="str">"uid123"</span>: {                  <span class="cm">// Document ID = Firebase Auth UID</span>
+    <span class="prop">uid</span>:          <span class="str">"uid123"</span>,
+    <span class="prop">name</span>:         <span class="str">"Arjun Singh"</span>,
+    <span class="prop">email</span>:        <span class="str">"arjun@tiet.ac.in"</span>,
+    <span class="prop">phone</span>:        <span class="str">"+91 9876543210"</span>,
+    <span class="prop">role</span>:         <span class="str">"student"</span>,   <span class="cm">// "student" | "driver" | "admin"</span>
+    <span class="prop">isActive</span>:     <span class="kw">true</span>,
+    <span class="prop">totalRides</span>:   <span class="num">12</span>,
+    <span class="prop">rating</span>:       <span class="num">4.8</span>,
+    <span class="prop">createdAt</span>:    <span class="str">"2025-07-04T10:30:00.000Z"</span>,
+    <span class="prop">updatedAt</span>:    <span class="str">"2025-07-05T15:00:00.000Z"</span>,
+  },
+
+  <span class="str">"uid456"</span>: {                  <span class="cm">// Driver document — has extra fields</span>
+    ...
+    <span class="prop">role</span>:          <span class="str">"driver"</span>,
+    <span class="prop">vehicleNumber</span>: <span class="str">"PB10AB1234"</span>,
+    <span class="prop">vehicleType</span>:   <span class="str">"Car"</span>,
+    <span class="prop">isAvailable</span>:   <span class="kw">false</span>,           <span class="cm">// goes online/offline in Phase 3</span>
+    <span class="prop">earnings</span>:      <span class="num">1250</span>,            <span class="cm">// total rupees earned</span>
+    <span class="prop">currentLocation</span>: <span class="kw">null</span>,         <span class="cm">// {lat, lng} updated in Phase 4</span>
+  }
+}</code></pre>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 10: ERRORS -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s10">
+    <div class="section-header">
+      <div class="section-num">10</div>
+      <h2>Errors Faced &amp; How We Fixed Them</h2>
+    </div>
+
+    <!-- Error 1 -->
+    <div class="error-card">
+      <div class="error-title">❌ Error 1 — Vite: Failed to resolve "@vitejs/plugin-react"</div>
+      <div class="error-msg">Failed to resolve import "@vitejs/plugin-react" from "vite.config.js"</div>
+      <p style="color:#a0a0c0;font-size:0.88rem;margin-top:0.5rem"><strong>Why it happened:</strong> <span class="inline-code">vite.config.js</span> imports <span class="inline-code">@vitejs/plugin-react</span> but it wasn't installed. The original project setup didn't install this package separately.</p>
+      <div class="fix-title">✅ Fix:</div>
+      <div class="error-msg" style="color:#86efac">npm install @vitejs/plugin-react
+# Output: added 1 package ← confirms it installed</div>
+    </div>
+
+    <!-- Error 2 -->
+    <div class="error-card">
+      <div class="error-title">❌ Error 2 — PowerShell: "&amp;&amp;" not recognized</div>
+      <div class="error-msg">The token '&amp;&amp;' is not a valid statement separator in this version.</div>
+      <p style="color:#a0a0c0;font-size:0.88rem;margin-top:0.5rem"><strong>Why it happened:</strong> On Windows PowerShell, you cannot chain commands with <span class="inline-code">&amp;&amp;</span> (that's Linux bash syntax). Tried to run <span class="inline-code">mkdir pages/student &amp;&amp; mkdir pages/driver</span>.</p>
+      <div class="fix-title">✅ Fix — Use PowerShell syntax:</div>
+      <div class="error-msg" style="color:#86efac">New-Item -ItemType Directory -Force -Path "pages/student", "pages/driver"
+# Or run commands on separate lines, or use ; between them</div>
+    </div>
+
+    <!-- Error 3 -->
+    <div class="error-card">
+      <div class="error-title">❌ Error 3 — White screen / App renders nothing</div>
+      <div class="error-msg">[No visible error in browser — just a blank white page]</div>
+      <p style="color:#a0a0c0;font-size:0.88rem;margin-top:0.5rem"><strong>Why it happened:</strong> Either a missing <span class="inline-code">.env</span> variable caused Firebase to fail silently, OR an import error in one of the pages crashed the app before anything rendered, OR <span class="inline-code">loading</span> in AuthContext never became <span class="inline-code">false</span>.</p>
+      <div class="fix-title">✅ Fix — Check browser Console (F12):</div>
+      <p style="color:#86efac;font-size:0.88rem">Open F12 → Console tab → the real error shows there. Common fixes:
+      <br>• Verify <span class="inline-code">frontend/.env</span> has all VITE_FIREBASE_* values
+      <br>• Run <span class="inline-code">npx vite build</span> to catch import errors
+      <br>• Check all imported file names match exactly (case-sensitive)</p>
+    </div>
+
+    <!-- Error 4 -->
+    <div class="error-card">
+      <div class="error-title">❌ Error 4 — TypeError: Cannot read properties of null (reading 'role')</div>
+      <div class="error-msg">TypeError: Cannot read properties of null (reading 'role')
+  at ProtectedRoute (ProtectedRoute.jsx:15)</div>
+      <p style="color:#a0a0c0;font-size:0.88rem;margin-top:0.5rem"><strong>Why it happened:</strong> Code used <span class="inline-code">profile.role</span> without checking if <span class="inline-code">profile</span> is null first. During the brief loading period, profile is null — accessing <span class="inline-code">.role</span> on null crashes.</p>
+      <div class="fix-title">✅ Fix — Always use optional chaining (?.):</div>
+      <div class="error-msg" style="color:#86efac">// ❌ Crashes:      profile.role
+// ✅ Safe:         profile?.role
+// ✅ With default: profile?.name?.split(' ')[0] || 'User'</div>
+    </div>
+
+    <!-- Error 5 -->
+    <div class="error-card">
+      <div class="error-title">❌ Error 5 — CORS Error: No 'Access-Control-Allow-Origin' header</div>
+      <div class="error-msg">Access to XMLHttpRequest at 'http://localhost:5000/api/auth/me' from origin 'http://localhost:5173' has been blocked by CORS policy</div>
+      <p style="color:#a0a0c0;font-size:0.88rem;margin-top:0.5rem"><strong>Why it happened:</strong> Frontend (port 5173) calling backend (port 5000) — browser blocks this by default for security. The backend needs to explicitly allow this.</p>
+      <div class="fix-title">✅ Fix — in backend/server.js:</div>
+      <div class="error-msg" style="color:#86efac">app.use(cors({
+  origin: 'http://localhost:5173',  // ← must exactly match frontend URL
+  credentials: true,
+}));</div>
+    </div>
+
+    <!-- Error 6 -->
+    <div class="error-card">
+      <div class="error-title">❌ Error 6 — 409 Conflict: User already registered</div>
+      <div class="error-msg">{"error": "User already registered."}</div>
+      <p style="color:#a0a0c0;font-size:0.88rem;margin-top:0.5rem"><strong>Why it happened:</strong> <span class="inline-code">POST /api/auth/register</span> was called twice for the same user. Can happen if Google sign-in is clicked twice, or if <span class="inline-code">registerUser</span> is called when it shouldn't be.</p>
+      <div class="fix-title">✅ Fix — The <span class="inline-code">signInWithGoogle</span> function handles this:</div>
+      <p style="color:#86efac;font-size:0.88rem">It tries <span class="inline-code">getMe()</span> first. If the user exists, it uses that profile. Only calls <span class="inline-code">registerUser</span> if <span class="inline-code">getMe()</span> returns a 404 (user doesn't exist yet in Firestore).</p>
+    </div>
+
+    <!-- Error 7 -->
+    <div class="error-card">
+      <div class="error-title">❌ Error 7 — Firebase popup-closed-by-user shown as error</div>
+      <div class="error-msg">Firebase: Error (auth/popup-closed-by-user)</div>
+      <p style="color:#a0a0c0;font-size:0.88rem;margin-top:0.5rem"><strong>Why it happened:</strong> User closed the Google sign-in popup without completing sign-in. Firebase throws an error for this, but it's just normal user behavior — not a real error.</p>
+      <div class="fix-title">✅ Fix — Catch this specific error code and show nothing (or a gentle message):</div>
+      <div class="error-msg" style="color:#86efac">if (err.code === 'auth/popup-closed-by-user') {
+  return;  // just ignore it — user cancelled intentionally
+}</div>
+    </div>
+
+    <!-- Error 8 -->
+    <div class="error-card">
+      <div class="error-title">❌ Error 8 — useAuth must be used within AuthProvider</div>
+      <div class="error-msg">Error: useAuth must be used within AuthProvider</div>
+      <p style="color:#a0a0c0;font-size:0.88rem;margin-top:0.5rem"><strong>Why it happened:</strong> A component called <span class="inline-code">useAuth()</span> but it's not inside <span class="inline-code">&lt;AuthProvider&gt;</span> in the tree. Usually means <span class="inline-code">AuthProvider</span> is missing from <span class="inline-code">App.jsx</span>.</p>
+      <div class="fix-title">✅ Fix — Wrap everything in App.jsx:</div>
+      <div class="error-msg" style="color:#86efac">function App() {
+  return (
+    &lt;AuthProvider&gt;          {/* ← MUST wrap Router */}
+      &lt;Router&gt;
+        &lt;Routes&gt;...&lt;/Routes&gt;
+      &lt;/Router&gt;
+    &lt;/AuthProvider&gt;
+  );
+}</div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────── -->
+  <!-- SECTION 11: FINAL CHECKLIST -->
+  <!-- ─────────────────────────────────────── -->
+  <div class="section" id="s11">
+    <div class="section-header">
+      <div class="section-num">11</div>
+      <h2>Phase 2 — Final Checklist</h2>
+    </div>
+
+    <h3>✅ Config Files</h3>
+    <ul class="checklist">
+      <li><span class="check-done">✅</span> <span class="inline-code">vite.config.js</span> created with <span class="inline-code">@vitejs/plugin-react</span> plugin</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">frontend/.env</span> has all VITE_FIREBASE_* keys + Maps key</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">backend/.env</span> has PORT, FIREBASE_PROJECT_ID, etc.</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">backend/config/serviceAccountKey.json</span> placed (NOT in GitHub)</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">.gitignore</span> includes <span class="inline-code">serviceAccountKey.json</span> and <span class="inline-code">.env</span></li>
+    </ul>
+
+    <h3>✅ Frontend — Auth Pages</h3>
+    <ul class="checklist">
+      <li><span class="check-done">✅</span> <span class="inline-code">LoginPage.jsx</span> — Email + Google sign-in with error handling</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">RegisterPage.jsx</span> — Role select, driver vehicle fields, validation</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">auth.css</span> — Shared auth page premium dark styles</li>
+    </ul>
+
+    <h3>✅ Frontend — Core Architecture</h3>
+    <ul class="checklist">
+      <li><span class="check-done">✅</span> <span class="inline-code">AuthContext.jsx</span> — Global user/profile state, all auth functions</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">api.js</span> — Axios with auto JWT token injection on all requests</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">firebase.js</span> — Firebase client SDK initialized once</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">useAuth.js</span> — Convenience hook file</li>
+    </ul>
+
+    <h3>✅ Frontend — Components &amp; Pages</h3>
+    <ul class="checklist">
+      <li><span class="check-done">✅</span> <span class="inline-code">ProtectedRoute.jsx</span> — Loading state, auth check, role-based redirect</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">Navbar.jsx + Navbar.css</span> — Role-aware nav, dropdown, mobile menu</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">ProfilePage.jsx + ProfilePage.css</span> — View/Edit/Vehicle tabs</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">StudentDashboard.jsx</span> — Navbar + quick action cards</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">DriverDashboard.jsx</span> — Navbar + vehicle info + earnings</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">App.jsx</span> — All routes including /*/profile for all 3 roles</li>
+    </ul>
+
+    <h3>✅ Backend — Auth System</h3>
+    <ul class="checklist">
+      <li><span class="check-done">✅</span> <span class="inline-code">config/firebase.js</span> — Firebase Admin SDK with getApps() check</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">middleware/auth.middleware.js</span> — verifyToken + requireRole</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">controllers/auth.controller.js</span> — registerUser, getMe, updateMe, deleteMe</li>
+      <li><span class="check-done">✅</span> <span class="inline-code">routes/auth.routes.js</span> — POST /register, GET /me, PUT /me, DELETE /me</li>
+    </ul>
+
+    <h3>✅ Firebase &amp; APIs</h3>
+    <ul class="checklist">
+      <li><span class="check-done">✅</span> Firebase project "SmartRideTIET" created</li>
+      <li><span class="check-done">✅</span> Firestore Database enabled (asia-south1, test mode)</li>
+      <li><span class="check-done">✅</span> Email/Password Authentication enabled</li>
+      <li><span class="check-done">✅</span> Google Authentication enabled</li>
+      <li><span class="check-done">✅</span> Web app registered, config copied to frontend/.env</li>
+      <li><span class="check-done">✅</span> Service Account Key downloaded and placed in backend/config/</li>
+      <li><span class="check-done">✅</span> Google Cloud project created, Maps APIs enabled</li>
+      <li><span class="check-done">✅</span> Google Maps API key created and added to frontend/.env</li>
+    </ul>
+
+    <h3>✅ Verification</h3>
+    <ul class="checklist">
+      <li><span class="check-done">✅</span> Backend runs: <span class="inline-code">npm run dev</span> → shows "🔥 Firebase Admin SDK initialized!"</li>
+      <li><span class="check-done">✅</span> Frontend builds: <span class="inline-code">npx vite build</span> → 1873 modules, 0 errors</li>
+      <li><span class="check-done">✅</span> Frontend dev server: <span class="inline-code">npm run dev</span> → opens at http://localhost:5173</li>
+      <li><span class="check-done">✅</span> Login page visible at /login with dark theme design</li>
+      <li><span class="check-done">✅</span> Register page visible at /register with role selector</li>
+      <li><span class="check-done">✅</span> Student dashboard accessible after login as student</li>
+      <li><span class="check-done">✅</span> Driver dashboard accessible after login as driver</li>
+      <li><span class="check-done">✅</span> ProtectedRoute redirects unauthenticated users to /login</li>
+    </ul>
+
+    <div class="alert alert-success" style="margin-top:2rem">
+      <div class="alert-icon">🎉</div>
+      <div class="alert-body">
+        <div class="alert-title">Phase 2 Complete!</div>
+        The entire authentication layer is built. Users can register, log in with email or Google, and are correctly directed to their role-specific dashboard. The Navbar, Profile page, and Protected routes all work. Next step: <strong>Phase 3 — Ride Booking System</strong> (students book rides, drivers accept them, real-time Firestore status updates).
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:3rem;padding:2rem;background:var(--bg3);border:1px solid var(--border);border-radius:16px">
+      <div style="font-size:2rem;margin-bottom:0.5rem">🚌</div>
+      <div style="font-weight:800;font-size:1.2rem;margin-bottom:0.25rem">SmartRideTIET</div>
+      <div style="color:var(--text3);font-size:0.85rem">Phase 2 Notes · Built for TIET Campus Community</div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+  document.querySelectorAll('.toc a').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(link.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+
+</body>
+</html>
