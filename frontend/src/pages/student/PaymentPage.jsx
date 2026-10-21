@@ -6,7 +6,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Navbar from '../../components/common/Navbar';
 import { useAuth } from '../../context/AuthContext';
-import { getRideById } from '../../services/api';
+import { getRideById, cancelRide as apiCancelRide } from '../../services/api';
 import {
   loadRazorpayScript,
   openRazorpayCheckout,
@@ -121,6 +121,19 @@ const PaymentPage = () => {
   };
 
   const handlePay = () => payMethod === 'wallet' ? handleWallet() : handleRazorpay();
+
+  const handleCancel = async () => {
+    if (!rideId) return;
+    const confirm = window.confirm('Are you sure you want to cancel this ride?');
+    if (!confirm) return;
+    try {
+      await apiCancelRide(rideId);
+      toast('Ride cancelled. Returning to dashboard…', { icon: '❌' });
+      navigate('/student/dashboard');
+    } catch {
+      toast.error('Could not cancel ride.');
+    }
+  };
 
   // ── Loading skeleton ────────────────────────────────────────
   if (loading) {
@@ -265,6 +278,17 @@ const PaymentPage = () => {
               </div>
             </div>
           </div>
+
+          {ride?.driverName ? (
+            <div style={{ marginTop: '0.85rem', padding: '0.65rem 0.9rem', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.25)', borderRadius: '10px', fontSize: '0.85rem', color: '#22c55e', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
+              <span>🧑‍✈️ Driver: <strong>{ride.driverName}</strong> ({ride.driverVehicleNumber || 'Cab'})</span>
+              {ride.estimatedTime && <span>⏱️ Est. Time: ~{ride.estimatedTime}</span>}
+            </div>
+          ) : (
+            <div style={{ marginTop: '0.85rem', padding: '0.65rem 0.9rem', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.25)', borderRadius: '10px', fontSize: '0.82rem', color: '#f59e0b' }}>
+              📡 Driver Status: Searching for available driver…
+            </div>
+          )}
         </div>
 
         {/* Fare Breakdown */}
@@ -360,11 +384,20 @@ const PaymentPage = () => {
           <p className="pay-secure">🔒 Payments secured by Razorpay · PCI DSS compliant</p>
         </div>
 
-        {/* Back link */}
-        <div style={{ textAlign: 'center' }}>
-          <Link to="/student/dashboard" style={{ fontSize: '0.82rem', color: '#6666a0', textDecoration: 'none' }}>
-            ← Cancel and go back to dashboard
+        {/* Back and Cancel links */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', marginTop: '1.25rem', flexWrap: 'wrap' }}>
+          <Link to="/student/book" style={{ fontSize: '0.85rem', color: '#a78bfa', textDecoration: 'none', fontWeight: 600 }}>
+            ← Back to Ride Tracking
           </Link>
+          <button
+            onClick={handleCancel}
+            style={{
+              background: 'none', border: 'none', color: '#f87171',
+              fontSize: '0.85rem', cursor: 'pointer', fontWeight: 600,
+            }}
+          >
+            ✕ Cancel This Ride
+          </button>
         </div>
       </div>
     </div>

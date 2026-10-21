@@ -4,6 +4,7 @@
 import { db } from './firebase';
 import {
   collection,
+  doc,
   query,
   where,
   orderBy,
@@ -15,71 +16,113 @@ import {
  * Subscribe to a student's rides in real-time.
  * @param {string} studentId
  * @param {function} callback - called with array of ride objects
+ * @param {function} [onError]
  * @returns unsubscribe function
  */
-export const subscribeToStudentRides = (studentId, callback) => {
+export const subscribeToStudentRides = (studentId, callback, onError) => {
   const q = query(
     collection(db, 'rides'),
     where('studentId', '==', studentId),
-    orderBy('createdAt', 'desc'),
-    limit(20)
+    limit(50)
   );
-  return onSnapshot(q, (snapshot) => {
-    const rides = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    callback(rides);
-  });
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const rides = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      rides.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+      callback(rides);
+    },
+    (err) => {
+      console.warn('⚠️ subscribeToStudentRides Firestore error:', err);
+      if (onError) onError(err);
+    }
+  );
 };
 
 /**
  * Subscribe to a driver's accepted/ongoing rides in real-time.
  * @param {string} driverId
  * @param {function} callback
+ * @param {function} [onError]
  * @returns unsubscribe function
  */
-export const subscribeToDriverRides = (driverId, callback) => {
+export const subscribeToDriverRides = (driverId, callback, onError) => {
   const q = query(
     collection(db, 'rides'),
     where('driverId', '==', driverId),
-    orderBy('createdAt', 'desc'),
-    limit(20)
+    limit(50)
   );
-  return onSnapshot(q, (snapshot) => {
-    const rides = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    callback(rides);
-  });
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const rides = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      rides.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+      callback(rides);
+    },
+    (err) => {
+      console.warn('⚠️ subscribeToDriverRides Firestore error:', err);
+      if (onError) onError(err);
+    }
+  );
 };
 
 /**
  * Subscribe to all pending rides (for driver available rides page).
  * @param {function} callback
+ * @param {function} [onError]
  * @returns unsubscribe function
  */
-export const subscribeToPendingRides = (callback) => {
+export const subscribeToPendingRides = (callback, onError) => {
   const q = query(
     collection(db, 'rides'),
     where('status', '==', 'pending'),
-    orderBy('createdAt', 'asc'),
-    limit(30)
+    limit(50)
   );
-  return onSnapshot(q, (snapshot) => {
-    const rides = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    callback(rides);
-  });
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const rides = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      rides.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+      callback(rides);
+    },
+    (err) => {
+      console.warn('⚠️ subscribeToPendingRides Firestore error:', err);
+      if (onError) onError(err);
+    }
+  );
 };
 
 /**
  * Subscribe to a single ride's updates.
  * @param {string} rideId
  * @param {function} callback
+ * @param {function} [onError]
  * @returns unsubscribe function
  */
-export const subscribeToRide = (rideId, callback) => {
-  const { doc } = require('firebase/firestore');
-  return onSnapshot(doc(db, 'rides', rideId), (docSnap) => {
-    if (docSnap.exists()) {
-      callback({ id: docSnap.id, ...docSnap.data() });
+export const subscribeToRide = (rideId, callback, onError) => {
+  return onSnapshot(
+    doc(db, 'rides', rideId),
+    (docSnap) => {
+      if (docSnap.exists()) {
+        callback({ id: docSnap.id, ...docSnap.data() });
+      }
+    },
+    (err) => {
+      console.warn('⚠️ subscribeToRide Firestore error:', err);
+      if (onError) onError(err);
     }
-  });
+  );
+};
+
+/**
+ * Estimate travel time given km and campus internal flag.
+ */
+export const estimateTripTime = (km, isCampus = false) => {
+  if (km === undefined || km === null || isNaN(km)) return '5-10 min';
+  const speed = isCampus ? 15 : 35;
+  const mins = Math.max(3, Math.round((km / speed) * 60));
+  if (mins < 60) return `${mins} min`;
+  return `${Math.floor(mins / 60)}h ${mins % 60}m`;
 };
 
 /**

@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Navbar from '../../components/common/Navbar';
 import { useAuth } from '../../context/AuthContext';
-import { cancelRide as apiCancelRide } from '../../services/api';
+import { cancelRide as apiCancelRide, getMyRides as apiGetMyRides } from '../../services/api';
 import {
   subscribeToStudentRides,
   getRideStatusMeta,
@@ -90,12 +90,19 @@ const RideCard = ({ ride, onCancel }) => {
       </div>
 
       {/* Meta row */}
-      <div style={{ display: 'flex', gap: '1.25rem', fontSize: '0.82rem', color: '#6666a0', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: '1.25rem', fontSize: '0.82rem', color: '#8888b8', flexWrap: 'wrap', alignItems: 'center' }}>
         <span>🚗 {ride.distance ?? '—'} km</span>
-        <span>💰 ₹{ride.fare ?? '—'}</span>
-        {ride.driverName && <span>🧑‍✈️ {ride.driverName}</span>}
+        <span style={{ fontWeight: 700, color: '#22c55e' }}>💰 ₹{ride.fare ?? '—'}</span>
+        {ride.driverName && <span>🧑‍✈️ Driver: {ride.driverName}</span>}
+        <span style={{
+          padding: '0.15rem 0.5rem', borderRadius: '10px', fontSize: '0.74rem', fontWeight: 700,
+          background: ride.paymentStatus === 'paid' ? 'rgba(34,197,94,0.12)' : 'rgba(245,158,11,0.12)',
+          color: ride.paymentStatus === 'paid' ? '#22c55e' : '#f59e0b',
+        }}>
+          {ride.paymentStatus === 'paid' ? 'Paid' : 'Unpaid'}
+        </span>
         {ride.status === 'completed' && ride.completedAt && (
-          <span>✅ {formatTime(ride.completedAt)}</span>
+          <span>✅ Completed {formatTime(ride.completedAt)}</span>
         )}
       </div>
 
@@ -135,10 +142,26 @@ const RideHistory = () => {
 
   useEffect(() => {
     if (!user) return;
-    const unsub = subscribeToStudentRides(user.uid, (data) => {
-      setRides(data);
-      setLoading(false);
-    });
+
+    // 1. Immediate REST API fetch
+    apiGetMyRides()
+      .then((res) => {
+        if (res?.rides) {
+          setRides(res.rides);
+          setLoading(false);
+        }
+      })
+      .catch((err) => console.warn('apiGetMyRides error:', err));
+
+    // 2. Real-time Firestore listener
+    const unsub = subscribeToStudentRides(
+      user.uid,
+      (data) => {
+        setRides(data);
+        setLoading(false);
+      },
+      () => setLoading(false)
+    );
     return () => unsub();
   }, [user]);
 

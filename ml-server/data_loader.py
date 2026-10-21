@@ -7,7 +7,9 @@ import pandas as pd
 from datetime import datetime, timezone
 from dotenv import load_dotenv
 
+# Load ml-server/.env first, then fall back to backend/.env for Firebase creds
 load_dotenv()
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '..', 'backend', '.env'), override=False)
 
 # ── Firebase init (lazy, only once) ───────────────────────────
 _db = None
@@ -51,7 +53,10 @@ def load_rides(limit: int = 500) -> pd.DataFrame:
       date, hour, day_of_week, status, fare, duration_minutes
     """
     db = _get_db()
-    docs = db.collection("rides").order_by("createdAt", direction="DESCENDING").limit(limit).stream()
+    try:
+        docs = db.collection("rides").order_by("createdAt", direction="DESCENDING").limit(limit).stream()
+    except Exception:
+        docs = db.collection("rides").limit(limit).stream()
 
     rows = []
     for doc in docs:
@@ -63,6 +68,11 @@ def load_rides(limit: int = 500) -> pd.DataFrame:
             dt = created_at.to_datetime()
         elif isinstance(created_at, datetime):
             dt = created_at
+        elif isinstance(created_at, str):
+            try:
+                dt = datetime.fromisoformat(created_at.replace("Z", "+00:00"))
+            except Exception:
+                continue
         else:
             continue  # skip malformed docs
 

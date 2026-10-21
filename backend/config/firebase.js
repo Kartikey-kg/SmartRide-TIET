@@ -10,14 +10,20 @@ if (getApps().length === 0) {
 
   let credential;
 
-  // ── Option A: Use serviceAccountKey.json file (recommended)
+  // ── Option A: Use service account JSON file
   try {
-    const serviceAccount = require('./serviceAccountKey.json');
+    let serviceAccount;
+    try {
+      serviceAccount = require('./serviceAccountKey.json');
+      console.log('🔑 Using serviceAccountKey.json');
+    } catch {
+      serviceAccount = require('./smartridetiet-firebase-adminsdk-fbsvc-8d030bad64.json');
+      console.log('🔑 Using smartridetiet-firebase-adminsdk-fbsvc-8d030bad64.json');
+    }
     credential = cert(serviceAccount);
-    console.log('🔑 Using serviceAccountKey.json');
   } catch (err) {
     // ── Option B: Use environment variables from .env
-    console.warn('⚠️  serviceAccountKey.json not found. Using .env variables instead.');
+    console.warn('⚠️  service account json not found. Using .env variables instead.');
 
     credential = cert({
       projectId:   process.env.FIREBASE_PROJECT_ID,

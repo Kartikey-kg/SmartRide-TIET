@@ -1,5 +1,5 @@
 // src/pages/student/BookRide.jsx
-// Phase 4 — Campus Landmarks + ₹10 campus flat fare + interactive booking
+// Phase 4 & 5 — Campus Landmarks + Flat Fare + Live Driver Tracking & Payment Flexibility
 
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
@@ -9,13 +9,17 @@ import { useAuth } from '../../context/AuthContext';
 import {
   bookRide as apiBookRide,
   cancelRide as apiCancelRide,
+  getMyRides as apiGetMyRides,
+  getRideById as apiGetRideById,
 } from '../../services/api';
 import {
   subscribeToRide,
+  subscribeToStudentRides,
   calcDistance,
   calcFare,
   getRideStatusMeta,
   formatTime,
+  estimateTripTime,
 } from '../../services/rideService';
 import {
   ALL_LOCATIONS,
@@ -36,13 +40,9 @@ const getSuggestions = (text) => {
   ).slice(0, 8);
 };
 
-// ── Estimated travel time (rough: 20 km/h inside campus, 40 outside)
+// ── Estimated travel time (rough: 15 km/h inside campus, 35 outside)
 const estimateTime = (km, isCampus) => {
-  const speed = isCampus ? 15 : 40;
-  const mins = Math.round((km / speed) * 60);
-  if (mins < 1) return '< 1 min';
-  if (mins < 60) return `${mins} min`;
-  return `${Math.floor(mins / 60)}h ${mins % 60}m`;
+  return estimateTripTime(km, isCampus);
 };
 
 // ── Location Input Component ──────────────────────────────────────
@@ -92,7 +92,7 @@ const QUICK_CATEGORIES = ['All', 'Gates', 'Academic', 'Hostels', 'Food', 'Sports
 
 // ── Main BookRide Page ────────────────────────────────────────────
 const BookRide = () => {
-  const { profile } = useAuth();
+  const { user, profile } = useAuth();
   const navigate = useNavigate();
 
   // Location state
@@ -112,11 +112,53 @@ const BookRide = () => {
   const [isCampus,    setIsCampus]    = useState(false);
 
   // Booking state
-  const [booking,    setBooking]     = useState(false);
-  const [activeRide, setActiveRide]  = useState(null);
-  const [rideStatus, setRideStatus]  = useState(null);
+  const [booking,     setBooking]     = useState(false);
+  const [activeRide,  setActiveRide]  = useState(null);
+  const [rideStatus,  setRideStatus]  = useState(null);
 
   const unsubRef = useRef(null);
+
+  // ── Auto-load and poll ongoing active ride for current student ─────
+  useEffect(() => {
+    if (!user?.uid) return;
+
+    const fetchMy = () => {
+      apiGetMyRides()
+        .then((res) => {
+          const rides = res?.rides || [];
+          const active = rides.find((r) => ['pending', 'accepted', 'ongoing'].includes(r.status));
+          if (active) {
+            setActiveRide(active.id);
+            setRideStatus(active);
+          } else if (activeRide) {
+            // Check if activeRide has now completed or cancelled
+            const current = rides.find((r) => r.id === activeRide);
+            if (current) setRideStatus(current);
+          }
+        })
+        .catch((err) => console.warn('apiGetMyRides error:', err));
+    };
+
+    fetchMy();
+    const timer = setInterval(fetchMy, 3000);
+
+    const unsub = subscribeToStudentRides(
+      user.uid,
+      (rides) => {
+        const active = rides.find((r) => ['pending', 'accepted', 'ongoing'].includes(r.status));
+        if (active) {
+          setActiveRide(active.id);
+          setRideStatus(active);
+        }
+      },
+      (err) => console.warn('subscribeToStudentRides error:', err)
+    );
+
+    return () => {
+      clearInterval(timer);
+      unsub();
+    };
+  }, [user, activeRide]);
 
   // ── Recalculate fare when both locations set ──────────────────
   useEffect(() => {
@@ -133,20 +175,46 @@ const BookRide = () => {
     }
   }, [pickupLoc, dropLoc]);
 
-  // ── Subscribe to ride status ──────────────────────────────────
+  // ── Subscribe and poll specific ride status ───────────────────
   useEffect(() => {
     if (activeRide) {
-      unsubRef.current = subscribeToRide(activeRide, (ride) => {
-        setRideStatus(ride);
-        if (ride.status === 'completed') {
-          toast.success('🎉 Your ride is complete! Have a safe trip.');
-        }
-        if (ride.status === 'cancelled') {
-          toast('Ride was cancelled.', { icon: '❌' });
-        }
-      });
+      const pollSpecificRide = () => {
+        apiGetRideById(activeRide)
+          .then((res) => {
+            if (res?.ride) {
+              setRideStatus((prev) => {
+                if (prev?.status !== res.ride.status && res.ride.status === 'completed') {
+                  toast.success('🎉 Your ride is complete! Saved to Ride History.');
+                }
+                return res.ride;
+              });
+            }
+          })
+          .catch((err) => console.warn('apiGetRideById error:', err));
+      };
+
+      pollSpecificRide();
+      const specificTimer = setInterval(pollSpecificRide, 3000);
+
+      unsubRef.current = subscribeToRide(
+        activeRide,
+        (ride) => {
+          setRideStatus(ride);
+          if (ride.status === 'completed') {
+            toast.success('🎉 Your ride is complete! Saved to Ride History.');
+          }
+          if (ride.status === 'cancelled') {
+            toast('Ride was cancelled.', { icon: '❌' });
+          }
+        },
+        (err) => console.warn('subscribeToRide error:', err)
+      );
+
+      return () => {
+        clearInterval(specificTimer);
+        if (unsubRef.current) unsubRef.current();
+      };
     }
-    return () => { if (unsubRef.current) unsubRef.current(); };
   }, [activeRide]);
 
   // ── Handlers ─────────────────────────────────────────────────
@@ -192,6 +260,7 @@ const BookRide = () => {
 
     setBooking(true);
     try {
+      const tripEstimate = estimateTripTime(distance, isCampus);
       const res = await apiBookRide({
         pickupLocation: { lat: pickupLoc.lat, lng: pickupLoc.lng },
         dropLocation:   { lat: dropLoc.lat,   lng: dropLoc.lng   },
@@ -200,11 +269,27 @@ const BookRide = () => {
         distance,
         fare,
         isCampusInternal: isCampus,
+        estimatedTime: tripEstimate,
+        studentPhone: profile?.phone || '',
+        studentName: profile?.name || '',
       });
-      toast.success('Ride booked! Redirecting to payment…');
+      toast.success('🚗 Ride requested! Searching for nearby drivers…');
+      
+      const newRideObj = res.ride || {
+        id: res.rideId,
+        pickupAddress: pickupLoc.label,
+        dropAddress: dropLoc.label,
+        distance,
+        fare,
+        isCampusInternal: isCampus,
+        estimatedTime: tripEstimate,
+        status: 'pending',
+        paymentStatus: 'unpaid',
+        createdAt: new Date().toISOString(),
+      };
+
       setActiveRide(res.rideId);
-      // Phase 5: redirect to payment page after brief delay
-      setTimeout(() => navigate(`/student/payment/${res.rideId}`), 800);
+      setRideStatus(newRideObj);
     } catch (err) {
       toast.error(err?.error || 'Booking failed. Please try again.');
     } finally {
@@ -214,11 +299,15 @@ const BookRide = () => {
 
   const handleCancel = async () => {
     if (!activeRide) return;
+    const confirm = window.confirm('Are you sure you want to cancel this ride?');
+    if (!confirm) return;
+
     try {
       await apiCancelRide(activeRide);
-      toast('Ride cancelled.', { icon: '❌' });
+      toast('Ride cancelled. Returning to dashboard…', { icon: '❌' });
       setActiveRide(null);
       setRideStatus(null);
+      navigate('/student/dashboard');
     } catch {
       toast.error('Could not cancel ride.');
     }
@@ -235,15 +324,121 @@ const BookRide = () => {
 
   // ── Quick loc filtered list ───────────────────────────────────
   const filteredLocations = ALL_LOCATIONS.filter((loc) => {
-    if (activeTab === 'All') return loc.isCampus; // show campus only in quick panel
+    if (activeTab === 'All') return loc.isCampus;
     return loc.isCampus && loc.category === activeTab;
   });
 
   // ── Render ride status banner ─────────────────────────────────
   const renderStatusBanner = () => {
-    if (!rideStatus) return null;
+    if (!rideStatus) {
+      return (
+        <div className="book-ride-card" style={{ textAlign: 'center', padding: '2.5rem 1rem' }}>
+          <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem', animation: 'pulse 1.5s infinite' }}>🚗</div>
+          <div style={{ fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.3rem' }}>
+            Loading Ride Details…
+          </div>
+          <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+            Connecting to server…
+          </div>
+        </div>
+      );
+    }
+
     const meta = getRideStatusMeta(rideStatus.status);
-    const isDone = ['completed', 'cancelled'].includes(rideStatus.status);
+    const hasDriver = !!rideStatus.driverName;
+    const isPaid = rideStatus.paymentStatus === 'paid';
+    const etaText = rideStatus.estimatedTime || estimateTripTime(rideStatus.distance, rideStatus.isCampusInternal);
+
+    // ── When completed: show clean completion card with direct history link ──
+    if (rideStatus.status === 'completed') {
+      return (
+        <div className="book-ride-card" style={{
+          textAlign: 'center', padding: '2.5rem 1.5rem',
+          background: 'rgba(34,197,94,0.06)', border: '1px solid rgba(34,197,94,0.3)',
+          borderRadius: '16px', animation: 'fadeSlideIn 0.3s ease',
+        }}>
+          <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>🎉</div>
+          <h2 style={{ color: '#22c55e', fontSize: '1.4rem', fontWeight: 800, marginBottom: '0.4rem' }}>
+            Ride Completed!
+          </h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', maxWidth: '520px', margin: '0 auto 1.25rem' }}>
+            Your trip from <strong>{rideStatus.pickupAddress}</strong> to <strong>{rideStatus.dropAddress}</strong> has ended and is now saved in your Ride History.
+          </p>
+
+          <div style={{
+            background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-light)',
+            borderRadius: '12px', padding: '0.85rem 1.25rem', display: 'inline-flex',
+            gap: '1.5rem', marginBottom: '1.5rem', fontSize: '0.88rem', flexWrap: 'wrap', justifyContent: 'center',
+          }}>
+            <span>💰 Fare: <strong>₹{rideStatus.fare}</strong></span>
+            <span>🚗 Distance: <strong>{rideStatus.distance} km</strong></span>
+            {rideStatus.driverName && <span>🧑‍✈️ Driver: <strong>{rideStatus.driverName}</strong></span>}
+            <span>💳 Payment: <strong>{isPaid ? 'Paid' : 'Unpaid'}</strong></span>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '0.85rem', flexWrap: 'wrap' }}>
+            <button
+              className="book-btn"
+              style={{ width: 'auto', padding: '0.75rem 1.5rem', marginTop: 0 }}
+              onClick={handleBookAnother}
+            >
+              <span>🚗 Book a New Ride</span>
+            </button>
+
+            <Link
+              to="/student/history"
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                background: 'rgba(255,255,255,0.06)', border: '1px solid var(--border-color)',
+                color: 'var(--text-primary)', borderRadius: '12px', padding: '0.75rem 1.25rem',
+                fontSize: '0.92rem', fontWeight: 700, textDecoration: 'none',
+              }}
+            >
+              📋 View in Ride History →
+            </Link>
+          </div>
+        </div>
+      );
+    }
+
+    // ── When cancelled: show cancelled card with reset option ──
+    if (rideStatus.status === 'cancelled') {
+      return (
+        <div className="book-ride-card" style={{
+          textAlign: 'center', padding: '2rem 1.5rem',
+          background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.25)',
+          borderRadius: '16px', animation: 'fadeSlideIn 0.3s ease',
+        }}>
+          <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>❌</div>
+          <h2 style={{ color: '#f87171', fontSize: '1.3rem', fontWeight: 700, marginBottom: '0.4rem' }}>
+            Ride Cancelled
+          </h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1.25rem' }}>
+            This ride was cancelled and archived into your Ride History.
+          </p>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '0.85rem', flexWrap: 'wrap' }}>
+            <button
+              className="book-btn"
+              style={{ width: 'auto', padding: '0.65rem 1.25rem', marginTop: 0 }}
+              onClick={handleBookAnother}
+            >
+              <span>🚗 Book Another Ride</span>
+            </button>
+            <Link
+              to="/student/history"
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                background: 'rgba(255,255,255,0.06)', border: '1px solid var(--border-color)',
+                color: 'var(--text-primary)', borderRadius: '12px', padding: '0.65rem 1.25rem',
+                fontSize: '0.9rem', fontWeight: 700, textDecoration: 'none',
+              }}
+            >
+              📋 View History →
+            </Link>
+          </div>
+        </div>
+      );
+    }
 
     return (
       <div className="booking-status-banner" style={{ background: meta.bg, border: `1px solid ${meta.dot}40` }}>
@@ -252,48 +447,98 @@ const BookRide = () => {
           <span className="booking-status-label" style={{ color: meta.color }}>
             {meta.label}
           </span>
+          <span className="booking-status-id">ID: {rideStatus.id?.slice(0, 8)}…</span>
         </div>
 
-        <div style={{ fontSize: '0.85rem', color: '#a0a0c0', marginBottom: '0.5rem' }}>
-          <span>📍 {rideStatus.pickupAddress}</span>
-          <span style={{ margin: '0 0.5rem' }}>→</span>
-          <span>🏁 {rideStatus.dropAddress}</span>
+        {/* Route Details */}
+        <div style={{ fontSize: '0.9rem', color: '#e0e0ff', marginBottom: '0.75rem', lineHeight: '1.5' }}>
+          <div>📍 <strong>Pickup:</strong> {rideStatus.pickupAddress}</div>
+          <div style={{ marginTop: '0.2rem' }}>🏁 <strong>Destination:</strong> {rideStatus.dropAddress}</div>
         </div>
 
-        <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.82rem', color: '#6666a0', flexWrap: 'wrap' }}>
+        {/* Metrics: Distance, ETA, Fare */}
+        <div style={{ display: 'flex', gap: '1rem', fontSize: '0.85rem', color: '#8888b8', flexWrap: 'wrap', alignItems: 'center', marginBottom: '1rem' }}>
           <span>🚗 {rideStatus.distance} km</span>
-          <span>💰 ₹{rideStatus.fare}</span>
+          <span className="ride-eta-badge">⏱️ Est. Time: ~{etaText}</span>
+          <span style={{ fontWeight: 700, color: '#22c55e' }}>💰 ₹{rideStatus.fare}</span>
           {rideStatus.isCampusInternal && (
-            <span style={{ color: '#22c55e', fontWeight: 700 }}>🏫 Campus Flat Rate</span>
+            <span style={{ color: '#22c55e', fontWeight: 700, fontSize: '0.78rem' }}>🏫 Campus Flat Rate</span>
           )}
           <span>🕐 {formatTime(rideStatus.createdAt)}</span>
         </div>
 
-        {rideStatus.driverName && (
-          <div className="driver-info-card">
-            <div className="driver-avatar">🧑‍✈️</div>
-            <div>
-              <div className="driver-info-name">{rideStatus.driverName}</div>
-              <div className="driver-info-sub">Your driver is on the way!</div>
+        {/* Driver Section: Which driver accepted or waiting */}
+        {rideStatus.status === 'pending' && (
+          <div className="waiting-driver-box">
+            <div className="waiting-driver-radar">📡</div>
+            <div className="waiting-driver-title">Waiting for a driver to accept…</div>
+            <div className="waiting-driver-desc">
+              Your ride request has been dispatched. As soon as a nearby campus driver accepts, you will see their vehicle & contact details right here.
             </div>
           </div>
         )}
 
-        {!isDone && (
+        {hasDriver && (
+          <div className="driver-info-card" style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+            <div className="driver-detail-row">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <div className="driver-avatar">🧑‍✈️</div>
+                <div>
+                  <div className="driver-info-name" style={{ fontSize: '1.05rem' }}>
+                    {rideStatus.driverName} (Accepted)
+                  </div>
+                  <div className="driver-info-sub">
+                    🚗 {rideStatus.driverVehicleNumber || 'Cab'} · {rideStatus.driverVehicleType || 'Standard Vehicle'}
+                  </div>
+                </div>
+              </div>
+              {rideStatus.driverPhone && (
+                <a href={`tel:${rideStatus.driverPhone}`} className="driver-call-btn">
+                  📞 Call ({rideStatus.driverPhone})
+                </a>
+              )}
+            </div>
+            <div style={{ fontSize: '0.8rem', color: '#22c55e', marginTop: '0.4rem', fontWeight: 600 }}>
+              ✓ Driver accepted! On the way to pick you up.
+            </div>
+          </div>
+        )}
+
+        {/* Payment Section: Show before payment, status, pay now */}
+        <div className="ride-payment-card">
+          <div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              Payment Details
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginTop: '0.25rem' }}>
+              <span className={`payment-status-badge ${isPaid ? 'paid' : 'unpaid'}`}>
+                {isPaid ? '✅ Paid' : '⚠️ Payment Pending'}
+              </span>
+              <span style={{ fontWeight: 800, fontSize: '1.1rem' }}>₹{rideStatus.fare}</span>
+            </div>
+            <div style={{ fontSize: '0.75rem', color: '#8888b8', marginTop: '0.2rem' }}>
+              {isPaid
+                ? `Paid via ${rideStatus.paymentMethod || 'Online'}`
+                : 'You can pay online now via Razorpay / Wallet or upon destination arrival.'}
+            </div>
+          </div>
+
+          {!isPaid && (
+            <button
+              className="pay-now-action-btn"
+              onClick={() => navigate(`/student/payment/${rideStatus.id}`)}
+            >
+              💳 Pay ₹{rideStatus.fare} Now →
+            </button>
+          )}
+        </div>
+
+        {/* Actions: Cancel at any time */}
+        <div className="booking-actions-row">
           <button className="booking-cancel-btn" onClick={handleCancel}>
             ✕ Cancel Ride
           </button>
-        )}
-
-        {isDone && (
-          <button
-            className="book-btn"
-            style={{ marginTop: '0.75rem' }}
-            onClick={handleBookAnother}
-          >
-            <span>+ Book Another Ride</span>
-          </button>
-        )}
+        </div>
       </div>
     );
   };
@@ -307,8 +552,12 @@ const BookRide = () => {
 
           {/* Header */}
           <div className="book-ride-header">
-            <h1>📍 Book a Ride</h1>
-            <p>Hello {profile?.name?.split(' ')[0] || 'Student'}! Where are you headed today?</p>
+            <h1>📍 {activeRide ? 'Ride Details & Status' : 'Book a Ride'}</h1>
+            <p>
+              {activeRide
+                ? 'Track your ride in real time. Driver and payment information are shown below.'
+                : `Hello ${profile?.name?.split(' ')[0] || 'Student'}! Where are you headed today?`}
+            </p>
           </div>
 
           {/* Campus fare notice */}
@@ -463,7 +712,7 @@ const BookRide = () => {
             </div>
           )}
 
-          {/* Live status banner */}
+          {/* Live status banner / Active ride screen */}
           {activeRide && renderStatusBanner()}
 
           {/* Info box */}
@@ -478,7 +727,7 @@ const BookRide = () => {
               marginTop: '1rem',
               lineHeight: 1.6,
             }}>
-              💡 <strong style={{ color: '#c084fc' }}>How it works:</strong> Select a pickup and drop landmark, confirm booking, and a nearby driver will accept your ride. Campus rides are always ₹10 flat.
+              💡 <strong style={{ color: '#c084fc' }}>How it works:</strong> Select a pickup and drop landmark, confirm booking, and a nearby driver will accept your ride. Campus rides are always ₹10 flat. You can cancel at any time and choose when to pay.
             </div>
           )}
         </div>

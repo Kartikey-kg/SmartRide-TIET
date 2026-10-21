@@ -55,11 +55,13 @@ export const getRideById      = (id)    => api.get(`/rides/${id}`);
 export const acceptRide       = (id)    => api.put(`/rides/${id}/accept`);
 export const completeRide     = (id)    => api.put(`/rides/${id}/complete`);
 export const cancelRide       = (id)    => api.put(`/rides/${id}/cancel`);
+export const confirmRidePayment = (id, data) => api.put(`/rides/${id}/confirm-payment`, data);
 export const getAvailableRides = ()     => api.get('/rides/driver/available');
 
 // Users
 export const getAllDrivers = ()   => api.get('/users/drivers');
 export const getUserById  = (id) => api.get(`/users/${id}`);
+export const getUserNotifications = () => api.get('/users/notifications');
 
 // Admin — Phase 1–5
 export const getDashboardStats  = ()          => api.get('/admin/stats');

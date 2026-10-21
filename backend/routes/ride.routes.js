@@ -21,6 +21,9 @@ router.put('/:id/complete', verifyToken, requireRole('driver'), rideController.c
 // PUT  /api/rides/:id/cancel  → Student or driver cancels a ride
 router.put('/:id/cancel', verifyToken, rideController.cancelRide);
 
+// PUT  /api/rides/:id/confirm-payment → Driver or student confirms payment
+router.put('/:id/confirm-payment', verifyToken, rideController.confirmPayment);
+
 // GET  /api/rides/available   → Driver sees available/pending rides nearby
 router.get('/driver/available', verifyToken, requireRole('driver'), rideController.getAvailableRides);
 

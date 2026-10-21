@@ -4,20 +4,66 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import Navbar from '../../components/common/Navbar';
+import NotificationModal from '../../components/common/NotificationModal';
 import { Link } from 'react-router-dom';
-import { subscribeToDriverRides, getRideStatusMeta } from '../../services/rideService';
+import { subscribeToDriverRides, getRideStatusMeta, estimateTripTime } from '../../services/rideService';
+import { getMyRides as apiGetMyRides, getUserNotifications } from '../../services/api';
 
 const DriverDashboard = () => {
   const { user, profile } = useAuth();
   const [activeRide, setActiveRide]     = useState(null);
   const [todayEarned, setTodayEarned]   = useState(0);
   const [totalRides,  setTotalRides]    = useState(0);
+  const [notifications, setNotifications] = useState([]);
+  const [readNotifIds, setReadNotifIds]   = useState([]);
+  const [showNotifModal, setShowNotifModal] = useState(false);
+
+  // Load read notifications from localStorage
+  useEffect(() => {
+    if (!user) return;
+    try {
+      const stored = localStorage.getItem(`smartride_read_notifs_${user.uid}`);
+      if (stored) {
+        setReadNotifIds(JSON.parse(stored));
+      }
+    } catch {}
+  }, [user]);
 
   useEffect(() => {
     if (!user) return;
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
 
+    const fetchDashboardData = () => {
+      // Rides & Earnings
+      apiGetMyRides()
+        .then((res) => {
+          const rides = res?.rides || [];
+          const active = rides.find((r) => ['accepted','ongoing'].includes(r.status));
+          setActiveRide(active || null);
+          const completed = rides.filter((r) => r.status === 'completed');
+          setTotalRides(completed.length);
+          const todayEarnings = completed
+            .filter((r) => new Date(r.completedAt || r.createdAt) >= todayStart)
+            .reduce((s, r) => s + (r.fare || 0), 0);
+          setTodayEarned(todayEarnings);
+        })
+        .catch(() => {});
+
+      // Notifications
+      getUserNotifications()
+        .then((res) => {
+          if (res?.notifications) {
+            setNotifications(res.notifications);
+          }
+        })
+        .catch(() => {});
+    };
+
+    fetchDashboardData();
+    const timer = setInterval(fetchDashboardData, 3000);
+
+    // Real-time listener
     const unsub = subscribeToDriverRides(user.uid, (rides) => {
       const active = rides.find((r) => ['accepted','ongoing'].includes(r.status));
       setActiveRide(active || null);
@@ -28,8 +74,36 @@ const DriverDashboard = () => {
         .reduce((s, r) => s + (r.fare || 0), 0);
       setTodayEarned(todayEarnings);
     });
-    return () => unsub();
+
+    return () => {
+      clearInterval(timer);
+      unsub();
+    };
   }, [user]);
+
+  const handleMarkRead = (id) => {
+    if (!readNotifIds.includes(id)) {
+      const updated = [...readNotifIds, id];
+      setReadNotifIds(updated);
+      if (user) {
+        try {
+          localStorage.setItem(`smartride_read_notifs_${user.uid}`, JSON.stringify(updated));
+        } catch {}
+      }
+    }
+  };
+
+  const handleMarkAllRead = () => {
+    const allIds = notifications.map((n) => n.id);
+    setReadNotifIds(allIds);
+    if (user) {
+      try {
+        localStorage.setItem(`smartride_read_notifs_${user.uid}`, JSON.stringify(allIds));
+      } catch {}
+    }
+  };
+
+  const unreadNotifsCount = notifications.filter((n) => !readNotifIds.includes(n.id)).length;
 
   const meta = activeRide ? getRideStatusMeta(activeRide.status) : null;
 
@@ -78,35 +152,66 @@ const DriverDashboard = () => {
           {/* ── Active Ride Banner ─────────────────────────────── */}
           {activeRide && meta && (
             <div style={{
-              background: meta.bg, border: `1px solid ${meta.dot}40`,
-              borderRadius: '16px', padding: '1.1rem 1.5rem',
+              background: meta.bg, border: `1px solid ${meta.dot}50`,
+              borderRadius: '16px', padding: '1.25rem 1.5rem',
               marginBottom: '1.5rem', animation: 'fadeSlide 0.4s ease',
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              flexWrap: 'wrap', gap: '0.75rem',
+              display: 'flex', flexDirection: 'column', gap: '0.85rem',
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <span style={{
-                  width: 10, height: 10, borderRadius: '50%', background: meta.dot,
-                  animation: 'pulse 1.5s infinite', flexShrink: 0,
-                }} />
-                <div>
-                  <div style={{ fontWeight: 700, color: meta.color, fontSize: '0.95rem' }}>
-                    Active Ride — {meta.label}
-                  </div>
-                  <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
-                    {activeRide.pickupAddress} → {activeRide.dropAddress}
-                    {activeRide.studentName && <span style={{ marginLeft: '0.5rem' }}>· 🎓 {activeRide.studentName}</span>}
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <span style={{
+                    width: 10, height: 10, borderRadius: '50%', background: meta.dot,
+                    animation: 'pulse 1.5s infinite', flexShrink: 0,
+                  }} />
+                  <div>
+                    <div style={{ fontWeight: 700, color: meta.color, fontSize: '0.98rem' }}>
+                      Active Ride — {meta.label}
+                    </div>
+                    <div style={{ fontSize: '0.85rem', color: '#c0c0e0', marginTop: '0.15rem' }}>
+                      📍 {activeRide.pickupAddress} → 🏁 {activeRide.dropAddress}
+                    </div>
                   </div>
                 </div>
+
+                <Link to="/driver/available" style={{
+                  background: 'rgba(255,255,255,0.08)', border: `1px solid ${meta.dot}50`,
+                  borderRadius: '10px', padding: '0.45rem 1rem',
+                  color: meta.color, fontSize: '0.84rem', fontWeight: 700,
+                  textDecoration: 'none', whiteSpace: 'nowrap',
+                }}>
+                  Manage Ride →
+                </Link>
               </div>
-              <Link to="/driver/available" style={{
-                background: meta.bg, border: `1px solid ${meta.dot}40`,
-                borderRadius: '10px', padding: '0.4rem 0.9rem',
-                color: meta.color, fontSize: '0.82rem', fontWeight: 700,
-                textDecoration: 'none', whiteSpace: 'nowrap',
+
+              {/* Student details + Payment check strip */}
+              <div style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                flexWrap: 'wrap', gap: '0.75rem', paddingTop: '0.75rem',
+                borderTop: '1px solid rgba(255,255,255,0.06)', fontSize: '0.84rem',
               }}>
-                Manage Ride →
-              </Link>
+                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                  <span style={{ color: '#d0d0f0', fontWeight: 600 }}>
+                    🎓 Student: <strong>{activeRide.studentName || 'Student'}</strong>
+                    {activeRide.studentPhone && ` (${activeRide.studentPhone})`}
+                  </span>
+                  <span style={{ color: '#06b6d4', fontWeight: 600 }}>
+                    ⏱️ Est. Time: ~{activeRide.estimatedTime || estimateTripTime(activeRide.distance, activeRide.isCampusInternal)}
+                  </span>
+                </div>
+
+                <div>
+                  <span style={{
+                    padding: '0.25rem 0.65rem', borderRadius: '12px', fontSize: '0.78rem', fontWeight: 700,
+                    background: activeRide.paymentStatus === 'paid' ? 'rgba(34,197,94,0.15)' : 'rgba(245,158,11,0.15)',
+                    color: activeRide.paymentStatus === 'paid' ? '#22c55e' : '#f59e0b',
+                    border: `1px solid ${activeRide.paymentStatus === 'paid' ? 'rgba(34,197,94,0.3)' : 'rgba(245,158,11,0.3)'}`,
+                  }}>
+                    {activeRide.paymentStatus === 'paid'
+                      ? `✅ Payment Done (₹${activeRide.fare})`
+                      : `⚠️ Payment Unpaid (₹${activeRide.fare})`}
+                  </span>
+                </div>
+              </div>
             </div>
           )}
 
@@ -159,6 +264,70 @@ const DriverDashboard = () => {
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Update vehicle & account info</p>
               </div>
             </Link>
+
+            {/* Notifications Action Card */}
+            <div
+              onClick={() => setShowNotifModal(true)}
+              style={{
+                background: 'var(--bg-card)',
+                border: unreadNotifsCount > 0 ? '1px solid rgba(184, 100, 80, 0.4)' : '1px solid var(--border-color)',
+                borderRadius: '16px',
+                padding: '1.5rem',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                position: 'relative',
+                boxShadow: unreadNotifsCount > 0 ? '0 0 15px rgba(184, 100, 80, 0.15)' : 'none',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-3px)';
+                e.currentTarget.style.borderColor = 'var(--primary-red)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.borderColor = unreadNotifsCount > 0 ? 'rgba(184, 100, 80, 0.4)' : 'var(--border-color)';
+              }}
+            >
+              {/* Badge on Top Right */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '14px',
+                  right: '14px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  minWidth: '24px',
+                  height: '24px',
+                  padding: '0 6px',
+                  borderRadius: '12px',
+                  background: unreadNotifsCount > 0 ? 'var(--primary-red, #dc2626)' : 'rgba(255,255,255,0.1)',
+                  color: '#fff',
+                  fontSize: '0.75rem',
+                  fontWeight: 800,
+                  boxShadow: unreadNotifsCount > 0 ? '0 0 10px rgba(220, 38, 38, 0.5)' : 'none',
+                  animation: unreadNotifsCount > 0 ? 'pulse 2s infinite' : 'none',
+                }}
+                title={unreadNotifsCount > 0 ? `${unreadNotifsCount} unread notification(s)` : 'No unread notifications'}
+              >
+                {unreadNotifsCount > 0 ? unreadNotifsCount : notifications.length}
+              </div>
+
+              <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>🔔</div>
+              <h3 style={{ color: 'var(--primary-red)', fontWeight: 700, marginBottom: '0.25rem' }}>
+                Notifications
+              </h3>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+                {unreadNotifsCount > 0 ? (
+                  <span style={{ color: 'var(--primary-red)', fontWeight: 600 }}>
+                    {unreadNotifsCount} new announcement{unreadNotifsCount > 1 ? 's' : ''}
+                  </span>
+                ) : notifications.length > 0 ? (
+                  <span>{notifications.length} announcements</span>
+                ) : (
+                  <span>Campus & admin notices</span>
+                )}
+              </p>
+            </div>
           </div>
 
           {/* Ride Dispatch Banner */}
@@ -178,6 +347,15 @@ const DriverDashboard = () => {
           </div>
         </div>
       </div>
+
+      <NotificationModal
+        isOpen={showNotifModal}
+        onClose={() => setShowNotifModal(false)}
+        notifications={notifications}
+        readIds={readNotifIds}
+        onMarkRead={handleMarkRead}
+        onMarkAllRead={handleMarkAllRead}
+      />
     </>
   );
 };

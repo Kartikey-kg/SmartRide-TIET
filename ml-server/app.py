@@ -94,6 +94,19 @@ def health_check():
     }
 
 
+@app.get("/retrain")
+@app.post("/retrain")
+def retrain_models():
+    """Reloads fresh data from Firebase and retrains all models."""
+    _init_models()
+    return {
+        "status": "ok",
+        "message": "All models retrained on latest Firestore data!",
+        "rides_loaded": len(_cache["raw_df"]) if _cache["raw_df"] is not None else 0,
+        "daily_buckets": len(_cache["daily_df"]) if _cache["daily_df"] is not None else 0,
+    }
+
+
 @app.get("/predict/demand")
 def predict_demand():
     """

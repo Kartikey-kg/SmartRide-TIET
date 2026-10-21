@@ -55,4 +55,32 @@ const getUserById = async (req, res) => {
   }
 };
 
-module.exports = { getAllDrivers, getUserById };
+/**
+ * GET /api/users/notifications
+ * Returns broadcast announcements for students and drivers
+ */
+const getUserNotifications = async (req, res) => {
+  try {
+    const userDoc = await db.collection('users').doc(req.user.uid).get();
+    const role = userDoc.exists ? userDoc.data().role : (req.userRole || 'student');
+
+    const snapshot = await db.collection('notifications').get();
+    let notifications = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+    // Filter by target audience
+    if (role === 'student') {
+      notifications = notifications.filter(n => n.target === 'all' || n.target === 'students');
+    } else if (role === 'driver') {
+      notifications = notifications.filter(n => n.target === 'all' || n.target === 'drivers');
+    }
+
+    // Sort newest first
+    notifications.sort((a, b) => new Date(b.createdAt || b.sentAt || 0) - new Date(a.createdAt || a.sentAt || 0));
+
+    res.json({ notifications });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports = { getAllDrivers, getUserById, getUserNotifications };
